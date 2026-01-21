@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eduardo2145-stack.github.io/calculadora-juros/sitemap.xml
