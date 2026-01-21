@@ -47,9 +47,40 @@
         input:focus { border-color: var(--primary); outline: none; }
         
         /* Botões e Toggles */
-        .toggles-area { background: #f1f3f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .toggle-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-        .toggle-label { font-size: 0.9rem; margin: 0; cursor: pointer; }
+                /* --- CORREÇÃO DO ALINHAMENTO --- */
+        
+        .toggles-area { 
+            background: #f1f3f5; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            text-align: left; /* Garante alinhamento à esquerda */
+        }
+
+        .toggle-group { 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 12px; 
+        }
+
+        .toggle-label { 
+            display: flex; /* O segredo: torna o próprio label flexível */
+            align-items: center; /* Centraliza verticalmente o texto com o checkbox */
+            font-size: 0.95rem; 
+            margin: 0; 
+            cursor: pointer;
+            width: 100%;
+            gap: 10px; /* Cria um espaço exato entre o checkbox e o texto */
+        }
+
+        /* Garante que o checkbox tenha tamanho fixo e não esprema */
+        .toggle-label input[type="checkbox"] {
+            margin: 0;
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0; /* Impede o checkbox de amassar se o texto for longo */
+        }
+
         .btn-calc { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-calc:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
         .btn-pdf { background-color: #dc3545; margin-top: 20px; font-size: 14px; padding: 10px; }
