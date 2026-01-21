@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    
+    <title>Simulador de Juros Compostos Online | Calculadora de Investimentos Grátis</title>
+    <meta name="description" content="Calcule quanto seu dinheiro vai render com nossa calculadora de juros compostos gratuita. Simule aportes mensais, taxas de juros e veja gráficos de crescimento.">
+    <meta name="keywords" content="calculadora juros compostos, simulador investimentos, calcular rendimento, juros sobre juros, independência financeira">
+    <meta name="author" content="Seu Nome ou Marca">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* --- ESTILOS GERAIS --- */
+        :root {
+            --primary-color: #28a745;
+            --primary-hover: #218838;
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        /* --- CALCULADORA (Área Principal) --- */
+        .calc-wrapper {
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .calc-wrapper {
+                flex-direction: row;
+            }
+            .form-side {
+                width: 40%;
+                border-right: 1px solid #eee;
+            }
+            .result-side {
+                width: 60%;
+            }
+        }
+
+        .padding-box {
+            padding: 30px;
+        }
+
+        /* Formulários */
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input {
+            width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px;
+            font-size: 16px; box-sizing: border-box; transition: 0.3s;
+        }
+        input:focus { border-color: var(--primary-color); outline: none; }
+
+        .btn-calc {
+            width: 100%; padding: 15px; background-color: var(--primary-color);
+            color: white; border: none; border-radius: 8px; font-size: 18px;
+            font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        .btn-calc:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+
+        /* Resultados */
+        .result-side { background-color: #fcfcfc; display: flex; flex-direction: column; }
+        
+        #intro-message {
+            text-align: center; color: #888; margin-top: 50px; padding: 20px;
+        }
+
+        #results-content { display: none; }
+
+        .big-number {
+            text-align: center; margin-bottom: 20px;
+            padding-bottom: 20px; border-bottom: 1px solid #eee;
+        }
+        .big-number span { display: block; font-size: 2.5rem; font-weight: 800; color: var(--primary-color); }
+        
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .stat-box small { color: #777; display: block; }
+        .stat-box strong { font-size: 1.2rem; display: block; }
+
+        .chart-container { position: relative; height: 300px; width: 100%; }
+
+        /* --- ARTIGO SEO (Crucial para AdSense) --- */
+        .seo-article {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            color: #444;
+        }
+        .seo-article h2 { color: #2c3e50; border-left: 5px solid var(--primary-color); padding-left: 15px; margin-top: 40px; }
+        .seo-article p { margin-bottom: 20px; font-size: 1.05rem; }
+        .seo-article ul { margin-bottom: 20px; }
+        .seo-article li { margin-bottom: 10px; }
+
+        /* --- ESPAÇOS DE ANÚNCIOS (Placeholders) --- */
+        .ad-slot {
+            background-color: #eee; border: 1px dashed #ccc;
+            text-align: center; padding: 15px; margin: 20px 0;
+            color: #999; font-size: 0.8rem; border-radius: 5px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        /* Defina alturas fixas para evitar CLS (Cumulative Layout Shift) */
+        .ad-top { min-height: 100px; }
+        .ad-sidebar { min-height: 250px; }
+        .ad-bottom { min-height: 90px; }
+
+        /* Rodapé */
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <header>
+            <h1>Simulador de Juros Compostos</h1>
+            <p class="subtitle">Planeje seu futuro financeiro e veja a mágica dos juros sobre juros</p>
+        </header>
+
+        <div class="ad-slot ad-top">Espaço Publicitário (Topo)</div>
+
+        <div class="calc-wrapper">
+            <div class="form-side padding-box">
+                <div class="input-group">
+                    <label for="valorInicial">Valor Inicial (R$)</label>
+                    <input type="number" id="valorInicial" placeholder="Ex: 1000">
+                </div>
+                <div class="input-group">
+                    <label for="aporteMensal">Aporte Mensal (R$)</label>
+                    <input type="number" id="aporteMensal" placeholder="Ex: 500">
+                </div>
+                <div class="input-group">
+                    <label for="taxaJuros">Taxa de Juros Mensal (%)</label>
+                    <input type="number" id="taxaJuros" placeholder="Ex: 0.8" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="periodo">Período (Meses)</label>
+                    <input type="number" id="periodo" placeholder="Ex: 60">
+                </div>
+                <button class="btn-calc" onclick="calcular()">Calcular Agora</button>
+            </div>
+
+            <div class="result-side padding-box">
+                
+                <div id="intro-message">
+                    <p>Preencha os dados ao lado para gerar sua simulação detalhada e o gráfico de crescimento.</p>
+                </div>
+
+                <div id="results-content">
+                    <div class="big-number">
+                        <small>Total Acumulado</small>
+                        <span id="resTotal">R$ 0,00</span>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <small>Valor Investido</small>
+                            <strong id="resInvestido">R$ 0,00</strong>
+                        </div>
+                        <div class="stat-box">
+                            <small>Ganho em Juros</small>
+                            <strong id="resJuros" style="color: var(--primary-color)">R$ 0,00</strong>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+
+                    <div class="ad-slot ad-bottom">Publicidade</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="seo-article">
+            <h2>O que são Juros Compostos?</h2>
+            <p>Os <strong>juros compostos</strong> são conhecidos como a "oitava maravilha do mundo" no mercado financeiro. Diferente dos juros simples, onde o rendimento é calculado apenas sobre o valor inicial, nos juros compostos o rendimento é calculado sobre o total acumulado mês a mês.</p>
+            <p>Isso cria o famoso "efeito bola de neve": quanto mais tempo você deixa o dinheiro investido, mais rápido ele cresce, pois você ganha juros sobre os juros passados.</p>
+
+            <div class="ad-slot ad-bottom">Espaço Publicitário</div>
+
+            <h2>Como usar este Simulador de Investimentos?</h2>
+            <p>Nossa ferramenta foi projetada para ser simples e precisa. Veja o que cada campo significa:</p>
+            <ul>
+                <li><strong>Valor Inicial:</strong> Quanto você tem hoje para começar a investir.</li>
+                <li><strong>Aporte Mensal:</strong> Quanto você consegue guardar e depositar todos os meses.</li>
+                <li><strong>Taxa de Juros:</strong> A rentabilidade do seu investimento (ex: Poupança rende aprox. 0.5% ao mês, CDBs podem render 1%).</li>
+                <li><strong>Período:</strong> Por quanto tempo (em meses) você vai manter o investimento.</li>
+            </ul>
+
+            <h2>O Segredo dos Aportes Mensais</h2>
+            <p>Muitas pessoas acham que precisam ter muito dinheiro para começar. O gráfico da nossa calculadora prova o contrário: a constância é mais importante que o valor inicial.</p>
+            <p>Fazer <strong>aportes mensais</strong>, mesmo que pequenos, potencializa a curva exponencial dos juros compostos. Ao adicionar dinheiro novo todo mês, você aumenta a base de cálculo para os juros do mês seguinte, acelerando drasticamente o tempo necessário para atingir sua liberdade financeira.</p>
+
+            <h2>Onde investir para ganhar Juros Compostos?</h2>
+            <p>No Brasil, as principais opções de renda fixa que utilizam juros compostos são:</p>
+            <ul>
+                <li><strong>CDBs (Certificados de Depósito Bancário):</strong> Emprestam dinheiro para bancos em troca de rentabilidade.</li>
+                <li><strong>Tesouro Direto:</strong> Títulos públicos onde você empresta dinheiro ao governo.</li>
+                <li><strong>LCI e LCA:</strong> Investimentos isentos de imposto de renda focados no setor imobiliário e agrícola.</li>
+            </ul>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Simulador Financeiro. Todos os direitos reservados.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        let myChart = null;
+
+        function calcular() {
+            // 1. Pegar valores
+            let inicial = parseFloat(document.getElementById('valorInicial').value) || 0;
+            let mensal = parseFloat(document.getElementById('aporteMensal').value) || 0;
+            let taxa = parseFloat(document.getElementById('taxaJuros').value);
+            let meses = parseFloat(document.getElementById('periodo').value);
+
+            // Validação
+            if (!meses || meses <= 0) {
+                alert("Por favor, informe o período em meses.");
+                return;
+            }
+            if (isNaN(taxa)) {
+                alert("Por favor, informe a taxa de juros.");
+                return;
+            }
+
+            // Converter taxa percentual para decimal
+            let i = taxa / 100;
+
+            // Arrays para o gráfico
+            let labels = [];
+            let dataInvestido = [];
+            let dataTotal = [];
+
+            let totalInvestido = inicial;
+            let saldoAtual = inicial;
+
+            // Loop mês a mês
+            for(let m = 0; m <= meses; m++) {
+                labels.push(m);
+                dataInvestido.push(totalInvestido.toFixed(2));
+                dataTotal.push(saldoAtual.toFixed(2));
+
+                if (m < meses) {
+                    // Aplica juros
+                    saldoAtual += saldoAtual * i;
+                    // Adiciona aporte
+                    saldoAtual += mensal;
+                    totalInvestido += mensal;
+                }
+            }
+
+            // Exibir resultados
+            const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            document.getElementById('resTotal').innerText = fmt.format(saldoAtual);
+            document.getElementById('resInvestido').innerText = fmt.format(totalInvestido);
+            document.getElementById('resJuros').innerText = fmt.format(saldoAtual - totalInvestido);
+
+            // Mostrar área de resultados
+            document.getElementById('intro-message').style.display = 'none';
+            document.getElementById('results-content').style.display = 'block';
+
+            // Gerar Gráfico
+            renderChart(labels, dataInvestido, dataTotal);
+        }
+
+        function renderChart(labels, investido, total) {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Acumulado',
+                            data: total,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Dinheiro Investido',
+                            data: investido,
+                            borderColor: '#adb5bd',
+                            backgroundColor: 'rgba(173, 181, 189, 0.2)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value / 1000 + 'k';
+                                }
+                            }
+                        },
+                        x: { display: false } // Oculta números do eixo X para ficar mais limpo
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
