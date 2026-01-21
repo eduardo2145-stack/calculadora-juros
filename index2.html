@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Simulador de Juros Compostos Profissional. Calcule rendimentos, descontando inflação e IR. Gere relatórios em PDF com tabela de evolução.">
+    <title>Calculadora de Juros Compostos Profissional | Gerar Relatório PDF</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #28a745;
+            --primary-dark: #218838;
+            --secondary: #007bff;
+            --text: #333;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+        }
+
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+        /* Abas */
+        .tabs { display: flex; justify-content: center; margin-bottom: 20px; border-bottom: 2px solid #e9ecef; }
+        .tab-btn { padding: 15px 30px; border: none; background: none; font-size: 1.1rem; font-weight: 600; color: #6c757d; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Layout */
+        .calc-wrapper { background: var(--white); border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; margin-bottom: 40px; }
+        @media (min-width: 768px) {
+            .calc-wrapper { flex-direction: row; }
+            .form-side { width: 40%; border-right: 1px solid #eee; }
+            .result-side { width: 60%; }
+        }
+        .padding-box { padding: 30px; }
+
+        /* Inputs */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 8px; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
+        
+        /* Botões e Toggles */
+        .toggles-area { background: #f1f3f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .toggle-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .toggle-label { font-size: 0.9rem; margin: 0; cursor: pointer; }
+        .btn-calc { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-calc:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        .btn-pdf { background-color: #dc3545; margin-top: 20px; font-size: 14px; padding: 10px; }
+        .btn-pdf:hover { background-color: #c82333; }
+
+        /* Resultados */
+        .result-side { background-color: #fcfcfc; display: flex; flex-direction: column; }
+        #results-area, #results-area-meta { display: none; }
+        .big-number { text-align: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .big-number span { display: block; font-size: 2.2rem; font-weight: 800; color: var(--primary); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-box { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); font-size: 0.9rem; }
+        .stat-box strong { display: block; font-size: 1.1rem; color: #333; margin-top: 5px; }
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
+
+        /* SEO e Ads */
+        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
+        .seo-article h2 { color: #2c3e50; border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
+        .seo-article p { margin-bottom: 15px; font-size: 1.05rem; }
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 10px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <header style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #2c3e50;">Simulador Financeiro Premium</h1>
+        <p style="color: #7f8c8d;">Planejamento financeiro completo com relatórios detalhados</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('rendimento')">Simular Investimento</button>
+        <button class="tab-btn" onclick="openTab('meta')">Calcular Meta (Inversa)</button>
+    </div>
+
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
+
+    <div id="rendimento" class="tab-content active">
+        <div class="calc-wrapper">
+            <div class="form-side padding-box">
+                <div class="input-group">
+                    <label>Valor Inicial</label>
+                    <input type="text" id="valorInicial" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Aporte Mensal</label>
+                    <input type="text" id="aporteMensal" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Taxa de Juros Anual (%)</label>
+                    <input type="number" id="taxaJuros" placeholder="10.5" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label>Período (Anos)</label>
+                    <input type="number" id="anos" placeholder="5" inputmode="numeric">
+                </div>
+
+                <div class="toggles-area">
+                    <div class="toggle-group">
+                        <label class="toggle-label"><input type="checkbox" id="checkIR"> Descontar Imposto de Renda (Regressivo)</label>
+                    </div>
+                    <div class="toggle-group">
+                        <label class="toggle-label"><input type="checkbox" id="checkInflacao"> Descontar Inflação (Poder de Compra)</label>
+                    </div>
+                    <div id="boxInflacao" style="display:none; margin-top:10px;">
+                        <label style="font-size: 0.8rem;">IPCA Esperado (% a.a.)</label>
+                        <input type="number" id="taxaInflacao" value="4.5" step="0.1">
+                    </div>
+                </div>
+
+                <button class="btn-calc" onclick="calcularRendimento()">Calcular Resultado</button>
+            </div>
+
+            <div class="result-side padding-box">
+                <div id="intro-rendimento" style="text-align: center; color: #999; margin-top: 50px;">
+                    <p>Preencha os valores para ver a projeção.</p>
+                </div>
+                
+                <div id="results-area">
+                    <div class="big-number">
+                        <small>Patrimônio Líquido Estimado</small>
+                        <span id="resTotal">R$ 0,00</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-box">Total Investido<strong id="resInvestido">R$ 0,00</strong></div>
+                        <div class="stat-box">Total em Juros<strong id="resJuros" style="color: var(--primary);">R$ 0,00</strong></div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartRendimento"></canvas>
+                    </div>
+                    <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')">📄 Baixar Relatório Completo (PDF)</button>
+                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="meta" class="tab-content">
+        <div class="calc-wrapper">
+            <div class="form-side padding-box">
+                <div class="input-group">
+                    <label>Quanto você quer juntar?</label>
+                    <input type="text" id="metaValor" class="money-input" placeholder="R$ 1.000.000,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Em quanto tempo? (Anos)</label>
+                    <input type="number" id="metaAnos" placeholder="10" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Valor que já tem hoje (Opcional)</label>
+                    <input type="text" id="metaInicial" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Rentabilidade Média Anual (%)</label>
+                    <input type="number" id="metaTaxa" placeholder="10" inputmode="decimal">
+                </div>
+                <button class="btn-calc" style="background-color: var(--secondary);" onclick="calcularMeta()">Calcular Aporte Necessário</button>
+            </div>
+
+            <div class="result-side padding-box">
+                <div id="intro-meta" style="text-align: center; color: #999; margin-top: 50px;">
+                    <p>Defina seu sonho e descubra o plano para alcançá-lo.</p>
+                </div>
+                <div id="results-area-meta">
+                    <div class="big-number">
+                        <small>Você precisa investir mensalmente:</small>
+                        <span id="resMetaMensal" style="color: var(--secondary);">R$ 0,00</span>
+                    </div>
+                    <div style="background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="margin: 0; font-size: 0.9rem;">Para acumular <strong id="txtMetaAlvo">R$ 0</strong> em <strong id="txtMetaAnos">0</strong> anos.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartMeta"></canvas>
+                    </div>
+                    <button class="btn-calc btn-pdf" onclick="gerarPDF('meta')">📄 Baixar Planejamento (PDF)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="seo-article">
+        <h2>Como funciona o Simulador de Juros Compostos?</h2>
+        <p>A "mágica" dos juros compostos acontece quando os rendimentos do seu investimento geram novos rendimentos. Nossa calculadora utiliza fórmulas financeiras avançadas para projetar esse crescimento, permitindo que você visualize o futuro do seu patrimônio com precisão.</p>
+        
+        <div class="ad-slot" style="height: 90px;">Publicidade Artigo</div>
+
+        <h2>Entenda os Recursos Avançados (Modo Realidade)</h2>
+        <p>A maioria das calculadoras online engana o usuário mostrando apenas o valor bruto. Nossa ferramenta oferece dois diferenciais cruciais:</p>
+        <ul>
+            <li><strong>Desconto de Imposto de Renda:</strong> Aplicamos a Tabela Regressiva da Renda Fixa Brasileira automaticamente. Investimentos de curto prazo pagam 22,5% sobre o lucro, enquanto aplicações acima de 2 anos pagam apenas 15%.</li>
+            <li><strong>Correção pela Inflação (IPCA):</strong> R$ 1 milhão hoje compra muito mais do que R$ 1 milhão daqui a 20 anos. Ativando esta opção, trazemos o valor futuro para o "Poder de Compra" atual, dando um choque de realidade necessário para um bom planejamento.</li>
+        </ul>
+
+        <h2>O que é a Calculadora de Metas (Inversa)?</h2>
+        <p>Na aba "Calcular Meta", fazemos a engenharia reversa. Você diz onde quer chegar (ex: comprar uma casa de R$ 500 mil em 5 anos) e a ferramenta calcula exatamente quanto você precisa poupar por mês, considerando os juros que você vai ganhar no caminho.</p>
+
+        <h2>Como gerar o Relatório em PDF?</h2>
+        <p>Após realizar sua simulação, clique no botão vermelho "Baixar Relatório". O sistema irá gerar um documento completo contendo: o resumo dos números, o gráfico visual de crescimento e uma <strong>tabela de evolução ano a ano</strong>, ideal para imprimir e colar na sua parede de metas.</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Simulador Financeiro Pro. Todos os direitos reservados.</p>
+    </footer>
+
+</div>
+
+<script>
+    // --- MÁSCARA DE MOEDA (R$ 1.000,00) ---
+    const moneyInputs = document.querySelectorAll('.money-input');
+    
+    moneyInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+            if(value === '') return;
+            value = (parseInt(value) / 100).toFixed(2) + '';
+            value = value.replace('.', ',');
+            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+            e.target.value = 'R$ ' + value;
+        });
+    });
+
+    // Função auxiliar para converter "R$ 1.000,00" para float (1000.00)
+    function parseMoney(str) {
+        if (!str) return 0;
+        return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
+    }
+
+    // --- VARIÁVEIS GLOBAIS ---
+    let chartRend = null;
+    let chartMetaInst = null;
+    let globalTableData = []; // Para o PDF
+
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    document.getElementById('checkInflacao').addEventListener('change', function() {
+        document.getElementById('boxInflacao').style.display = this.checked ? 'block' : 'none';
+    });
+
+    // --- CÁLCULO 1: RENDIMENTO ---
+    function calcularRendimento() {
+        // Usando parseMoney para ler os campos formatados
+        let P = parseMoney(document.getElementById('valorInicial').value);
+        let M = parseMoney(document.getElementById('aporteMensal').value);
+        let taxaAnual = parseFloat(document.getElementById('taxaJuros').value) || 0;
+        let anos = parseFloat(document.getElementById('anos').value) || 0;
+        let usarIR = document.getElementById('checkIR').checked;
+        let usarInflacao = document.getElementById('checkInflacao').checked;
+        let inflacaoAnual = parseFloat(document.getElementById('taxaInflacao').value) || 0;
+
+        if (anos <= 0) return alert("Informe o período em anos.");
+
+        let meses = anos * 12;
+        let i = (Math.pow(1 + (taxaAnual / 100), 1 / 12) - 1); // Taxa mensal
+        
+        let labels = [];
+        let dataInvestido = [];
+        let dataBruto = [];
+        globalTableData = []; // Limpa dados da tabela
+
+        let totalInvestido = P;
+        let saldoBruto = P;
+        
+        // Loop Mensal
+        for(let m = 0; m <= meses; m++) {
+            if (m > 0) {
+                saldoBruto = saldoBruto * (1 + i) + M;
+                totalInvestido += M;
+            }
+            
+            // Dados para o Gráfico (Resumido para não pesar)
+            if (m % 6 === 0 || m === meses) { 
+                labels.push(m);
+                dataInvestido.push(totalInvestido);
+                dataBruto.push(saldoBruto);
+            }
+
+            // Dados para a Tabela PDF (Ano a Ano)
+            if (m > 0 && m % 12 === 0) {
+                let anoAtual = m / 12;
+                let lucroAtual = saldoBruto - totalInvestido;
+                globalTableData.push([
+                    anoAtual + 'º Ano',
+                    totalInvestido.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+                    lucroAtual.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+                    saldoBruto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
+                ]);
+            }
+        }
+
+        // Cálculos Finais (IR e Inflação)
+        let lucroBruto = saldoBruto - totalInvestido;
+        let saldoLiquido = saldoBruto;
+
+        if (usarIR) {
+            let dias = meses * 30;
+            let aliquotaIR = 0.15; // Padrão longo prazo
+            if (dias <= 180) aliquotaIR = 0.225;
+            else if (dias <= 360) aliquotaIR = 0.20;
+            else if (dias <= 720) aliquotaIR = 0.175;
+            
+            let imposto = lucroBruto * aliquotaIR;
+            saldoLiquido -= imposto;
+        }
+
+        if (usarInflacao) {
+            let deflator = Math.pow(1 + (inflacaoAnual / 100), anos);
+            saldoLiquido = saldoLiquido / deflator;
+        }
+
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('resTotal').innerText = fmt.format(saldoLiquido);
+        document.getElementById('resInvestido').innerText = fmt.format(totalInvestido);
+        document.getElementById('resJuros').innerText = fmt.format(saldoLiquido - totalInvestido);
+        
+        document.getElementById('intro-rendimento').style.display = 'none';
+        document.getElementById('results-area').style.display = 'block';
+
+        renderChartRendimento(labels, dataInvestido, dataBruto);
+    }
+
+    // --- CÁLCULO 2: META ---
+    function calcularMeta() {
+        let objetivo = parseMoney(document.getElementById('metaValor').value);
+        let anos = parseFloat(document.getElementById('metaAnos').value);
+        let inicial = parseMoney(document.getElementById('metaInicial').value);
+        let taxaAnual = parseFloat(document.getElementById('metaTaxa').value);
+
+        if (!objetivo || !anos || !taxaAnual) return alert("Preencha os campos obrigatórios.");
+
+        let meses = anos * 12;
+        let i = (Math.pow(1 + (taxaAnual / 100), 1 / 12) - 1);
+
+        let fatorJurosComposto = Math.pow(1 + i, meses);
+        let valorFuturoInicial = inicial * fatorJurosComposto;
+        let faltaJuntar = objetivo - valorFuturoInicial;
+
+        let aporteNecessario = 0;
+        if (faltaJuntar > 0) {
+            aporteNecessario = faltaJuntar / ( (fatorJurosComposto - 1) / i );
+        }
+
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('resMetaMensal').innerText = fmt.format(aporteNecessario);
+        document.getElementById('txtMetaAlvo').innerText = fmt.format(objetivo);
+        document.getElementById('txtMetaAnos').innerText = anos;
+
+        document.getElementById('intro-meta').style.display = 'none';
+        document.getElementById('results-area-meta').style.display = 'block';
+
+        renderChartMeta(inicial, aporteNecessario, meses, i);
+    }
+
+    // --- GRÁFICOS ---
+    function renderChartRendimento(labels, investido, bruto) {
+        const ctx = document.getElementById('chartRendimento').getContext('2d');
+        if (chartRend) chartRend.destroy();
+
+        chartRend = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Total Bruto', data: bruto, borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.1)', fill: true, pointRadius: 0 },
+                    { label: 'Investido', data: investido, borderColor: '#6c757d', backgroundColor: 'rgba(108,117,125,0.1)', fill: true, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: {display:false} } }
+        });
+    }
+
+    function renderChartMeta(inicial, mensal, meses, i) {
+        const ctx = document.getElementById('chartMeta').getContext('2d');
+        if (chartMetaInst) chartMetaInst.destroy();
+        let labels = [], data = [], saldo = inicial;
+        for(let m=0; m<=meses; m++) {
+            if (m % 6 === 0 || m === meses) { labels.push(m); data.push(saldo); }
+            saldo = saldo * (1 + i) + mensal;
+        }
+        chartMetaInst = new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: [{ label: 'Evolução', data: data, borderColor: '#007bff', backgroundColor: 'rgba(0,123,255,0.1)', fill: true }] },
+            options: { responsive: true, maintainAspectRatio: false, elements: {point:{radius:0}}, scales: { x: {display:false} } }
+        });
+    }
+
+    // --- GERADOR DE PDF COM TABELA ---
+    async function gerarPDF(tipo) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(20);
+        doc.setTextColor(40, 167, 69);
+        doc.text("Planejamento Financeiro Detalhado", 20, 20);
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text(`Data: ${new Date().toLocaleDateString()} - Simulação via Web`, 20, 28);
+
+        if (tipo === 'rendimento') {
+            // Página 1: Resumo e Gráfico
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+            doc.text(`Total Acumulado: ${document.getElementById('resTotal').innerText}`, 20, 45);
+            doc.text(`Total Investido: ${document.getElementById('resInvestido').innerText}`, 20, 53);
+            
+            const canvas = document.getElementById('chartRendimento');
+            const imgData = canvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 15, 65, 180, 90);
+
+            // Tabela de Evolução (AutoTable)
+            doc.text("Tabela de Evolução Anual", 20, 170);
+            doc.autoTable({
+                startY: 175,
+                head: [['Ano', 'Total Investido', 'Juros Ganhos', 'Montante Total']],
+                body: globalTableData,
+                theme: 'grid',
+                headStyles: { fillColor: [40, 167, 69] },
+            });
+            
+        } else {
+            let meta = document.getElementById('txtMetaAlvo').innerText;
+            let aporte = document.getElementById('resMetaMensal').innerText;
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+            doc.text(`Objetivo: ${meta}`, 20, 45);
+            doc.setTextColor(0, 123, 255);
+            doc.setFontSize(16);
+            doc.text(`Investimento Necessário: ${aporte} /mês`, 20, 55);
+            
+            const canvas = document.getElementById('chartMeta');
+            const imgData = canvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 15, 70, 180, 90);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text("Nota: Este cálculo considera a rentabilidade média informada constante.", 20, 170);
+        }
+
+        doc.save("Relatorio-Financeiro.pdf");
+    }
+</script>
+
+</body>
+</html>
