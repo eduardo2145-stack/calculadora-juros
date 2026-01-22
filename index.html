@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Simulador JurosWeb. Calcule rendimentos com extrato detalhado.">
+    <meta name="description" content="Simulador JurosWeb. Calcule rendimentos e planeje suas metas financeiras com precisão.">
     <title>JurosWeb | Simulador de Investimentos</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
@@ -81,9 +81,10 @@
 
         .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
         
-        /* SEO e Publicidade (Restaurados) */
+        /* SEO e Publicidade */
         .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
         .seo-article h2 { color: #0056b3; border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
+        .seo-article p, .seo-article ul { margin-bottom: 15px; }
         
         .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
         
@@ -245,19 +246,26 @@
                         <canvas id="chartMeta"></canvas>
                     </div>
                     <button class="btn-calc btn-pdf" onclick="gerarPDF('meta')">📄 Baixar Planejamento</button>
+                    
+                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="seo-article">
-        <h2>Entendendo seus Investimentos com JurosWeb</h2>
+        <h2>Entendendo seus Rendimentos com JurosWeb</h2>
         <p>A JurosWeb é sua aliada na construção de patrimônio. Diferente das calculadoras comuns, nós mostramos a "verdade financeira": o impacto da inflação e do imposto de renda no seu bolso.</p>
         <p>Ao investir, existem dois números importantes:</p>
         <ul>
             <li><strong>Saldo Nominal:</strong> O número que aparece no aplicativo do banco.</li>
             <li><strong>Poder de Compra:</strong> O que esse dinheiro realmente vale no supermercado do futuro.</li>
         </ul>
+
+        <h2>Planejando Metas e Aposentadoria</h2>
+        <p>Muitas pessoas começam a investir sem saber onde querem chegar. A nossa <strong>Calculadora de Meta</strong> faz o cálculo inverso: você define o valor do seu sonho (seja comprar uma casa ou se aposentar com R$ 1 milhão) e nós calculamos quanto você precisa poupar por mês.</p>
+        <p>Essa ferramenta é essencial para quem precisa de disciplina, pois transforma um sonho distante em um boleto mensal acessível que cabe no seu bolso hoje.</p>
+        
         <div class="ad-slot" style="height: 90px;">Publicidade</div>
     </div>
 
@@ -494,7 +502,7 @@
         });
     }
 
-    // --- PDF AJUSTADO (Logo Menor e Gráfico Arrumado) ---
+    // --- PDF ---
     async function gerarPDF(tipo) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
