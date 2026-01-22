@@ -81,10 +81,13 @@
 
         .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
         
-        /* Rodapé */
-        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
+        /* SEO e Publicidade (Restaurados) */
+        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
+        .seo-article h2 { color: #0056b3; border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
         
-        /* Removemos os espaços de Publicidade (Ad-Slots) que estavam vazios */
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
+        
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
     </style>
 </head>
 <body>
@@ -100,6 +103,8 @@
         <button class="tab-btn active" onclick="openTab('rendimento')">Simular Investimento</button>
         <button class="tab-btn" onclick="openTab('meta')">Calcular Meta</button>
     </div>
+
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div id="rendimento" class="tab-content active">
         <div class="calc-wrapper">
@@ -195,6 +200,8 @@
                     </div>
 
                     <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')">📄 Baixar Relatório (PDF)</button>
+
+                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
                 </div>
             </div>
         </div>
@@ -241,6 +248,17 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="seo-article">
+        <h2>Entendendo seus Investimentos com JurosWeb</h2>
+        <p>A JurosWeb é sua aliada na construção de patrimônio. Diferente das calculadoras comuns, nós mostramos a "verdade financeira": o impacto da inflação e do imposto de renda no seu bolso.</p>
+        <p>Ao investir, existem dois números importantes:</p>
+        <ul>
+            <li><strong>Saldo Nominal:</strong> O número que aparece no aplicativo do banco.</li>
+            <li><strong>Poder de Compra:</strong> O que esse dinheiro realmente vale no supermercado do futuro.</li>
+        </ul>
+        <div class="ad-slot" style="height: 90px;">Publicidade</div>
     </div>
 
     <footer>
@@ -481,28 +499,24 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // AJUSTE: Logo menor e posicionada na esquerda, sem atropelar texto
         const logoData = await getLogoBase64();
         if (logoData) {
-            doc.addImage(logoData, 'PNG', 15, 10, 40, 0); // (X, Y, Largura, Altura Auto)
+            doc.addImage(logoData, 'PNG', 15, 10, 40, 0); 
         } else {
             doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(0, 86, 179);
             doc.text("JurosWeb", 15, 25);
         }
 
-        // Data no topo direito
         doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(100);
         doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 150, 20);
-        
-        doc.line(15, 35, 195, 35); // Linha abaixo do cabeçalho
+        doc.line(15, 35, 195, 35); 
 
-        let startY = 45; // Conteúdo começa aqui
+        let startY = 45; 
 
         if (tipo === 'rendimento') {
             doc.setFontSize(14); doc.setTextColor(0);
             doc.text("Relatório de Rendimento", 15, startY);
             
-            // Dados em texto (Subi um pouco o espaçamento)
             doc.setFontSize(11);
             doc.text(`Total Investido: ${pdfData.investido}`, 20, startY + 10);
             doc.text(`Saldo Final (Nominal): ${pdfData.nominal}`, 20, startY + 18);
@@ -517,21 +531,15 @@
                  doc.text(`Total Final: ${pdfData.nominal}`, 20, startY + 26);
             }
 
-            // AJUSTE: Gráfico com proporção correta (não esticado)
-            // Antes estava altura 80, o que distorcia. Mudei para largura menor e altura proporcional.
             const canvas = document.getElementById('chartRendimento');
-            // Gambiarra técnica: Pintar fundo branco no canvas antes de tirar print pro PDF
             const ctx = canvas.getContext('2d');
             ctx.globalCompositeOperation = 'destination-over';
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const imgData = canvas.toDataURL('image/png');
-            // doc.addImage(imgData, 'PNG', X, Y, Largura, Altura);
-            // Reduzi a largura para 160 e altura para 90 para manter proporção
             doc.addImage(imgData, 'PNG', 25, startY + 45, 160, 90);
 
-            // Tabela
             doc.setTextColor(0); doc.setFont("helvetica", "bold");
             doc.text("Evolução Mensal", 15, startY + 145);
             doc.autoTable({
@@ -545,7 +553,6 @@
             });
 
         } else {
-            // PDF Meta
             let meta = document.getElementById('txtMetaAlvo').innerText;
             let aporte = document.getElementById('resMetaMensal').innerText;
             doc.setFontSize(14); doc.setTextColor(0);
