@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Simulador JurosWeb. Calcule rendimentos com extrato detalhado, inflação e gere relatórios em PDF.">
-    <title>JurosWeb | Simulador de Investimentos Profissional</title>
+    <meta name="description" content="Simulador JurosWeb. Calcule rendimentos com extrato detalhado.">
+    <title>JurosWeb | Simulador de Investimentos</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
@@ -13,12 +13,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        :root { --primary: #0056b3; /* Azul Profissional */ --primary-dark: #004494; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; --danger: #dc3545; --warning: #e67e22; }
+        :root { --primary: #0056b3; --primary-dark: #004494; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; --danger: #dc3545; --warning: #e67e22; }
         
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 
-        /* Header com Logo */
+        /* Header */
         header { text-align: center; margin-bottom: 30px; }
         #logoSite { max-width: 180px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
 
@@ -71,6 +71,7 @@
         
         #msgPoupanca { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: none; border: 1px solid #c3e6cb; }
 
+        /* Tabela */
         .table-wrapper { margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white; }
         th { background: #e9ecef; position: sticky; top: 0; padding: 10px; text-align: right; color: #555; z-index: 1; }
@@ -79,10 +80,11 @@
         th:first-child, td:first-child { text-align: center; }
 
         .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
-        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
-        .seo-article h2 { color: #2c3e50; border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
-        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 10px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
+        
+        /* Rodapé */
         footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
+        
+        /* Removemos os espaços de Publicidade (Ad-Slots) que estavam vazios */
     </style>
 </head>
 <body>
@@ -90,16 +92,14 @@
 <div class="container">
     
     <header>
-        <img src="logo.png" id="logoSite" alt="JurosWeb - Simulador Financeiro">
-        <p style="color: #7f8c8d; margin-top: 0;">Planeje sua independência financeira com segurança</p>
+        <img src="logo.png" id="logoSite" alt="JurosWeb">
+        <p style="color: #7f8c8d; margin-top: 0;">Planeje sua independência financeira</p>
     </header>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('rendimento')">Simular Investimento</button>
         <button class="tab-btn" onclick="openTab('meta')">Calcular Meta</button>
     </div>
-
-    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div id="rendimento" class="tab-content active">
         <div class="calc-wrapper">
@@ -170,14 +170,14 @@
                         </div>
 
                         <div class="extrato-row destaque" style="background: #fdfdfd; padding-top: 15px; margin-top: 10px; border-top: 1px solid #eee;">
-                            <span style="font-size: 0.9rem; color: #777;">Poder de Compra Real (Hoje) <span style="cursor:help" title="Quanto vale hoje">❓</span></span>
+                            <span style="font-size: 0.9rem; color: #777;">Poder de Compra Real (Hoje)</span>
                             <span id="resTotalLiquido" style="color: #444; font-size: 1.2rem;">R$ 0,00</span>
                         </div>
                     </div>
 
                     <div id="msgPoupanca">
                         💡 <strong>Você fez um ótimo negócio!</strong><br>
-                        Se deixasse parado, seu poder de compra seria de apenas <strong id="valColchao">R$ 0,00</strong>. O investimento protegeu seu dinheiro.
+                        Se deixasse parado, seu poder de compra seria de apenas <strong id="valColchao">R$ 0,00</strong>.
                     </div>
 
                     <div class="chart-container">
@@ -195,7 +195,6 @@
                     </div>
 
                     <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')">📄 Baixar Relatório (PDF)</button>
-                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
                 </div>
             </div>
         </div>
@@ -244,19 +243,8 @@
         </div>
     </div>
 
-    <div class="seo-article">
-        <h2>Entendendo seus Investimentos com JurosWeb</h2>
-        <p>A JurosWeb é sua aliada na construção de patrimônio. Diferente das calculadoras comuns, nós mostramos a "verdade financeira": o impacto da inflação e do imposto de renda no seu bolso.</p>
-        <p>Ao investir, existem dois números importantes:</p>
-        <ul>
-            <li><strong>Saldo Nominal:</strong> O número que aparece no aplicativo do banco.</li>
-            <li><strong>Poder de Compra:</strong> O que esse dinheiro realmente vale no supermercado do futuro.</li>
-        </ul>
-        <div class="ad-slot" style="height: 90px;">Publicidade</div>
-    </div>
-
     <footer>
-        <p>&copy; 2024 JurosWeb.com.br - Todos os direitos reservados.</p>
+        <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
     </footer>
 
 </div>
@@ -319,7 +307,6 @@
         let totalInvestido = P;
         let saldoBruto = P;
         
-        // Loop Mensal
         for(let m = 0; m <= meses; m++) {
             if (m > 0) {
                 saldoBruto = saldoBruto * (1 + i) + M;
@@ -340,7 +327,6 @@
             }
         }
 
-        // Tabela
         const tbody = document.querySelector('#tabelaEvolucao tbody');
         tbody.innerHTML = ''; 
         const fragment = document.createDocumentFragment();
@@ -351,14 +337,12 @@
         });
         tbody.appendChild(fragment);
 
-        // --- CÁLCULOS FINAIS ---
         let lucroBruto = saldoBruto - totalInvestido;
         let valorIR = 0;
         let valorPerdaInflacao = 0;
         let saldoLiquidoNominal = saldoBruto; 
         let saldoFinalReal = saldoBruto; 
 
-        // 1. Calcula IR
         if (usarIR) {
             let dias = meses * 30;
             let aliquotaIR = 0.15;
@@ -370,7 +354,6 @@
             saldoFinalReal = saldoLiquidoNominal;
         }
 
-        // 2. Calcula Inflação
         const rowInf = document.getElementById('rowInflacao');
         const msgBox = document.getElementById('msgPoupanca');
 
@@ -391,7 +374,6 @@
             rowInf.style.display = 'none';
         }
 
-        // --- EXIBIÇÃO ---
         const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
         
         document.getElementById('resInvestido').innerText = fmt.format(totalInvestido);
@@ -409,7 +391,6 @@
         
         if(usarInflacao) document.getElementById('resInflacao').innerText = '- ' + fmt.format(valorPerdaInflacao);
 
-        // Dados PDF
         pdfData = {
             bruto: fmt.format(lucroBruto),
             nominal: fmt.format(saldoLiquidoNominal),
@@ -478,7 +459,7 @@
         });
     }
 
-    // --- HELPER: Converter Imagem para Base64 (Para o PDF) ---
+    // --- HELPER PARA IMAGEM ---
     function getLogoBase64() {
         return new Promise((resolve) => {
             const img = document.getElementById('logoSite');
@@ -491,77 +472,95 @@
             canvas.height = img.naturalHeight;
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0);
-            try {
-                resolve(canvas.toDataURL("image/png"));
-            } catch(e) { resolve(null); }
+            try { resolve(canvas.toDataURL("image/png")); } catch(e) { resolve(null); }
         });
     }
 
-    // --- PDF ATUALIZADO COM LOGO ---
+    // --- PDF AJUSTADO (Logo Menor e Gráfico Arrumado) ---
     async function gerarPDF(tipo) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // 1. Tentar pegar a logo
+        // AJUSTE: Logo menor e posicionada na esquerda, sem atropelar texto
         const logoData = await getLogoBase64();
         if (logoData) {
-            doc.addImage(logoData, 'PNG', 20, 10, 50, 0); // Logo no topo
+            doc.addImage(logoData, 'PNG', 15, 10, 40, 0); // (X, Y, Largura, Altura Auto)
         } else {
-            // Se a logo falhar, escreve texto
             doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(0, 86, 179);
-            doc.text("JurosWeb", 20, 25);
+            doc.text("JurosWeb", 15, 25);
         }
 
+        // Data no topo direito
         doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(100);
-        doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 150, 25);
-        doc.line(20, 35, 190, 35); // Linha separadora
+        doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 150, 20);
+        
+        doc.line(15, 35, 195, 35); // Linha abaixo do cabeçalho
 
-        let startY = 45; // Posição vertical inicial
+        let startY = 45; // Conteúdo começa aqui
 
         if (tipo === 'rendimento') {
             doc.setFontSize(14); doc.setTextColor(0);
-            doc.text("Relatório de Rendimento", 20, startY);
+            doc.text("Relatório de Rendimento", 15, startY);
             
+            // Dados em texto (Subi um pouco o espaçamento)
             doc.setFontSize(11);
-            doc.text(`Total Investido: ${pdfData.investido}`, 25, startY + 10);
-            doc.text(`Saldo Final (Nominal): ${pdfData.nominal}`, 25, startY + 17);
-            doc.setTextColor(230, 126, 34); 
-            doc.text(`Reposição Inflacionária: ${pdfData.inflacao}`, 25, startY + 24);
-            doc.setTextColor(40, 167, 69);
-            doc.setFont("helvetica", "bold");
-            doc.text(`Poder de Compra Real: ${pdfData.liquido}`, 25, startY + 34);
+            doc.text(`Total Investido: ${pdfData.investido}`, 20, startY + 10);
+            doc.text(`Saldo Final (Nominal): ${pdfData.nominal}`, 20, startY + 18);
+            
+            if (pdfData.inflacao !== 'Não calc.') {
+                doc.setTextColor(230, 126, 34); 
+                doc.text(`Reposição Inflacionária: ${pdfData.inflacao}`, 20, startY + 26);
+                doc.setTextColor(40, 167, 69);
+                doc.setFont("helvetica", "bold");
+                doc.text(`Poder de Compra Real: ${pdfData.liquido}`, 20, startY + 36);
+            } else {
+                 doc.text(`Total Final: ${pdfData.nominal}`, 20, startY + 26);
+            }
 
+            // AJUSTE: Gráfico com proporção correta (não esticado)
+            // Antes estava altura 80, o que distorcia. Mudei para largura menor e altura proporcional.
             const canvas = document.getElementById('chartRendimento');
-            const imgData = canvas.toDataURL('image/png');
-            doc.addImage(imgData, 'PNG', 15, startY + 40, 180, 80);
+            // Gambiarra técnica: Pintar fundo branco no canvas antes de tirar print pro PDF
+            const ctx = canvas.getContext('2d');
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            const imgData = canvas.toDataURL('image/png');
+            // doc.addImage(imgData, 'PNG', X, Y, Largura, Altura);
+            // Reduzi a largura para 160 e altura para 90 para manter proporção
+            doc.addImage(imgData, 'PNG', 25, startY + 45, 160, 90);
+
+            // Tabela
             doc.setTextColor(0); doc.setFont("helvetica", "bold");
-            doc.text("Evolução Mensal", 20, startY + 130);
+            doc.text("Evolução Mensal", 15, startY + 145);
             doc.autoTable({
-                startY: startY + 135,
+                startY: startY + 150,
                 head: [['Mês', 'Investido', 'Juros Acum.', 'Total']],
                 body: globalTableData,
                 theme: 'grid',
-                headStyles: { fillColor: [0, 86, 179] }, // Azul
-                styles: { fontSize: 9 }
+                headStyles: { fillColor: [0, 86, 179] }, 
+                styles: { fontSize: 9 },
+                margin: { top: 20 }
             });
 
         } else {
+            // PDF Meta
             let meta = document.getElementById('txtMetaAlvo').innerText;
             let aporte = document.getElementById('resMetaMensal').innerText;
             doc.setFontSize(14); doc.setTextColor(0);
-            doc.text("Planejamento de Meta", 20, startY);
+            doc.text("Planejamento de Meta", 15, startY);
             doc.setFontSize(12);
             doc.text(`Objetivo: ${meta}`, 20, startY + 15);
             doc.text(`Investir Mensalmente: ${aporte}`, 20, startY + 25);
             
             const canvas = document.getElementById('chartMeta');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
             const imgData = canvas.toDataURL('image/png');
-            doc.addImage(imgData, 'PNG', 15, startY + 35, 180, 90);
+            doc.addImage(imgData, 'PNG', 25, startY + 35, 160, 90);
         }
-        
-        doc.setFontSize(9); doc.setTextColor(150);
-        doc.text("Simulação via JurosWeb.com.br", 20, 285);
         
         doc.save("Relatorio-JurosWeb.pdf");
     }
