@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Conversor de Imagens Online Gratuito. Converta WEBP para JPG, PNG para JPG e muito mais.">
-    <title>Conversor de Imagens | JurosWeb</title>
+    <meta name="description" content="Conversor de Imagens Gratuito. Converta para PDF, JPG, PNG, WEBP e BMP.">
+    <title>Conversor de Imagens e PDF | JurosWeb</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
     <script>
@@ -15,6 +15,8 @@
     </script>
 
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
@@ -53,7 +55,7 @@
         .preview-container { margin-top: 20px; display: none; }
         #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        .btn-download { display: none; background: var(--secondary); color: white; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; width: 100%; box-sizing: border-box; }
+        .btn-download { display: none; background: var(--secondary); color: white; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; width: 100%; box-sizing: border-box; cursor: pointer; border: none; }
         .btn-download:hover { background: #218838; transform: translateY(-2px); }
 
         .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
@@ -83,14 +85,16 @@
 
     <div class="converter-box">
         <h1>Conversor de Imagens</h1>
-        <p>Transforme suas fotos para JPG, PNG ou WEBP em segundos.</p>
+        <p>Transforme suas fotos para JPG, PNG, PDF ou BMP.</p>
 
         <div class="control-group">
             <label>1. Converter para qual formato?</label>
             <select id="formatSelect">
-                <option value="image/jpeg">JPG (Melhor para fotos, fundo branco)</option>
-                <option value="image/png">PNG (Alta qualidade, fundo transparente)</option>
-                <option value="image/webp">WEBP (Mais leve para sites)</option>
+                <option value="image/jpeg">JPG (Melhor para fotos)</option>
+                <option value="image/png">PNG (Fundo transparente)</option>
+                <option value="application/pdf">PDF (Documento)</option>
+                <option value="image/webp">WEBP (Otimizado para Web)</option>
+                <option value="image/bmp">BMP (Bitmap)</option>
             </select>
         </div>
 
@@ -104,9 +108,10 @@
         </div>
 
         <div class="preview-container" id="previewContainer">
-            <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary);">Imagem Convertida:</p>
+            <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary);">Pré-visualização:</p>
             <img id="preview-img" alt="Preview">
-            <a id="downloadBtn" class="btn-download" download="imagem-convertida">⬇️ Baixar Imagem Convertida</a>
+            <button id="downloadBtn" class="btn-download" onclick="baixarArquivo()">⬇️ Baixar Agora</button>
+            <a id="downloadLink" style="display:none;"></a>
         </div>
 
     </div>
@@ -129,68 +134,120 @@
     const previewImg = document.getElementById('preview-img');
     const downloadBtn = document.getElementById('downloadBtn');
     const uploadText = document.getElementById('uploadText');
+    const downloadLink = document.getElementById('downloadLink');
+
+    let currentImg = null;
+    let originalFileName = "";
 
     // Quando o usuário seleciona um arquivo
     fileInput.addEventListener('change', function(e) {
-        processarImagem(e.target.files[0]);
+        if(e.target.files[0]){
+            processarImagem(e.target.files[0]);
+        }
     });
 
-    // Quando o usuário muda o formato (se já tiver imagem carregada, converte de novo)
+    // Quando o usuário muda o formato
     formatSelect.addEventListener('change', function() {
-        if (fileInput.files[0]) {
-            processarImagem(fileInput.files[0]);
+        if (currentImg) {
+            atualizarBotao();
         }
     });
 
     function processarImagem(file) {
-        if (!file) return;
-
-        uploadText.innerText = "Arquivo selecionado: " + file.name;
+        uploadText.innerText = "Arquivo: " + file.name;
+        originalFileName = file.name;
 
         const reader = new FileReader();
         reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                converter(img, file.name);
+            currentImg = new Image();
+            currentImg.onload = function() {
+                previewImg.src = event.target.result; // Mostra a original no preview
+                previewContainer.style.display = 'block';
+                downloadBtn.style.display = 'block';
+                atualizarBotao();
             };
-            img.src = event.target.result;
+            currentImg.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    function converter(img, originalName) {
+    function atualizarBotao() {
+        const formato = formatSelect.value;
+        let ext = "";
+        
+        if (formato === 'application/pdf') ext = 'PDF';
+        else if (formato === 'image/jpeg') ext = 'JPG';
+        else if (formato === 'image/png') ext = 'PNG';
+        else if (formato === 'image/webp') ext = 'WEBP';
+        else if (formato === 'image/bmp') ext = 'BMP';
+
+        downloadBtn.innerText = `⬇️ Baixar como .${ext}`;
+    }
+
+    function baixarArquivo() {
+        if (!currentImg) return;
+
+        const formato = formatSelect.value;
         const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = currentImg.width;
+        canvas.height = currentImg.height;
         const ctx = canvas.getContext('2d');
 
-        const formatoDestino = formatSelect.value;
-
-        // Se for JPG, precisamos preencher o fundo transparente com branco
-        if (formatoDestino === 'image/jpeg') {
+        // Se for JPG ou BMP, fundo branco (remove transparência preta)
+        if (formato === 'image/jpeg' || formato === 'image/bmp' || formato === 'application/pdf') {
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
-
-        ctx.drawImage(img, 0, 0);
-
-        // Gera a nova imagem
-        const dataUrl = canvas.toDataURL(formatoDestino, 0.92); // Qualidade 92%
         
-        // Atualiza o preview
-        previewImg.src = dataUrl;
-        previewContainer.style.display = 'block';
+        ctx.drawImage(currentImg, 0, 0);
 
-        // Configura o botão de download
-        let extensao = formatoDestino.split('/')[1];
-        if (extensao === 'jpeg') extensao = 'jpg';
+        // Prepara o nome do arquivo
+        let nomeBase = originalFileName.split('.').slice(0, -1).join('.');
+
+        // --- LÓGICA DO PDF ---
+        if (formato === 'application/pdf') {
+            const { jsPDF } = window.jspdf;
+            
+            // Cria PDF (orientação depende se a imagem é retrato ou paisagem)
+            const orientacao = canvas.width > canvas.height ? 'l' : 'p';
+            const doc = new jsPDF(orientacao, 'mm', 'a4');
+            
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            
+            // Converte para JPG para colocar dentro do PDF
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            
+            // Calcula proporção para caber na página A4 com margem
+            const margin = 10;
+            const maxWidth = pageWidth - (margin * 2);
+            const maxHeight = pageHeight - (margin * 2);
+            
+            let imgWidth = canvas.width;
+            let imgHeight = canvas.height;
+            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+            
+            imgWidth *= ratio;
+            imgHeight *= ratio;
+            
+            const x = (pageWidth - imgWidth) / 2;
+            const y = (pageHeight - imgHeight) / 2;
+
+            doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
+            doc.save(`${nomeBase}.pdf`);
         
-        // Pega o nome original sem extensão e adiciona a nova
-        let nomeBase = originalName.split('.').slice(0, -1).join('.');
-        downloadBtn.download = `${nomeBase}-convertido.${extensao}`;
-        downloadBtn.href = dataUrl;
-        downloadBtn.style.display = 'block';
-        downloadBtn.innerText = `⬇️ Baixar como .${extensao.toUpperCase()}`;
+        } else {
+            // --- LÓGICA DE IMAGEM NORMAL ---
+            let qualidade = 0.92;
+            const dataUrl = canvas.toDataURL(formato, qualidade);
+            
+            let ext = formato.split('/')[1];
+            if (ext === 'jpeg') ext = 'jpg';
+
+            downloadLink.href = dataUrl;
+            downloadLink.download = `${nomeBase}-convertido.${ext}`;
+            downloadLink.click();
+        }
     }
 </script>
 
