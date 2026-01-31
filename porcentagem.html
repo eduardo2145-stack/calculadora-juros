@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Porcentagem | JurosWeb</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f9; color: #333; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header-tool { text-align: center; margin-bottom: 40px; }
+        .back-link { text-decoration: none; color: #666; font-weight: bold; }
+
+        /* Grid das 3 Calculadoras */
+        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #0056b3; }
+        .card h3 { margin-top: 0; color: #0056b3; font-size: 1.1rem; }
+        
+        .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; text-align: center; font-size: 1rem; }
+        span { font-weight: bold; color: #777; white-space: nowrap; }
+        
+        button { background: #28a745; color: white; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 5px; }
+        button:hover { background: #218838; }
+
+        .result { background: #eef2f7; padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; font-weight: bold; color: #333; display: none; }
+        .result strong { color: #0056b3; font-size: 1.2rem; display: block; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-tool">
+        <a href="utilidades.html" class="back-link">← Voltar para Ferramentas</a>
+        <h1>Calculadora de Porcentagem</h1>
+        <p>Resolva rapidamente seus problemas com porcentagem.</p>
+    </div>
+
+    <div class="calc-grid">
+        
+        <div class="card">
+            <h3>1. Quanto vale uma %?</h3>
+            <p style="font-size:0.9rem; color:#666;">Ex: Quanto é 20% de 500?</p>
+            <div class="input-row">
+                <span>Quanto é</span>
+                <input type="number" id="c1_num1" placeholder="20">
+                <span>%</span>
+            </div>
+            <div class="input-row">
+                <span>de</span>
+                <input type="number" id="c1_num2" placeholder="500">
+                <span>?</span>
+            </div>
+            <button onclick="calc1()">Calcular</button>
+            <div id="res1" class="result">Resultado: <strong id="val1">0</strong></div>
+        </div>
+
+        <div class="card">
+            <h3>2. Representa quantos %?</h3>
+            <p style="font-size:0.9rem; color:#666;">Ex: 50 é quantos % de 200?</p>
+            <div class="input-row">
+                <span>O valor</span>
+                <input type="number" id="c2_num1" placeholder="50">
+            </div>
+            <div class="input-row">
+                <span>é quantos % de</span>
+                <input type="number" id="c2_num2" placeholder="200">
+                <span>?</span>
+            </div>
+            <button onclick="calc2()">Calcular</button>
+            <div id="res2" class="result">Resultado: <strong id="val2">0%</strong></div>
+        </div>
+
+        <div class="card">
+            <h3>3. Aumento ou Desconto</h3>
+            <p style="font-size:0.9rem; color:#666;">Ex: Era 100 e foi para 150.</p>
+            <div class="input-row">
+                <span>Valor Inicial</span>
+                <input type="number" id="c3_num1" placeholder="100">
+            </div>
+            <div class="input-row">
+                <span>Valor Final</span>
+                <input type="number" id="c3_num2" placeholder="150">
+            </div>
+            <button onclick="calc3()">Calcular</button>
+            <div id="res3" class="result">Variação de: <strong id="val3">0%</strong></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Calc 1: Quanto é X% de Y
+    function calc1() {
+        let pct = parseFloat(document.getElementById('c1_num1').value);
+        let total = parseFloat(document.getElementById('c1_num2').value);
+        if(!pct || !total) return;
+        let res = (pct / 100) * total;
+        document.getElementById('val1').innerText = res.toFixed(2);
+        document.getElementById('res1').style.display = 'block';
+    }
+
+    // Calc 2: X é quantos % de Y
+    function calc2() {
+        let parte = parseFloat(document.getElementById('c2_num1').value);
+        let total = parseFloat(document.getElementById('c2_num2').value);
+        if(!parte || !total) return;
+        let res = (parte / total) * 100;
+        document.getElementById('val2').innerText = res.toFixed(2) + '%';
+        document.getElementById('res2').style.display = 'block';
+    }
+
+    // Calc 3: Variação (Aumento/Queda)
+    function calc3() {
+        let inicio = parseFloat(document.getElementById('c3_num1').value);
+        let fim = parseFloat(document.getElementById('c3_num2').value);
+        if(!inicio || !fim) return;
+        let diferenca = fim - inicio;
+        let res = (diferenca / inicio) * 100;
+        
+        let texto = res > 0 ? "Aumento de " : "Queda de ";
+        document.getElementById('val3').innerText = texto + res.toFixed(2) + '%';
+        document.getElementById('val3').style.color = res > 0 ? '#28a745' : '#dc3545';
+        document.getElementById('res3').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
