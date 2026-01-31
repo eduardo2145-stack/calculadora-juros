@@ -3,53 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora Regra de 3 | JurosWeb</title>
+    <meta name="description" content="Calculadora de Regra de 3 Simples e Inversa. Resolva problemas de proporção com explicação passo a passo.">
+    <title>Calculadora Regra de 3 (Simples e Inversa) | JurosWeb</title>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3C46NXBG96');
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+
     <style>
-        body { font-family: sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; width: 90%; }
-        .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
-        input { padding: 15px; border: 2px solid #ddd; border-radius: 8px; width: 100%; font-size: 1.2rem; text-align: center; }
-        input:focus { border-color: #0056b3; outline: none; }
-        .equal { font-size: 2rem; color: #888; }
-        .btn-calc { background: #28a745; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .back-link { display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #666; }
+        :root { --primary: #0056b3; --secondary: #28a745; --bg: #f4f6f9; --white: #ffffff; --text: #333; }
+
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+        /* HEADER */
+        header { margin-bottom: 30px; }
+        nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        #logoSite { max-height: 50px; width: auto; display: block; }
+        .menu-links { display: flex; gap: 20px; }
+        .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .menu-links a:hover { color: var(--primary); }
+        .menu-links a.active { color: var(--primary); }
+
+        /* UI CALCULADORA */
+        .calc-box { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 800px; margin: 0 auto; border-top: 5px solid var(--primary); }
+        
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #666; display: block; margin-bottom: 30px; }
+
+        /* SWITCH DIRETA / INVERSA */
+        .mode-selector { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; background: #f0f2f5; padding: 5px; border-radius: 50px; width: fit-content; margin-left: auto; margin-right: auto; }
+        .mode-btn { padding: 10px 25px; border-radius: 25px; border: none; cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.9rem; }
+        .mode-btn.active { background: var(--primary); color: white; shadow: 0 2px 10px rgba(0,86,179,0.3); }
+        .mode-btn.inactive { background: transparent; color: #666; }
+        .mode-btn.inactive:hover { background: #e9ecef; }
+
+        /* GRID DE INPUTS */
+        .rule-grid { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .group { display: flex; flex-direction: column; gap: 15px; background: #f8f9fa; padding: 20px; border-radius: 12px; border: 1px solid #eee; width: 100%; max-width: 300px; }
+        
+        .input-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .label-text { font-size: 0.9rem; font-weight: bold; color: #555; width: 80px; }
+        
+        input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.1rem; text-align: center; font-weight: bold; color: var(--primary); }
+        input:focus { border-color: var(--primary); outline: none; background: #fff; }
+        
+        .arrow-icon { font-size: 2rem; color: #ccc; display: none; }
+        @media(min-width: 768px) { .arrow-icon { display: block; } }
+
+        /* RESULTADO */
+        .result-box { background: #eef2f7; padding: 20px; border-radius: 10px; text-align: center; border: 1px dashed var(--primary); display: none; animation: fadeIn 0.5s; }
+        .result-val { font-size: 2.5rem; font-weight: 800; color: var(--secondary); display: block; margin: 10px 0; }
+        .step-text { font-size: 0.9rem; color: #666; background: #fff; padding: 10px; border-radius: 6px; display: inline-block; margin-top: 10px; border: 1px solid #ddd; }
+        
+        @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+        .btn-calc { background: var(--primary); color: white; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .btn-calc:hover { background: var(--primary-dark); }
+
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2 style="text-align: center; margin-top: 0; color: #0056b3;">Regra de 3 Simples</h2>
-    <p style="text-align: center; color: #777; margin-bottom: 30px;">Se A está para B, então C está para X.</p>
+<div class="container">
+    <header>
+        <nav>
+            <div class="nav-content">
+                <a href="index.html"><img src="logo.png" id="logoSite" alt="JurosWeb"></a>
+                <div class="menu-links">
+                    <a href="index.html">Financeiro</a>
+                    <a href="utilidades.html" class="active">Ferramentas</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <div class="row">
-        <input type="number" id="numA" placeholder="A (ex: 10)">
-        <span class="equal">Está para</span>
-        <input type="number" id="numB" placeholder="B (ex: 100)">
-    </div>
-    
-    <div class="row">
-        <input type="number" id="numC" placeholder="C (ex: 5)">
-        <span class="equal">Então X é</span>
-        <input type="text" id="resX" placeholder="X" readonly style="background: #eef2f7; font-weight: bold; color: #0056b3;">
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
+
+    <div class="calc-box">
+        <h1>Regra de 3</h1>
+        <span class="subtitle">A ferramenta matemática mais útil do mundo.</span>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" id="btnDireta" onclick="setMode('direta')">Simples (Direta)</button>
+            <button class="mode-btn inactive" id="btnInversa" onclick="setMode('inversa')">Inversa (Tempo)</button>
+        </div>
+
+        <p id="modeDesc" style="text-align:center; font-size:0.85rem; color:#777; margin-top:-15px; margin-bottom:25px;">
+            Ex: Se eu compro mais coisas, eu gasto mais dinheiro. (Aumenta ⮕ Aumenta)
+        </p>
+
+        <div class="rule-grid">
+            <div class="group">
+                <div class="input-row">
+                    <span class="label-text">Se com</span>
+                    <input type="number" id="valA" placeholder="A (Ex: 10)" oninput="autoCalc()">
+                </div>
+                <div class="input-row">
+                    <span class="label-text">Eu tenho</span>
+                    <input type="number" id="valB" placeholder="B (Ex: 20)" oninput="autoCalc()">
+                </div>
+            </div>
+
+            <div class="arrow-icon">👉</div>
+
+            <div class="group">
+                <div class="input-row">
+                    <span class="label-text">Com</span>
+                    <input type="number" id="valC" placeholder="C (Ex: 5)" oninput="autoCalc()">
+                </div>
+                <div class="input-row">
+                    <span class="label-text">Terei X</span>
+                    <input type="text" id="valX" placeholder="?" readonly style="background:#e9ecef; cursor:not-allowed;">
+                </div>
+            </div>
+        </div>
+
+        <div id="resultBox" class="result-box">
+            <span style="font-weight:bold; color:#444;">Resultado (X):</span>
+            <span id="finalResult" class="result-val">0</span>
+            <div id="explanation" class="step-text">Fórmula: (B x C) / A</div>
+        </div>
+
+        <button class="btn-calc" onclick="manualCalc()">Calcular Agora</button>
+
     </div>
 
-    <button class="btn-calc" onclick="calcular()">Calcular Resultado</button>
-    <a href="utilidades.html" class="back-link">← Voltar para Ferramentas</a>
+    <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
+
+    <footer>
+        <p>&copy; 2026 JurosWeb.com.br</p>
+        <p style="margin-top: 10px;"><a href="politica.html" style="color: #999; text-decoration: none;">Política de Privacidade</a></p>
+    </footer>
 </div>
 
 <script>
-    function calcular() {
-        // Fórmula: (B * C) / A
-        let a = parseFloat(document.getElementById('numA').value);
-        let b = parseFloat(document.getElementById('numB').value);
-        let c = parseFloat(document.getElementById('numC').value);
+    let mode = 'direta';
 
-        if(!a || !b || !c) return alert("Preencha os campos A, B e C");
-
-        let x = (b * c) / a;
+    function setMode(newMode) {
+        mode = newMode;
         
-        // Se for número inteiro, mostra inteiro. Se for quebrado, mostra 2 casas.
-        document.getElementById('resX').value = Number.isInteger(x) ? x : x.toFixed(2);
+        // Atualiza botões
+        if(mode === 'direta') {
+            document.getElementById('btnDireta').className = 'mode-btn active';
+            document.getElementById('btnInversa').className = 'mode-btn inactive';
+            document.getElementById('modeDesc').innerText = "Ex: Se eu compro mais coisas, gasto mais dinheiro. (Aumenta ⮕ Aumenta)";
+        } else {
+            document.getElementById('btnDireta').className = 'mode-btn inactive';
+            document.getElementById('btnInversa').className = 'mode-btn active';
+            document.getElementById('modeDesc').innerText = "Ex: Se eu aumento a velocidade, o tempo diminui. (Aumenta ⮕ Diminui)";
+        }
+        autoCalc();
+    }
+
+    function autoCalc() {
+        let a = parseFloat(document.getElementById('valA').value);
+        let b = parseFloat(document.getElementById('valB').value);
+        let c = parseFloat(document.getElementById('valC').value);
+
+        if(!a || !b || !c) {
+            document.getElementById('valX').value = "?";
+            document.getElementById('resultBox').style.display = 'none';
+            return;
+        }
+
+        let res = 0;
+        let formula = "";
+
+        if (mode === 'direta') {
+            // Regra de 3 Direta: X = (B * C) / A
+            res = (b * c) / a;
+            formula = `Conta feita: (${b} x ${c}) ÷ ${a}`;
+        } else {
+            // Regra de 3 Inversa: X = (A * B) / C
+            // Lógica: Se A produz B, C produzirá X. Se A aumenta, X diminui.
+            // Ex: 10 pedreiros (A) levam 5 dias (B). 20 pedreiros (C) levam X.
+            // 10 * 5 = 50 dias-homem. 50 / 20 = 2.5 dias.
+            res = (a * b) / c;
+            formula = `Conta Inversa: (${a} x ${b}) ÷ ${c}`;
+        }
+
+        // Formatação
+        let finalVal = Number.isInteger(res) ? res : res.toFixed(2);
+        
+        document.getElementById('valX').value = finalVal;
+        document.getElementById('finalResult').innerText = finalVal;
+        document.getElementById('explanation').innerText = formula;
+        document.getElementById('resultBox').style.display = 'block';
+    }
+
+    function manualCalc() {
+        autoCalc();
+        // Rola até o resultado se estiver no celular
+        document.getElementById('resultBox').scrollIntoView({behavior: "smooth"});
     }
 </script>
 
