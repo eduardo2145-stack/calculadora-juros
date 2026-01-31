@@ -25,17 +25,17 @@
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
         
-        /* MENU DE NAVEGAÇÃO */
+        /* MENU DE NAVEGAÇÃO (Padronizado) */
         header { margin-bottom: 30px; }
         nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; max-width: 1000px; margin: 0 auto; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         #logoSite { max-height: 40px; width: auto; display: block; }
         .menu-links { display: flex; gap: 20px; }
         .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
         .menu-links a:hover { color: var(--primary); }
         .menu-links a.active { color: var(--primary); }
 
-        /* CARDS */
+        /* CONTEÚDO DA PÁGINA */
         .tools-header { text-align: center; margin: 40px 0; }
         .tools-header h1 { color: var(--primary); margin-bottom: 10px; }
         
@@ -53,6 +53,8 @@
 </head>
 <body>
 
+<div class="container">
+    
     <header>
         <nav>
             <div class="nav-content">
@@ -67,25 +69,24 @@
         </nav>
     </header>
 
-<div class="container">
     <div class="tools-header">
         <h1>Utilidades e Ferramentas</h1>
         <p>Ferramentas gratuitas para facilitar seu dia a dia.</p>
     </div>
 
-    <div class="ad-slot" style="height: 90px;">Publicidade</div>
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div class="tools-grid">
         <a href="imagem.html" class="tool-card">
             <span class="icon">🖼️</span>
-            <h3>Conversor de Imagens</h3>
-            <p>Transforme arquivos WEBP em JPG ou PNG em segundos, direto no navegador.</p>
+            <h3>Editor de Imagens</h3>
+            <p>Converta, redimensione e comprima JPG, PNG e PDF.</p>
         </a>
 
         <a href="regra3.html" class="tool-card">
             <span class="icon">✖️</span>
             <h3>Regra de 3 Simples</h3>
-            <p>Calculadora automática para resolver problemas de proporção rapidamente.</p>
+            <p>Calculadora automática (Direta e Inversa) com explicação.</p>
         </a>
 
         <a href="porcentagem.html" class="tool-card">
@@ -95,13 +96,13 @@
         </a>
 
         <a href="datas.html" class="tool-card">
-    <span class="icon">📅</span>
-    <h3>Calculadora de Datas</h3>
-    <p>Conte dias entre datas ou some prazos de vencimento.</p>
-</a>
+            <span class="icon">📅</span>
+            <h3>Calculadora de Datas</h3>
+            <p>Conte dias entre datas ou calcule prazos de vencimento.</p>
+        </a>
     </div>
 
-    <div class="ad-slot" style="height: 90px;">Publicidade</div>
+    <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
 
     <footer>
         <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
