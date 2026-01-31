@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor Rápido de Imagens</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
+        h1 { color: #333; margin-bottom: 20px; }
+        
+        .upload-area { border: 2px dashed #ccc; padding: 30px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
+        .upload-area:hover { border-color: #007bff; background: #f8fbff; }
+        
+        select { padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        
+        button { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        #preview { max-width: 100%; margin-top: 20px; border-radius: 5px; display: none; }
+        #downloadBtn { display: none; background: #28a745; margin-top: 10px; text-decoration: none; padding: 12px; border-radius: 5px; color: white; display: block; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Conversor de Imagens</h1>
+    <p style="color:#666; font-size: 0.9rem;">Converta JPG, PNG ou WEBP em segundos.</p>
+
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        <span style="font-size: 2rem;">📁</span><br>
+        Clique para escolher a imagem
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <div id="controls" style="display:none;">
+        <label style="display:block; text-align:left; margin-bottom:5px; font-weight:bold;">Converter para:</label>
+        <select id="formatSelect">
+            <option value="image/png">PNG (Fundo Transparente)</option>
+            <option value="image/jpeg">JPG (Mais Leve)</option>
+            <option value="image/webp">WEBP (Moderna)</option>
+        </select>
+
+        <button onclick="converterImagem()" id="btnConvert">Converter Agora</button>
+    </div>
+
+    <img id="preview" alt="Preview">
+    <a id="downloadLink" style="display:none;"></a>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const controls = document.getElementById('controls');
+    const preview = document.getElementById('preview');
+    const downloadLink = document.getElementById('downloadLink');
+    let originalImage = null;
+
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            originalImage = new Image();
+            originalImage.onload = function() {
+                controls.style.display = 'block';
+                preview.src = event.target.result;
+                preview.style.display = 'block';
+                downloadLink.style.display = 'none'; // Esconde botão de download anterior
+            }
+            originalImage.src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+    });
+
+    function converterImagem() {
+        if (!originalImage) return;
+
+        // Criar um "Canvas" (uma tela de pintura invisível)
+        const canvas = document.createElement('canvas');
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
+        const ctx = canvas.getContext('2d');
+
+        // Se for JPG, pinta o fundo de branco (senão fica preto onde era transparente)
+        const formato = document.getElementById('formatSelect').value;
+        if (formato === 'image/jpeg') {
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Desenha a imagem no canvas
+        ctx.drawImage(originalImage, 0, 0);
+
+        // Converte o canvas para o formato escolhido
+        const dataUrl = canvas.toDataURL(formato, 0.9); // 0.9 é a qualidade (90%)
+
+        // Prepara o download
+        downloadLink.href = dataUrl;
+        
+        let ext = formato.split('/')[1];
+        if(ext === 'jpeg') ext = 'jpg';
+        
+        downloadLink.download = `imagem-convertida.${ext}`;
+        downloadLink.innerText = `⬇️ Baixar Imagem .${ext.toUpperCase()}`;
+        downloadLink.style.display = 'block';
+        downloadLink.style.background = '#28a745';
+        downloadLink.style.marginTop = '15px';
+    }
+</script>
+
+</body>
+</html>
