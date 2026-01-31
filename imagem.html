@@ -3,110 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversor Rápido de Imagens</title>
-    <style>
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; }
-        h1 { color: #333; margin-bottom: 20px; }
-        
-        .upload-area { border: 2px dashed #ccc; padding: 30px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; transition: 0.3s; }
-        .upload-area:hover { border-color: #007bff; background: #f8fbff; }
-        
-        select { padding: 10px; width: 100%; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-        
-        button { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold; }
-        button:hover { background: #0056b3; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+    <meta name="description" content="Conversor de Imagens Online Gratuito. Converta WEBP para JPG, PNG para JPG e muito mais.">
+    <title>Conversor de Imagens | JurosWeb</title>
 
-        #preview { max-width: 100%; margin-top: 20px; border-radius: 5px; display: none; }
-        #downloadBtn { display: none; background: #28a745; margin-top: 10px; text-decoration: none; padding: 12px; border-radius: 5px; color: white; display: block; text-align: center; }
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-3C46NXBG96');
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
+
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+
+    <style>
+        :root { --primary: #0056b3; --primary-dark: #004494; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
+
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+
+        /* HEADER & MENU */
+        header { margin-bottom: 30px; }
+        nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        #logoSite { max-height: 50px; width: auto; display: block; }
+        .menu-links { display: flex; gap: 20px; }
+        .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .menu-links a:hover { color: var(--primary); }
+        .menu-links a.active { color: var(--primary); }
+
+        /* CONVERSOR UI */
+        .converter-box { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto; text-align: center; border-top: 5px solid var(--primary); }
+        
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        p { color: #666; margin-bottom: 30px; }
+
+        .control-group { margin-bottom: 20px; text-align: left; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
+        
+        select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; cursor: pointer; }
+        select:focus { border-color: var(--primary); outline: none; }
+
+        .upload-area { border: 2px dashed #ccc; padding: 40px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #fdfdfd; margin-bottom: 20px; }
+        .upload-area:hover { border-color: var(--primary); background: #f0f7ff; }
+        .upload-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        
+        .preview-container { margin-top: 20px; display: none; }
+        #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .btn-download { display: none; background: var(--secondary); color: white; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; width: 100%; box-sizing: border-box; }
+        .btn-download:hover { background: #218838; transform: translateY(-2px); }
+
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Conversor de Imagens</h1>
-    <p style="color:#666; font-size: 0.9rem;">Converta JPG, PNG ou WEBP em segundos.</p>
+<div class="container">
+    
+    <header>
+        <nav>
+            <div class="nav-content">
+                <a href="index.html">
+                    <img src="logo.png" id="logoSite" alt="JurosWeb" title="Voltar ao início">
+                </a>
+                <div class="menu-links">
+                    <a href="index.html">Financeiro</a>
+                    <a href="utilidades.html" class="active">Ferramentas</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-        <span style="font-size: 2rem;">📁</span><br>
-        Clique para escolher a imagem
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
+
+    <div class="converter-box">
+        <h1>Conversor de Imagens</h1>
+        <p>Transforme suas fotos para JPG, PNG ou WEBP em segundos.</p>
+
+        <div class="control-group">
+            <label>1. Converter para qual formato?</label>
+            <select id="formatSelect">
+                <option value="image/jpeg">JPG (Melhor para fotos, fundo branco)</option>
+                <option value="image/png">PNG (Alta qualidade, fundo transparente)</option>
+                <option value="image/webp">WEBP (Mais leve para sites)</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>2. Escolha sua imagem:</label>
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <span class="upload-icon">📤</span>
+                <span id="uploadText">Clique aqui para selecionar o arquivo</span>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+
+        <div class="preview-container" id="previewContainer">
+            <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary);">Imagem Convertida:</p>
+            <img id="preview-img" alt="Preview">
+            <a id="downloadBtn" class="btn-download" download="imagem-convertida">⬇️ Baixar Imagem Convertida</a>
+        </div>
+
     </div>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
-    <div id="controls" style="display:none;">
-        <label style="display:block; text-align:left; margin-bottom:5px; font-weight:bold;">Converter para:</label>
-        <select id="formatSelect">
-            <option value="image/png">PNG (Fundo Transparente)</option>
-            <option value="image/jpeg">JPG (Mais Leve)</option>
-            <option value="image/webp">WEBP (Moderna)</option>
-        </select>
+    <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
 
-        <button onclick="converterImagem()" id="btnConvert">Converter Agora</button>
-    </div>
+    <footer>
+        <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
+        <p style="margin-top: 10px;">
+            <a href="politica.html" style="color: #999; text-decoration: none; font-size: 0.85rem;">Política de Privacidade</a>
+        </p>
+    </footer>
 
-    <img id="preview" alt="Preview">
-    <a id="downloadLink" style="display:none;"></a>
 </div>
 
 <script>
     const fileInput = document.getElementById('fileInput');
-    const controls = document.getElementById('controls');
-    const preview = document.getElementById('preview');
-    const downloadLink = document.getElementById('downloadLink');
-    let originalImage = null;
+    const formatSelect = document.getElementById('formatSelect');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImg = document.getElementById('preview-img');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const uploadText = document.getElementById('uploadText');
 
+    // Quando o usuário seleciona um arquivo
     fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
+        processarImagem(e.target.files[0]);
+    });
+
+    // Quando o usuário muda o formato (se já tiver imagem carregada, converte de novo)
+    formatSelect.addEventListener('change', function() {
+        if (fileInput.files[0]) {
+            processarImagem(fileInput.files[0]);
+        }
+    });
+
+    function processarImagem(file) {
         if (!file) return;
+
+        uploadText.innerText = "Arquivo selecionado: " + file.name;
 
         const reader = new FileReader();
         reader.onload = function(event) {
-            originalImage = new Image();
-            originalImage.onload = function() {
-                controls.style.display = 'block';
-                preview.src = event.target.result;
-                preview.style.display = 'block';
-                downloadLink.style.display = 'none'; // Esconde botão de download anterior
-            }
-            originalImage.src = event.target.result;
-        }
+            const img = new Image();
+            img.onload = function() {
+                converter(img, file.name);
+            };
+            img.src = event.target.result;
+        };
         reader.readAsDataURL(file);
-    });
+    }
 
-    function converterImagem() {
-        if (!originalImage) return;
-
-        // Criar um "Canvas" (uma tela de pintura invisível)
+    function converter(img, originalName) {
         const canvas = document.createElement('canvas');
-        canvas.width = originalImage.width;
-        canvas.height = originalImage.height;
+        canvas.width = img.width;
+        canvas.height = img.height;
         const ctx = canvas.getContext('2d');
 
-        // Se for JPG, pinta o fundo de branco (senão fica preto onde era transparente)
-        const formato = document.getElementById('formatSelect').value;
-        if (formato === 'image/jpeg') {
+        const formatoDestino = formatSelect.value;
+
+        // Se for JPG, precisamos preencher o fundo transparente com branco
+        if (formatoDestino === 'image/jpeg') {
             ctx.fillStyle = "#FFFFFF";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
-        // Desenha a imagem no canvas
-        ctx.drawImage(originalImage, 0, 0);
+        ctx.drawImage(img, 0, 0);
 
-        // Converte o canvas para o formato escolhido
-        const dataUrl = canvas.toDataURL(formato, 0.9); // 0.9 é a qualidade (90%)
+        // Gera a nova imagem
+        const dataUrl = canvas.toDataURL(formatoDestino, 0.92); // Qualidade 92%
+        
+        // Atualiza o preview
+        previewImg.src = dataUrl;
+        previewContainer.style.display = 'block';
 
-        // Prepara o download
-        downloadLink.href = dataUrl;
+        // Configura o botão de download
+        let extensao = formatoDestino.split('/')[1];
+        if (extensao === 'jpeg') extensao = 'jpg';
         
-        let ext = formato.split('/')[1];
-        if(ext === 'jpeg') ext = 'jpg';
-        
-        downloadLink.download = `imagem-convertida.${ext}`;
-        downloadLink.innerText = `⬇️ Baixar Imagem .${ext.toUpperCase()}`;
-        downloadLink.style.display = 'block';
-        downloadLink.style.background = '#28a745';
-        downloadLink.style.marginTop = '15px';
+        // Pega o nome original sem extensão e adiciona a nova
+        let nomeBase = originalName.split('.').slice(0, -1).join('.');
+        downloadBtn.download = `${nomeBase}-convertido.${extensao}`;
+        downloadBtn.href = dataUrl;
+        downloadBtn.style.display = 'block';
+        downloadBtn.innerText = `⬇️ Baixar como .${extensao.toUpperCase()}`;
     }
 </script>
 
