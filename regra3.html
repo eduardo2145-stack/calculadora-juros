@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Regra de 3 | JurosWeb</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); max-width: 500px; width: 90%; }
+        .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 10px; }
+        input { padding: 15px; border: 2px solid #ddd; border-radius: 8px; width: 100%; font-size: 1.2rem; text-align: center; }
+        input:focus { border-color: #0056b3; outline: none; }
+        .equal { font-size: 2rem; color: #888; }
+        .btn-calc { background: #28a745; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 1.2rem; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .back-link { display: block; text-align: center; margin-top: 20px; text-decoration: none; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align: center; margin-top: 0; color: #0056b3;">Regra de 3 Simples</h2>
+    <p style="text-align: center; color: #777; margin-bottom: 30px;">Se A está para B, então C está para X.</p>
+
+    <div class="row">
+        <input type="number" id="numA" placeholder="A (ex: 10)">
+        <span class="equal">Está para</span>
+        <input type="number" id="numB" placeholder="B (ex: 100)">
+    </div>
+    
+    <div class="row">
+        <input type="number" id="numC" placeholder="C (ex: 5)">
+        <span class="equal">Então X é</span>
+        <input type="text" id="resX" placeholder="X" readonly style="background: #eef2f7; font-weight: bold; color: #0056b3;">
+    </div>
+
+    <button class="btn-calc" onclick="calcular()">Calcular Resultado</button>
+    <a href="utilidades.html" class="back-link">← Voltar para Ferramentas</a>
+</div>
+
+<script>
+    function calcular() {
+        // Fórmula: (B * C) / A
+        let a = parseFloat(document.getElementById('numA').value);
+        let b = parseFloat(document.getElementById('numB').value);
+        let c = parseFloat(document.getElementById('numC').value);
+
+        if(!a || !b || !c) return alert("Preencha os campos A, B e C");
+
+        let x = (b * c) / a;
+        
+        // Se for número inteiro, mostra inteiro. Se for quebrado, mostra 2 casas.
+        document.getElementById('resX').value = Number.isInteger(x) ? x : x.toFixed(2);
+    }
+</script>
+
+</body>
+</html>
