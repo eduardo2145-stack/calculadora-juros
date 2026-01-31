@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas Úteis | JurosWeb</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f6f9; color: #333; margin: 0; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        
+        /* Cards das Ferramentas */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+        .tool-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; transition: 0.3s; text-decoration: none; color: #333; display: block; border: 2px solid transparent; }
+        .tool-card:hover { transform: translateY(-5px); border-color: #0056b3; }
+        .icon { font-size: 3rem; margin-bottom: 15px; display: block; }
+        h3 { margin: 10px 0; color: #0056b3; }
+        p { color: #666; font-size: 0.9rem; }
+        
+        /* Menu (Igual ao Index) */
+        nav { background: #fff; border-bottom: 1px solid #eee; padding: 15px 0; }
+        .nav-content { max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; padding: 0 20px; }
+        .logo { font-weight: bold; color: #0056b3; text-decoration: none; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-content">
+        <a href="index.html" class="logo">📈 JurosWeb</a>
+        <a href="index.html" style="text-decoration:none; color:#555;">Voltar ao Início</a>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 style="text-align: center; color: #444;">Utilidades e Ferramentas</h1>
+    <p style="text-align: center; color: #777;">Ferramentas gratuitas para facilitar seu dia a dia.</p>
+
+    <div class="tools-grid">
+        <a href="imagem.html" class="tool-card">
+            <span class="icon">🖼️</span>
+            <h3>Conversor de Imagens</h3>
+            <p>Transforme arquivos WEBP em JPG ou PNG em segundos, direto no navegador.</p>
+        </a>
+
+        <a href="regra3.html" class="tool-card">
+            <span class="icon">✖️</span>
+            <h3>Regra de 3 Simples</h3>
+            <p>Calculadora automática para resolver problemas de proporção rapidamente.</p>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
