@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Conversor de Imagens Gratuito. Converta para PDF, JPG, PNG, WEBP e BMP.">
-    <title>Conversor de Imagens e PDF | JurosWeb</title>
+    <meta name="description" content="Editor e Conversor de Imagens. Converta, Redimensione e Comprima fotos online.">
+    <title>Conversor e Editor de Imagens | JurosWeb</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
     <script>
@@ -21,12 +21,12 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
     <style>
-        :root { --primary: #0056b3; --primary-dark: #004494; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
+        :root { --primary: #0056b3; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
 
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 
-        /* HEADER & MENU */
+        /* HEADER */
         header { margin-bottom: 30px; }
         nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
@@ -36,26 +36,34 @@
         .menu-links a:hover { color: var(--primary); }
         .menu-links a.active { color: var(--primary); }
 
-        /* CONVERSOR UI */
-        .converter-box { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 600px; margin: 0 auto; text-align: center; border-top: 5px solid var(--primary); }
+        /* UI TOOL */
+        .converter-box { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 700px; margin: 0 auto; border-top: 5px solid var(--primary); }
         
-        h1 { color: var(--primary); margin-bottom: 10px; }
-        p { color: #666; margin-bottom: 30px; }
+        h1 { color: var(--primary); margin-bottom: 10px; text-align: center; }
+        .subtitle { color: #666; margin-bottom: 30px; text-align: center; display: block; }
 
-        .control-group { margin-bottom: 20px; text-align: left; }
+        .control-group { margin-bottom: 20px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
         
-        select { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; cursor: pointer; }
-        select:focus { border-color: var(--primary); outline: none; }
-
-        .upload-area { border: 2px dashed #ccc; padding: 40px 20px; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #fdfdfd; margin-bottom: 20px; }
+        select, input[type="number"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; box-sizing: border-box; }
+        
+        .upload-area { border: 2px dashed #ccc; padding: 30px; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #fdfdfd; text-align: center; }
         .upload-area:hover { border-color: var(--primary); background: #f0f7ff; }
-        .upload-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .upload-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
+
+        /* AJUSTES AVANÇADOS */
+        .advanced-options { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; border: 1px solid #eee; }
+        .row-inputs { display: flex; gap: 15px; }
+        .col { flex: 1; }
         
-        .preview-container { margin-top: 20px; display: none; }
-        #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input[type="range"] { width: 100%; cursor: pointer; }
+        .quality-val { float: right; color: var(--primary); font-weight: bold; }
+
+        /* PREVIEW */
+        .preview-container { margin-top: 30px; display: none; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
+        #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
         
-        .btn-download { display: none; background: var(--secondary); color: white; text-decoration: none; padding: 15px; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; transition: 0.3s; width: 100%; box-sizing: border-box; cursor: pointer; border: none; }
+        .btn-download { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; font-size: 1.2rem; cursor: pointer; width: 100%; transition: 0.3s; display: block; }
         .btn-download:hover { background: #218838; transform: translateY(-2px); }
 
         .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
@@ -66,13 +74,10 @@
 <body>
 
 <div class="container">
-    
     <header>
         <nav>
             <div class="nav-content">
-                <a href="index.html">
-                    <img src="logo.png" id="logoSite" alt="JurosWeb" title="Voltar ao início">
-                </a>
+                <a href="index.html"><img src="logo.png" id="logoSite" alt="JurosWeb"></a>
                 <div class="menu-links">
                     <a href="index.html">Financeiro</a>
                     <a href="utilidades.html" class="active">Ferramentas</a>
@@ -84,169 +89,179 @@
     <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div class="converter-box">
-        <h1>Conversor de Imagens</h1>
-        <p>Transforme suas fotos para JPG, PNG, PDF ou BMP.</p>
+        <h1>Conversor & Editor</h1>
+        <span class="subtitle">Converta, redimensione e comprima suas imagens.</span>
 
         <div class="control-group">
-            <label>1. Converter para qual formato?</label>
-            <select id="formatSelect">
-                <option value="image/jpeg">JPG (Melhor para fotos)</option>
-                <option value="image/png">PNG (Fundo transparente)</option>
+            <label>1. Formato de Saída:</label>
+            <select id="formatSelect" onchange="atualizarPreview()">
+                <option value="image/jpeg">JPG (Padrão)</option>
+                <option value="image/png">PNG (Transparente)</option>
+                <option value="image/webp">WEBP (Web)</option>
                 <option value="application/pdf">PDF (Documento)</option>
-                <option value="image/webp">WEBP (Otimizado para Web)</option>
                 <option value="image/bmp">BMP (Bitmap)</option>
             </select>
         </div>
 
         <div class="control-group">
-            <label>2. Escolha sua imagem:</label>
+            <label>2. Carregar Imagem:</label>
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <span class="upload-icon">📤</span>
-                <span id="uploadText">Clique aqui para selecionar o arquivo</span>
+                <span class="upload-icon">📷</span>
+                <span id="uploadText">Toque para selecionar</span>
             </div>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
         </div>
 
-        <div class="preview-container" id="previewContainer">
-            <p style="margin-bottom: 10px; font-weight: bold; color: var(--primary);">Pré-visualização:</p>
-            <img id="preview-img" alt="Preview">
-            <button id="downloadBtn" class="btn-download" onclick="baixarArquivo()">⬇️ Baixar Agora</button>
-            <a id="downloadLink" style="display:none;"></a>
+        <div id="advancedPanel" class="advanced-options">
+            <label style="color: var(--primary); margin-bottom: 15px;">3. Ajustes (Opcional)</label>
+            
+            <div class="row-inputs" style="margin-bottom: 15px;">
+                <div class="col">
+                    <label style="font-size: 0.85rem;">Largura (px)</label>
+                    <input type="number" id="imgWidth" oninput="calcularAltura()">
+                </div>
+                <div class="col">
+                    <label style="font-size: 0.85rem;">Altura (px)</label>
+                    <input type="number" id="imgHeight" oninput="calcularLargura()">
+                </div>
+            </div>
+
+            <div id="qualityGroup">
+                <label style="font-size: 0.85rem;">Qualidade / Compressão <span id="qualityDisplay" class="quality-val">90%</span></label>
+                <input type="range" id="qualityRange" min="10" max="100" value="90" oninput="atualizarQualidadeDisplay()">
+                <p style="font-size: 0.75rem; color: #777; margin-top: 5px;">Menor % = Arquivo mais leve.</p>
+            </div>
         </div>
 
+        <div class="preview-container" id="previewContainer">
+            <img id="preview-img" alt="Preview">
+            <button id="downloadBtn" class="btn-download" onclick="baixarArquivo()">⬇️ Baixar Imagem</button>
+            <p id="fileSizeInfo" style="margin-top: 10px; font-size: 0.8rem; color: #666;"></p>
+        </div>
     </div>
 
     <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
 
     <footer>
-        <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
-        <p style="margin-top: 10px;">
-            <a href="politica.html" style="color: #999; text-decoration: none; font-size: 0.85rem;">Política de Privacidade</a>
-        </p>
+        <p>&copy; 2026 JurosWeb.com.br</p>
+        <p style="margin-top: 10px;"><a href="politica.html" style="color: #999; text-decoration: none;">Política de Privacidade</a></p>
     </footer>
-
 </div>
 
 <script>
     const fileInput = document.getElementById('fileInput');
-    const formatSelect = document.getElementById('formatSelect');
+    const advancedPanel = document.getElementById('advancedPanel');
+    const qualityGroup = document.getElementById('qualityGroup');
     const previewContainer = document.getElementById('previewContainer');
-    const previewImg = document.getElementById('preview-img');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const uploadText = document.getElementById('uploadText');
-    const downloadLink = document.getElementById('downloadLink');
+    
+    let originalImg = null;
+    let originalName = "";
+    let aspectRatio = 1;
 
-    let currentImg = null;
-    let originalFileName = "";
-
-    // Quando o usuário seleciona um arquivo
     fileInput.addEventListener('change', function(e) {
-        if(e.target.files[0]){
-            processarImagem(e.target.files[0]);
-        }
+        if(e.target.files[0]) carregarImagem(e.target.files[0]);
     });
 
-    // Quando o usuário muda o formato
-    formatSelect.addEventListener('change', function() {
-        if (currentImg) {
-            atualizarBotao();
-        }
-    });
-
-    function processarImagem(file) {
-        uploadText.innerText = "Arquivo: " + file.name;
-        originalFileName = file.name;
-
+    function carregarImagem(file) {
+        document.getElementById('uploadText').innerText = file.name;
+        originalName = file.name;
+        
         const reader = new FileReader();
         reader.onload = function(event) {
-            currentImg = new Image();
-            currentImg.onload = function() {
-                previewImg.src = event.target.result; // Mostra a original no preview
-                previewContainer.style.display = 'block';
-                downloadBtn.style.display = 'block';
-                atualizarBotao();
+            originalImg = new Image();
+            originalImg.onload = function() {
+                // Configura dimensoes iniciais
+                document.getElementById('imgWidth').value = originalImg.width;
+                document.getElementById('imgHeight').value = originalImg.height;
+                aspectRatio = originalImg.width / originalImg.height;
+
+                advancedPanel.style.display = 'block';
+                atualizarPreview(); // Gera o primeiro preview
             };
-            currentImg.src = event.target.result;
+            originalImg.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    function atualizarBotao() {
-        const formato = formatSelect.value;
-        let ext = "";
-        
-        if (formato === 'application/pdf') ext = 'PDF';
-        else if (formato === 'image/jpeg') ext = 'JPG';
-        else if (formato === 'image/png') ext = 'PNG';
-        else if (formato === 'image/webp') ext = 'WEBP';
-        else if (formato === 'image/bmp') ext = 'BMP';
+    function calcularAltura() {
+        let w = parseFloat(document.getElementById('imgWidth').value);
+        if(w) document.getElementById('imgHeight').value = Math.round(w / aspectRatio);
+    }
 
-        downloadBtn.innerText = `⬇️ Baixar como .${ext}`;
+    function calcularLargura() {
+        let h = parseFloat(document.getElementById('imgHeight').value);
+        if(h) document.getElementById('imgWidth').value = Math.round(h * aspectRatio);
+    }
+
+    function atualizarQualidadeDisplay() {
+        document.getElementById('qualityDisplay').innerText = document.getElementById('qualityRange').value + '%';
+    }
+
+    function atualizarPreview() {
+        if(!originalImg) return;
+        
+        // Esconde slider de qualidade se for PNG (PNG não comprime com perda igual JPG)
+        const formato = document.getElementById('formatSelect').value;
+        if(formato === 'image/png') qualityGroup.style.opacity = '0.5'; 
+        else qualityGroup.style.opacity = '1';
+
+        // Atualiza botão
+        let ext = formato.split('/')[1];
+        if(ext === 'jpeg') ext = 'jpg';
+        if(formato === 'application/pdf') ext = 'pdf';
+        
+        const btn = document.getElementById('downloadBtn');
+        btn.innerText = `⬇️ Baixar ${ext.toUpperCase()}`;
+        
+        // Mostra preview simples (não processa em tempo real para não travar se for imagem 4k)
+        document.getElementById('preview-img').src = originalImg.src;
+        previewContainer.style.display = 'block';
     }
 
     function baixarArquivo() {
-        if (!currentImg) return;
+        if (!originalImg) return;
 
-        const formato = formatSelect.value;
+        const w = parseInt(document.getElementById('imgWidth').value);
+        const h = parseInt(document.getElementById('imgHeight').value);
+        const quality = parseInt(document.getElementById('qualityRange').value) / 100;
+        const formato = document.getElementById('formatSelect').value;
+
         const canvas = document.createElement('canvas');
-        canvas.width = currentImg.width;
-        canvas.height = currentImg.height;
+        canvas.width = w;
+        canvas.height = h;
         const ctx = canvas.getContext('2d');
 
-        // Se for JPG ou BMP, fundo branco (remove transparência preta)
+        // Fundo branco para JPG/BMP/PDF
         if (formato === 'image/jpeg' || formato === 'image/bmp' || formato === 'application/pdf') {
             ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillRect(0, 0, w, h);
         }
+
+        // Redimensionamento suave
+        ctx.drawImage(originalImg, 0, 0, w, h);
         
-        ctx.drawImage(currentImg, 0, 0);
+        let nomeBase = originalName.split('.').slice(0, -1).join('.');
 
-        // Prepara o nome do arquivo
-        let nomeBase = originalFileName.split('.').slice(0, -1).join('.');
-
-        // --- LÓGICA DO PDF ---
+        // GERAÇÃO DO ARQUIVO
         if (formato === 'application/pdf') {
             const { jsPDF } = window.jspdf;
-            
-            // Cria PDF (orientação depende se a imagem é retrato ou paisagem)
-            const orientacao = canvas.width > canvas.height ? 'l' : 'p';
+            const orientacao = w > h ? 'l' : 'p';
             const doc = new jsPDF(orientacao, 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/jpeg', quality);
             
-            const pageWidth = doc.internal.pageSize.getWidth();
-            const pageHeight = doc.internal.pageSize.getHeight();
+            const pW = doc.internal.pageSize.getWidth();
+            const pH = doc.internal.pageSize.getHeight();
+            const ratio = Math.min((pW-20)/w, (pH-20)/h);
             
-            // Converte para JPG para colocar dentro do PDF
-            const imgData = canvas.toDataURL('image/jpeg', 0.95);
-            
-            // Calcula proporção para caber na página A4 com margem
-            const margin = 10;
-            const maxWidth = pageWidth - (margin * 2);
-            const maxHeight = pageHeight - (margin * 2);
-            
-            let imgWidth = canvas.width;
-            let imgHeight = canvas.height;
-            const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
-            
-            imgWidth *= ratio;
-            imgHeight *= ratio;
-            
-            const x = (pageWidth - imgWidth) / 2;
-            const y = (pageHeight - imgHeight) / 2;
-
-            doc.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-            doc.save(`${nomeBase}.pdf`);
-        
+            doc.addImage(imgData, 'JPEG', 10, 10, w*ratio, h*ratio);
+            doc.save(`${nomeBase}_editado.pdf`);
         } else {
-            // --- LÓGICA DE IMAGEM NORMAL ---
-            let qualidade = 0.92;
-            const dataUrl = canvas.toDataURL(formato, qualidade);
-            
-            let ext = formato.split('/')[1];
-            if (ext === 'jpeg') ext = 'jpg';
-
-            downloadLink.href = dataUrl;
-            downloadLink.download = `${nomeBase}-convertido.${ext}`;
-            downloadLink.click();
+            const dataUrl = canvas.toDataURL(formato, quality);
+            const link = document.createElement('a');
+            let ext = formato.split('/')[1].replace('jpeg', 'jpg');
+            link.download = `${nomeBase}_editado.${ext}`;
+            link.href = dataUrl;
+            link.click();
         }
     }
 </script>
