@@ -48,10 +48,11 @@
         .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -1px; }
         .logo i { color: var(--accent); }
-        .search-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 4px; display: flex; width: 350px; }
-        .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; }
-        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
-        .search-box i { color: white; cursor: pointer; }
+        .search-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 4px; display: flex; width: 350px; transition: 0.3s; }
+        .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
+        .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
+        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
+        .search-box i { color: white; cursor: pointer; margin-top: 4px; }
         .nav-menu { display: flex; gap: 20px; }
         .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
@@ -62,7 +63,7 @@
             .nav-menu { overflow-x: auto; width: 100%; padding-bottom: 5px; white-space: nowrap; }
         }
 
-        /* CONTAINER CENTRAL (LIMITADO) */
+        /* CONTAINER CENTRAL */
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; }
 
         /* HERO SECTION */
@@ -93,14 +94,15 @@
 
         /* CALCULADORA */
         .calc-section { margin-top: 40px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #eee; }
-        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; display:flex; justify-content:space-between; align-items:center; }
         .input-group label { font-size: 0.85rem; text-transform: uppercase; color: #777; font-weight: 700; }
         input[type="text"], input[type="number"] { width: 100%; border: 2px solid #eee; border-radius: 4px; padding: 12px; font-weight: 600; color: #333; box-sizing: border-box; }
         input:focus { border-color: var(--primary); outline: none; }
         
         .btn-calc { background: var(--primary); color: white; border-radius: 4px; text-transform: uppercase; font-weight: 800; padding: 15px; border: none; width: 100%; cursor: pointer; transition: 0.3s; margin-top: 15px; }
         .btn-calc:hover { background: #600000; transform: translateY(-2px); }
-        
+        .btn-pdf { background: #333; margin-top: 10px; font-size: 0.9rem; }
+
         .result-box { background: #fdfdfd; border: 1px dashed #ddd; padding: 20px; border-radius: 4px; margin-top: 20px; display: none; }
         .big-result { font-size: 2.5rem; font-weight: 900; color: var(--primary); display: block; margin: 10px 0; text-align: center; }
         
@@ -123,7 +125,7 @@
 
         .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
         
-        /* FOOTER FULL WIDTH (CORRIGIDO) */
+        /* FOOTER */
         footer { background: #111; color: #ccc; padding: 50px 0; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
         .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; }
@@ -169,8 +171,7 @@
 
         <aside class="side-widget">
             <div class="widget-header">Rankings B3 (Simulado)</div>
-            <ul class="ranking-list" id="rankingList">
-                </ul>
+            <ul class="ranking-list" id="rankingList"></ul>
         </aside>
     </div>
 
@@ -220,7 +221,7 @@
                     <div style="height:300px;"><canvas id="chartRendimento"></canvas></div>
                     <div class="tip-card" id="tipBox">
                         <div class="tip-title"><i class="fas fa-lightbulb"></i> Dica do Especialista</div>
-                        <div class="tip-content" id="tipText">O tempo é seu maior aliado nos juros compostos.</div>
+                        <div class="tip-content" id="tipText">Invista com consistência.</div>
                     </div>
                 </div>
 
@@ -251,12 +252,13 @@
 
     <div class="ad-slot">Publicidade Rodapé</div>
 
-</div> 
+</div>
+
 <footer>
     <div class="footer-inner">
         <div class="footer-col">
             <h4>JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+            <p>Seu portal gratuito de educação financeira.</p>
         </div>
         <div class="footer-col">
             <h4>Ferramentas</h4>
@@ -278,13 +280,13 @@
 </footer>
 
 <script>
-    // DICAS
+    // --- DADOS E MÁSCARAS ---
     const financialTips = [
         "A Regra dos 72: Divida 72 pela taxa de juros anual para saber em quantos anos seu dinheiro dobra.",
-        "Reserva de Emergência: O ideal é ter de 6 a 12 meses do seu custo de vida guardados em liquidez diária.",
-        "Juros Compostos: O tempo é seu maior aliado. Comece cedo, mesmo que com pouco.",
-        "Diversificação: Nunca coloque todos os ovos na mesma cesta. Diversifique entre Renda Fixa e Variável.",
-        "Inflação: Lembre-se sempre de descontar a inflação para saber seu ganho real de poder de compra."
+        "Reserva de Emergência: Tenha de 6 a 12 meses do custo de vida guardados.",
+        "Juros Compostos: O tempo é seu maior aliado. Comece cedo.",
+        "Diversificação: Não coloque todos os ovos na mesma cesta.",
+        "Inflação: Lembre-se sempre de descontar a inflação para ver o ganho real."
     ];
 
     const moneyInputs = document.querySelectorAll('.money-input');
@@ -292,7 +294,6 @@
     let chartMetaInst = null;
     let pdfData = {};
 
-    // MÁSCARA DINHEIRO
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -308,7 +309,7 @@
         return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0; 
     }
 
-    // ABAS
+    // --- FUNCIONALIDADE DE ABAS ---
     function openTab(tab) {
         document.getElementById('rendimento').style.display = tab === 'rendimento' ? 'block' : 'none';
         document.getElementById('meta').style.display = tab === 'meta' ? 'block' : 'none';
@@ -319,8 +320,9 @@
         document.getElementById('btn-meta').style.color = tab === 'meta' ? 'white' : '#333';
     }
 
-    // CALCULAR RENDIMENTO
+    // --- CÁLCULO RENDIMENTO ---
     function calcularRendimento() {
+        // Pega valores ou assume 0 se vazio
         let P = parseMoney(document.getElementById('valorInicial').value);
         let M = parseMoney(document.getElementById('aporteMensal').value);
         let taxaAnual = parseFloat(document.getElementById('taxaJuros').value) || 0;
@@ -328,8 +330,9 @@
         let usarIR = document.getElementById('checkIR').checked;
         let usarInflacao = document.getElementById('checkInflacao').checked;
 
+        // Validação mínima: Precisa de tempo
         if (!anos || anos <= 0) {
-            alert("Por favor, preencha o tempo em anos.");
+            alert("Por favor, preencha o campo 'Anos'.");
             return;
         }
 
@@ -411,14 +414,14 @@
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText, liquido: document.getElementById('resTotalLiquido').innerText };
     }
 
-    // CALCULAR META
+    // --- CÁLCULO META ---
     function calcularMeta() {
         let obj = parseMoney(document.getElementById('metaValor').value);
         let ano = parseFloat(document.getElementById('metaAnos').value);
         let ini = parseMoney(document.getElementById('metaInicial').value);
         let tax = parseFloat(document.getElementById('metaTaxa').value);
         
-        if(!obj || !ano) return alert("Preencha os campos obrigatórios (Objetivo e Prazo).");
+        if(!obj || !ano) return alert("Preencha os campos obrigatórios.");
         
         let mes = ano * 12;
         let i = Math.pow(1 + (tax/100), 1/12) - 1;
@@ -435,6 +438,7 @@
         chartMetaInst = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Evolução da Meta', data: data, borderColor: '#00d26a', fill: true }] } });
     }
 
+    // --- GERAR PDF ---
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -450,22 +454,35 @@
         doc.save('relatorio_jurosweb.pdf');
     }
 
-    // CARREGAR NOTÍCIAS (COM IMAGENS LOCAIS)
+    // --- NOTÍCIAS HÍBRIDAS (API + LOCAL) ---
     async function loadNews(termo = '') {
         const query = termo || 'investimentos mercado financeiro brasil';
-        const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`;
         
+        // Seus Backups Locais (Pasta IMG)
         const backups = [ 'IMG/news1.jpg', 'IMG/news2.jpg', 'IMG/news3.jpg', 'IMG/news4.jpg', 'IMG/news5.jpg', 'IMG/news6.jpg' ];
+        
+        // Notícias Fixas (Caso a API falhe totalmente)
+        const staticNews = [
+            {title: "Ibovespa reage positivamente a novos dados econômicos", pubDate: new Date()},
+            {title: "Dólar opera com estabilidade aguardando decisões do FED", pubDate: new Date()},
+            {title: "Entenda como a inflação afeta seus investimentos em Renda Fixa", pubDate: new Date()},
+            {title: "Setor bancário lidera alta na bolsa de valores hoje", pubDate: new Date()},
+            {title: "Bitcoin mantém tendência de alta e atrai novos investidores", pubDate: new Date()},
+            {title: "Banco Central divulga nova projeção para a Taxa Selic", pubDate: new Date()}
+        ];
+
         const grid = document.getElementById('newsGrid');
         
         const renderNews = (items) => {
             grid.innerHTML = '';
             items.forEach((item, idx) => {
-                let img = backups[idx % backups.length];
+                let link = item.link || '#';
+                // Lógica de Imagem: Tenta API -> Se não, usa backup local pelo índice
+                let img = backups[idx % backups.length]; 
                 if(item.enclosure?.link) img = item.enclosure.link;
                 
                 grid.innerHTML += `
-                <a href="${item.link}" target="_blank" class="news-card">
+                <a href="${link}" target="_blank" class="news-card">
                     <div class="news-img-box"><img src="${img}" onerror="this.src='${backups[idx % backups.length]}'"></div>
                     <div class="news-body">
                         <div class="news-tag">Mercado</div>
@@ -476,25 +493,22 @@
             });
         };
 
+        // Tenta API RSS
         try {
-            const res = await fetch(url);
+            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`);
             const data = await res.json();
-            if(data.items) {
+            
+            if(data.status === 'ok' && data.items.length > 0) {
                 renderNews(data.items.slice(0, 6));
                 document.getElementById('heroTitle').innerText = data.items[0].title;
+            } else {
+                throw new Error("API vazia");
             }
         } catch(e) {
-            console.log("Erro API, usando modo offline");
-            // Notícias Fakes se der erro
-            const fakeNews = [
-                {title: "Ibovespa opera em alta com otimismo no cenário fiscal", pubDate: new Date(), link: "#"},
-                {title: "Dólar recua frente ao real após novos dados dos EUA", pubDate: new Date(), link: "#"},
-                {title: "Banco Central sinaliza manutenção da taxa Selic", pubDate: new Date(), link: "#"},
-                {title: "Empresas de tecnologia lideram ganhos na bolsa hoje", pubDate: new Date(), link: "#"},
-                {title: "Entenda como a inflação impacta seus investimentos", pubDate: new Date(), link: "#"},
-                {title: "Bitcoin atinge nova máxima histórica nesta manhã", pubDate: new Date(), link: "#"}
-            ];
-            renderNews(fakeNews);
+            console.log("Usando modo offline");
+            // Se falhar, usa as notícias estáticas com as imagens locais
+            renderNews(staticNews);
+            document.getElementById('heroTitle').innerText = staticNews[0].title;
         }
     }
 
@@ -506,6 +520,7 @@
         }
     }
 
+    // --- TICKER ---
     function loadTicker() {
         const stocks = [
             {n:'IBOV', v:'128.500', c:'up', p:'+0.8%'}, {n:'PETR4', v:'38,20', c:'down', p:'-1.2%'}, 
@@ -517,8 +532,7 @@
         
         [...stocks, ...stocks].forEach(s => {
             let arrow = s.c==='up' ? '▲' : '▼';
-            let color = s.c==='up' ? 'stock-up' : 'stock-down';
-            tickerHTML += `<span class="stock-item">${s.n} <span class="${color}">${s.v} ${arrow}</span></span>`;
+            tickerHTML += `<span class="stock-item">${s.n} <span class="stock-${s.c}">${s.v} ${arrow}</span></span>`;
             if(rankingHTML.length < 500) rankingHTML += `<li class="ranking-item"><span class="rank-name">${s.n}</span><span class="rank-val ${s.c}">${s.v} ${s.p}</span></li>`;
         });
         document.getElementById('stockTicker').innerHTML = tickerHTML;
