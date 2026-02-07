@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuncie Conosco | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* MESMO CSS GLOBAL */
+        :root { --primary: #8B0000; --primary-dark: #600000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; line-height: 1.6; }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .logo i { color: var(--accent); }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; float: right; margin-top: 5px; text-transform: uppercase; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* ESPECÍFICO DESTA PÁGINA */
+        .ads-hero { text-align: center; margin-top: 50px; margin-bottom: 40px; }
+        .ads-hero h1 { color: var(--primary); font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+        .ads-hero p { color: #666; font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 50px; }
+        .card { background: white; padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #eee; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); border-color: var(--primary); }
+        .card i { font-size: 2.5rem; color: var(--accent); margin-bottom: 20px; }
+        .card h3 { color: #333; margin-bottom: 10px; }
+        
+        .contact-cta { background: var(--secondary); color: white; padding: 40px; border-radius: 8px; text-align: center; }
+        .btn-cta { display: inline-block; margin-top: 20px; background: var(--primary); color: white; padding: 12px 30px; text-decoration: none; font-weight: bold; border-radius: 50px; transition: 0.3s; }
+        .btn-cta:hover { background: var(--accent); color: #333; }
+
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: auto; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-flex">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="index.html">VOLTAR</a></nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="ads-hero">
+        <h1>Anuncie no JurosWeb</h1>
+        <p>Conecte sua marca a milhares de usuários interessados em finanças, investimentos e ferramentas de produtividade.</p>
+    </div>
+
+    <div class="cards-grid">
+        <div class="card">
+            <i class="fas fa-users"></i>
+            <h3>Público Qualificado</h3>
+            <p>Nossos usuários buscam ativamente soluções financeiras e ferramentas práticas para o dia a dia.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Alta Visibilidade</h3>
+            <p>Banners estratégicos e publieditoriais que garantem a visualização da sua marca sem atrapalhar a experiência.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-handshake"></i>
+            <h3>Parceria Flexível</h3>
+            <p>Formatos personalizados para atender às necessidades e orçamento da sua campanha.</p>
+        </div>
+    </div>
+
+    <div class="contact-cta">
+        <h2>Pronto para crescer com a gente?</h2>
+        <p>Entre em contato com nossa equipe comercial para receber nosso Mídia Kit.</p>
+        <a href="contato.html" class="btn-cta">Falar com Comercial</a>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="porcentagem.html">Porcentagem</a>
+            <a href="datas.html">Contador de Dias</a>
+            <a href="imagem.html">Editor de Imagens</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
+
+</body>
+</html>
