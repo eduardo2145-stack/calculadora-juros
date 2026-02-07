@@ -297,25 +297,24 @@
 </div>
 
 <script>
-    // --- 1. NOTÍCIAS (SISTEMA ANTI-FALHA DE IMAGENS) ---
+    // --- 1. NOTÍCIAS (COM NOVAS IMAGENS DE BACKUP) ---
     async function carregarNoticias(termoBusca = '') {
         let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
         
-        // Atualiza título visualmente
         const titulo = document.getElementById('newsTitle');
         if(titulo) titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
 
         const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         
-        // 6 IMAGENS DE BACKUP DE ALTA QUALIDADE (Uma para cada cartão)
+        // NOVOS LINKS DE BACKUP (Testados e Funcionando)
         const backups = [
-            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 1. Gráfico
-            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // 2. Touro
-            'https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?auto=format&fit=crop&w=600&q=80', // 3. Bitcoin
-            'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80', // 4. Dinheiro
-            'https://images.unsplash.com/photo-1554224155-9ffd48f43606?auto=format&fit=crop&w=600&q=80', // 5. Calculadora
-            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80'  // 6. Notebook
+            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // 1. Touro da Bolsa
+            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 2. Gráfico de Velas
+            'https://images.unsplash.com/photo-1621504450168-b8c48c19871d?auto=format&fit=crop&w=600&q=80', // 3. Bitcoin Dourado
+            'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=600&q=80', // 4. Notas de Dinheiro
+            'https://images.unsplash.com/photo-1616077744360-77a360485981?auto=format&fit=crop&w=600&q=80', // 5. Calculadora Financeira
+            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80'  // 6. Notebook Trabalho
         ];
 
         try {
@@ -331,55 +330,34 @@
                 return;
             }
 
-            // Ordena por data (Mais recente primeiro)
+            // Ordena por data
             data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
             // Pega as 6 primeiras
             data.items.slice(0, 6).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
-                
                 const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour: '2-digit', minute:'2-digit'});
                 
-                // --- LÓGICA DE IMAGEM BLINDADA ---
-                // Seleciona uma imagem de backup fixa para esta posição (0 a 5)
-                // Isso garante que se todas falharem, teremos 6 imagens diferentes bonitas.
-                let backupImg = backups[index % backups.length]; 
+                let backupImg = backups[index % backups.length];
                 let imgUrl = "";
 
-                // 1. Tenta pegar do campo "enclosure"
-                if (item.enclosure && item.enclosure.link) {
-                    imgUrl = item.enclosure.link;
-                } 
-                // 2. Tenta pegar do campo "thumbnail"
-                else if (item.thumbnail) {
-                    imgUrl = item.thumbnail;
-                }
-                // 3. Tenta extrair do HTML (Regex melhorado para aspas simples ou duplas)
+                if (item.enclosure && item.enclosure.link) imgUrl = item.enclosure.link;
+                else if (item.thumbnail) imgUrl = item.thumbnail;
                 else {
                     const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
-                    if(imgMatch && imgMatch[1]) {
-                        imgUrl = imgMatch[1];
-                    }
+                    if(imgMatch && imgMatch[1]) imgUrl = imgMatch[1];
                 }
 
-                // 4. Correção de Protocolo (Se a url vier como //site.com/img.jpg)
-                if (imgUrl && imgUrl.startsWith('//')) {
-                    imgUrl = 'https:' + imgUrl;
-                }
+                if (imgUrl && imgUrl.startsWith('//')) imgUrl = 'https:' + imgUrl;
+                if (!imgUrl) imgUrl = backupImg;
 
-                // 5. Se falhou tudo, usa o backup agora mesmo
-                if (!imgUrl) {
-                    imgUrl = backupImg;
-                }
-
-                // HTML do Card (Com onerror para forçar o backup se a imagem quebrar ao carregar)
                 card.innerHTML = `
                     <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                         <div class="news-img-container">
                             <img src="${imgUrl}" class="news-img" 
-                                 onerror="this.onerror=null; this.src='${backupImg}';" 
-                                 alt="Notícia">
+                                 onerror="this.src='${backupImg}'; this.onerror=null;" 
+                                 alt="Imagem da notícia">
                         </div>
                         <div class="news-content">
                             <div class="news-tag">Mercado</div>
@@ -399,12 +377,10 @@
 
         } catch (erro) { 
             console.error(erro);
-            // Se der erro total na API, mostra msg
-            document.getElementById('newsGrid').innerHTML = '<p style="padding:20px; color:red;">Atualizando notícias...</p>';
+            document.getElementById('newsGrid').innerHTML = '<p style="padding:20px; color:red;">Erro ao carregar notícias.</p>';
         }
     }
 
-    // Função de Busca
     function realizarBusca() {
         let input = document.getElementById('campoBusca');
         let termo = input.value.trim();
@@ -414,7 +390,6 @@
         }
     }
 
-    // Enter na busca
     const buscaInput = document.getElementById('campoBusca');
     if(buscaInput){
         buscaInput.addEventListener('keypress', function (e) {
@@ -437,13 +412,9 @@
         if(tickerElem) tickerElem.innerHTML = html;
     }
 
-    // INICIALIZAÇÃO
-    window.onload = function() { 
-        carregarNoticias(); 
-        loadTicker(); 
-    };
+    window.onload = function() { carregarNoticias(); loadTicker(); };
 
-    // --- 3. CALCULADORA (MANTIDA IGUAL) ---
+    // --- 3. CALCULADORA ---
     const moneyInputs = document.querySelectorAll('.money-input');
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
@@ -533,7 +504,6 @@
             else if (dias <= 720) aliquotaIR = 0.175;
             valorIR = lucroBruto * aliquotaIR;
             saldoLiquidoNominal = saldoBruto - valorIR;
-            
             document.getElementById('rowIR').style.display = 'flex';
             document.getElementById('resIR').innerText = '- ' + valorIR.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
         } else {
@@ -546,7 +516,6 @@
             let deflator = Math.pow(1 + (inflacaoRate / 100), anos);
             let saldoReal = saldoLiquidoNominal / deflator;
             valorPerdaInflacao = saldoLiquidoNominal - saldoReal;
-            
             document.getElementById('rowInflacao').style.display = 'flex';
             document.getElementById('resInflacao').innerText = '- ' + valorPerdaInflacao.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
             document.getElementById('resTotalLiquido').innerText = saldoReal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
@@ -560,7 +529,6 @@
         document.getElementById('resInvestido').innerText = fmt.format(totalInvestido);
         document.getElementById('resBrutoJuros').innerText = fmt.format(saldoBruto - totalInvestido);
         document.getElementById('resTotalBruto').innerText = fmt.format(saldoLiquidoNominal); 
-        
         document.getElementById('intro-rendimento').style.display = 'none';
         document.getElementById('results-area').style.display = 'block';
 
@@ -624,6 +592,5 @@
         doc.save("Relatorio-JurosWeb.pdf");
     }
 </script>
-
 </body>
 </html>
