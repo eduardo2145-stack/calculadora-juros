@@ -297,22 +297,29 @@
 </div>
 
 <script>
-    // --- 1. NOTÍCIAS (COM BUSCA FUNCIONAL) ---
+   // --- 1. NOTÍCIAS (COM BUSCA, ORDENAÇÃO E CORREÇÃO DE IMAGEM) ---
     async function carregarNoticias(termoBusca = '') {
-        // Se usuário digitou, usa o termo. Se não, usa o padrão.
         let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
         
-        // Atualiza o título da seção para dar feedback
+        // Atualiza título visualmente
         const titulo = document.getElementById('newsTitle');
         titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
 
+        // URL da API
         const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         
-        const backups = ['https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80'];
+        // Imagens de Backup (Caso a notícia venha sem foto)
+        const backups = [
+            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // Gráfico
+            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // Touro
+            'https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?auto=format&fit=crop&w=600&q=80', // Tech/Cripto
+            'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80', // Dinheiro
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80', // Notebook
+            'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80'  // Calculadora
+        ];
 
         try {
-            // Mostra "Buscando..." se for uma pesquisa
             if(termoBusca) document.getElementById('newsGrid').innerHTML = '<p style="padding:20px; color:#666;">Pesquisando...</p>';
 
             const response = await fetch(apiUrl);
@@ -321,19 +328,60 @@
             grid.innerHTML = ''; 
             
             if(data.items.length === 0) {
-                grid.innerHTML = '<p style="padding:20px; color:#666;">Nenhuma notícia encontrada para este termo.</p>';
+                grid.innerHTML = '<p style="padding:20px; color:#666;">Nenhuma notícia encontrada.</p>';
                 return;
             }
 
+            // 1. ORDENAÇÃO POR DATA (Mais novo primeiro)
+            data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+            // Pega as 6 primeiras
             data.items.slice(0, 6).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
-                const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'});
-                let imgUrl = item.enclosure?.link || item.thumbnail || backups[index % backups.length];
-                card.innerHTML = `<a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;"><div class="news-img-container"><img src="${imgUrl}" class="news-img" onerror="this.onerror=null;this.src='${backups[index % backups.length]}';" alt="Notícia"></div><div class="news-content"><div class="news-tag">Mercado</div><div class="news-title">${item.title}</div><div class="news-footer"><span><i class="far fa-calendar-alt"></i> ${dataPub}</span><span>Ler mais →</span></div></div></a>`;
+                
+                // Formata Data
+                const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour: '2-digit', minute:'2-digit'});
+                
+                // 2. LÓGICA AVANÇADA PARA PEGAR IMAGEM
+                // Tenta Enclosure > Thumbnail > Procura img no conteúdo > Backup
+                let imgUrl = backups[index % backups.length]; // Começa com o backup por segurança
+                
+                if (item.enclosure && item.enclosure.link) {
+                    imgUrl = item.enclosure.link;
+                } else if (item.thumbnail) {
+                    imgUrl = item.thumbnail;
+                } else {
+                    // Tenta achar tag <img src="..."> dentro da descrição HTML
+                    const imgMatch = item.description.match(/<img[^>]+src="([^">]+)"/);
+                    if(imgMatch) {
+                        imgUrl = imgMatch[1];
+                    }
+                }
+
+                // Cria o HTML do Card
+                card.innerHTML = `
+                    <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+                        <div class="news-img-container">
+                            <img src="${imgUrl}" class="news-img" 
+                                 onerror="this.onerror=null; this.src='${backups[index % backups.length]}';" 
+                                 alt="Notícia">
+                        </div>
+                        <div class="news-content">
+                            <div class="news-tag">Mercado</div>
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-footer">
+                                <span><i class="far fa-clock"></i> ${dataPub}</span>
+                                <span>Ler mais →</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
                 grid.appendChild(card);
             });
-            document.getElementById('lastUpdate').innerText = 'Atualizado agora';
+            
+            document.getElementById('lastUpdate').innerText = 'Atualizado: ' + new Date().toLocaleTimeString();
+
         } catch (erro) { console.error(erro); }
     }
 
