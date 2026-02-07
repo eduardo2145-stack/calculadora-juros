@@ -49,11 +49,34 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -1px; }
         .logo i { color: var(--accent); }
         
-        .search-box { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 15px; border-radius: 4px; display: flex; width: 350px; transition: 0.3s; }
+        /* --- BUSCA CORRIGIDA (FLEXBOX PERFEITO) --- */
+        .search-box { 
+            display: flex; 
+            align-items: center; /* Centraliza verticalmente */
+            background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            padding: 5px 15px; 
+            border-radius: 50px; /* Redondo igual imagem */
+            width: 350px; 
+            transition: 0.3s; 
+        }
         .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        .search-box input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 1rem; }
-        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
-        .search-box i { color: white; cursor: pointer; margin-top: 4px; }
+        .search-box input { 
+            flex: 1; /* Ocupa o espaço todo */
+            background: transparent; 
+            border: none; 
+            color: white; 
+            outline: none; 
+            font-size: 1rem; 
+            padding: 5px 0;
+        }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box i { 
+            color: white; 
+            cursor: pointer; 
+            margin-left: 10px; /* Espaço entre texto e lupa */
+            font-size: 1.1rem;
+        }
 
         .nav-menu { display: flex; gap: 20px; }
         .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
@@ -71,12 +94,12 @@
         /* HERO SECTION */
         .hero-section { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-top: 20px; }
         @media (max-width: 900px) { .hero-section { grid-template-columns: 1fr; } }
-        .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; text-decoration: none; color: white; display: block; background: #000; }
-        .featured-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; opacity: 0.9; }
-        .featured-card:hover .featured-img { transform: scale(1.05); opacity: 0.7; }
+        .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; text-decoration: none; color: white; display: block; }
+        .featured-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .featured-card:hover .featured-img { transform: scale(1.05); }
         .featured-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px; box-sizing: border-box; }
         .featured-tag { background: var(--primary); color: white; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-        .featured-title { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .featured-title { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
 
         /* SIDEBAR */
         .side-widget { background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
@@ -84,7 +107,7 @@
         .ranking-list { list-style: none; padding: 0; margin: 0; }
         .ranking-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; align-items: center; }
         .rank-name { font-weight: 700; color: #444; }
-        .rank-val.up { color: var(--success); font-weight: bold; } .rank-val.down { color: var(--danger); font-weight: bold; }
+        .rank-val.up { color: var(--success); } .rank-val.down { color: var(--danger); }
 
         /* FERRAMENTAS */
         .tools-title { margin-top: 40px; margin-bottom: 10px; font-size: 1.2rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
@@ -144,10 +167,12 @@
 <header>
     <div class="header-container">
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        
         <div class="search-box">
             <input type="text" id="campoBusca" placeholder="Pesquisar (ex: PETR4, Dólar)...">
             <i class="fas fa-search" onclick="realizarBusca()"></i>
         </div>
+
         <div class="nav-menu">
             <a href="index.html">Início</a>
             <a href="utilidades.html">Ferramentas</a>
@@ -253,7 +278,8 @@
 
     <div class="ad-slot">Publicidade Rodapé</div>
 
-</div> 
+</div>
+
 <footer>
     <div class="footer-inner">
         <div class="footer-col">
@@ -280,7 +306,7 @@
 </footer>
 
 <script>
-    // 1. INICIALIZAÇÃO SEGURA
+    // 1. INICIALIZAÇÃO
     window.onload = function() {
         carregarNoticias();
         loadTicker();
@@ -319,9 +345,14 @@
         });
     });
     
+    // FUNÇÃO PARSE MONEY CORRIGIDA (REMOVE R$ E PONTOS)
     function parseMoney(str) { 
         if(!str) return 0;
-        return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0; 
+        // Remove tudo que não for dígito ou vírgula
+        let limpo = str.toString().replace(/[^\d,]/g, '');
+        // Troca vírgula por ponto
+        limpo = limpo.replace(',', '.');
+        return parseFloat(limpo) || 0; 
     }
 
     // 3. CALCULADORA (BLINDADA)
@@ -428,6 +459,7 @@
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText, liquido: document.getElementById('resTotalLiquido').innerText };
     }
 
+    // --- CÁLCULO META ---
     function calcularMeta() {
         let obj = parseMoney(document.getElementById('metaValor').value);
         let ano = parseFloat(document.getElementById('metaAnos').value);
@@ -453,6 +485,7 @@
         } catch(e) { console.log("Erro gráfico meta", e); }
     }
 
+    // --- GERAR PDF ---
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -474,7 +507,7 @@
 
     // 4. NOTÍCIAS HÍBRIDAS
     async function carregarNoticias(termoBusca = '') {
-        let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
+        let query = termoBusca ? termoBusca : 'investimentos mercado financeiro brasil';
         const titulo = document.getElementById('heroTitle');
         if(termoBusca) titulo.innerText = `Resultados para: ${termoBusca}`;
 
