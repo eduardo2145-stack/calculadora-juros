@@ -8,41 +8,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary: #8B0000; --bg: #f8f9fa; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        /* GLOBAL */
+        :root { --primary: #8B0000; --primary-dark: #600000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; line-height: 1.6; }
+        
         header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
-        .nav-links a { float: right; color: white; text-decoration: none; font-weight: bold; margin-top: 5px; }
+        .logo i { color: var(--accent); }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; margin-left: 20px; text-transform: uppercase; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--accent); }
 
         .page-title { color: var(--primary); margin-top: 40px; border-left: 5px solid var(--primary); padding-left: 15px; font-size: 2rem; font-weight: 800; }
 
         .grid-calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px; }
-        .card { background: white; padding: 30px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 30px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .card h3 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
         
         input { padding: 10px; border: 2px solid #eee; border-radius: 4px; width: 80px; text-align: center; font-weight: bold; }
         input:focus { border-color: var(--primary); outline: none; }
         
         .calc-row { display: flex; align-items: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
-        .btn-small { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-small { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-small:hover { background: var(--primary); }
         .result-small { font-weight: 900; color: var(--primary); font-size: 1.2rem; margin-left: auto; }
 
-        /* CONTEÚDO SEO */
         .seo-content { margin-top: 60px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
         .seo-content h2 { color: var(--primary); margin-top: 0; }
         .seo-content p { color: #666; line-height: 1.8; text-align: justify; margin-bottom: 15px; }
 
-        footer { background: #111; color: #999; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: auto; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="container">
+    <div class="container header-flex">
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
-        <nav class="nav-links"><a href="index.html">VOLTAR</a></nav>
+        <nav class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="utilidades.html" style="color:var(--accent);">Ferramentas</a>
+        </nav>
     </div>
 </header>
 
@@ -63,7 +76,6 @@
                 <span class="result-small" id="res1">0</span>
             </div>
         </div>
-
         <div class="card">
             <h3>Descobrir a Porcentagem</h3>
             <div class="calc-row">
@@ -77,7 +89,6 @@
                 <span class="result-small" id="res2">0%</span>
             </div>
         </div>
-
         <div class="card">
             <h3>Aumento de Valor</h3>
             <div class="calc-row">
@@ -97,21 +108,35 @@
     <article class="seo-content">
         <h2>Entendendo a Porcentagem</h2>
         <p>A porcentagem é uma medida de razão baseada em 100. É uma forma de expressar uma proporção ou uma relação entre dois valores. O símbolo "%" significa "por cento", ou seja, dividido por 100.</p>
-        
         <h3>Como calcular desconto?</h3>
         <p>Para calcular um desconto em um produto, você deve multiplicar o valor original pela porcentagem de desconto e dividir por 100. O resultado deve ser subtraído do valor original. Por exemplo, um produto de R$ 200,00 com 10% de desconto terá uma redução de R$ 20,00, custando R$ 180,00.</p>
-
-        <h3>Como calcular aumento?</h3>
-        <p>Para calcular um aumento (como um reajuste salarial), a lógica é similar. Se você ganha R$ 2.000,00 e recebe um aumento de 5%, calcula-se 5% de 2.000 (que é 100) e soma-se ao valor inicial. O novo salário será R$ 2.100,00.</p>
-
-        <h3>Por que usar nossa calculadora?</h3>
-        <p>Embora a matemática seja simples, no dia a dia é fácil se confundir com a posição da vírgula ou a ordem das operações. Nossa ferramenta oferece três modos distintos para cobrir todas as suas necessidades: cálculo direto, descoberta de proporção e projeção de aumento.</p>
     </article>
 </div>
 
 <footer>
-    <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
-    <a href="politica.html" style="color:#777;">Política de Privacidade</a>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="porcentagem.html">Calculadora de Porcentagem</a>
+            <a href="datas.html">Contador de Dias</a>
+            <a href="imagem.html">Editor de Imagens</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
 </footer>
 
 <script>
