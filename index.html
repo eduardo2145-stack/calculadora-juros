@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Simulador JurosWeb. Calcule rendimentos e planeje suas metas financeiras com precisão.">
+    <meta name="description" content="Simulador JurosWeb. Veja quanto seu dinheiro rende por mês e planeje sua independência financeira.">
     <meta name="google-site-verification" content="Fu-IqfYzGqxFKOIopQbfPDASNLayre6lTG8iqbpv43w">
-    <title>JurosWeb | Simulador de Investimentos</title>
+    <title>JurosWeb | Simulador com Rendimento Mensal</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
     <script>
@@ -34,7 +34,7 @@
         nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         
-        #logoSite { max-height: 50px; width: auto; display: block; } /* Logo ajustada para o menu */
+        #logoSite { max-height: 50px; width: auto; display: block; }
         
         .menu-links { display: flex; gap: 20px; }
         .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
@@ -68,6 +68,11 @@
         .toggle-group { display: flex; align-items: center; margin-bottom: 12px; }
         .toggle-label { display: flex; align-items: center; font-size: 0.95rem; margin: 0; cursor: pointer; width: 100%; gap: 10px; }
         .toggle-label input[type="checkbox"] { margin: 0; width: 20px; height: 20px; flex-shrink: 0; }
+        
+        /* Tooltip Inflação */
+        .tooltip { position: relative; display: inline-block; border-bottom: 1px dotted black; cursor: help; margin-left: 5px; color: var(--primary); font-weight: bold; width: 18px; height: 18px; text-align: center; border-radius: 50%; border: 1px solid var(--primary); font-size: 12px; line-height: 16px; }
+        .tooltip .tooltiptext { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
 
         /* Botões */
         .btn-calc { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
@@ -93,10 +98,13 @@
         /* Tabela */
         .table-wrapper { margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white; }
-        th { background: #e9ecef; position: sticky; top: 0; padding: 10px; text-align: right; color: #555; z-index: 1; }
+        th { background: #e9ecef; position: sticky; top: 0; padding: 10px; text-align: right; color: #555; z-index: 1; font-weight: 700; }
         td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #f1f1f1; color: #666; }
         tr:nth-child(even) { background-color: #f8f9fa; }
         th:first-child, td:first-child { text-align: center; }
+        
+        /* Destaque para rendimento mensal */
+        td.rend-mes { color: var(--secondary); font-weight: 600; }
 
         .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
         
@@ -163,7 +171,12 @@
                         <label class="toggle-label"><input type="checkbox" id="checkIR"> Descontar Imposto de Renda</label>
                     </div>
                     <div class="toggle-group">
-                        <label class="toggle-label"><input type="checkbox" id="checkInflacao"> Descontar Inflação (IPCA)</label>
+                        <label class="toggle-label">
+                            <input type="checkbox" id="checkInflacao"> Descontar Inflação
+                            <div class="tooltip">?
+                                <span class="tooltiptext">Remove o efeito da inflação para mostrar o "Poder de Compra Real". É como se trouxesse o valor do futuro para os preços de hoje (ex: supermercado).</span>
+                            </div>
+                        </label>
                     </div>
                     <div id="boxInflacao" style="display:none; margin-top:10px; padding-left: 30px;">
                         <label style="font-size: 0.8rem;">IPCA Esperado (% a.a.)</label>
@@ -193,7 +206,7 @@
                             <span id="resInvestido">R$ 0,00</span>
                         </div>
                         <div class="extrato-row">
-                            <span>(+) Rendimento Juros</span>
+                            <span>(+) Rendimento Total</span>
                             <span id="resBrutoJuros" style="color: var(--secondary);">R$ 0,00</span>
                         </div>
                         
@@ -202,7 +215,7 @@
                             <span id="resIR" class="val-red">- R$ 0,00</span>
                         </div>
                         <div id="rowInflacao" class="extrato-row" style="display:none;">
-                            <span>(i) Reposição Inflacionária</span>
+                            <span>(i) Perda Inflacionária</span>
                             <span id="resInflacao" class="val-orange">- R$ 0,00</span>
                         </div>
 
@@ -213,8 +226,8 @@
                     </div>
 
                     <div id="msgPoupanca">
-                        💡 <strong>Você fez um ótimo negócio!</strong><br>
-                        Se deixasse parado, seu poder de compra seria de apenas <strong id="valColchao">R$ 0,00</strong>.
+                        💡 <strong>Entenda o resultado:</strong><br>
+                        Seu dinheiro cresceu, mas os preços no mercado também sobem. O "Poder de Compra" é o que você realmente conseguirá comprar com esse dinheiro no futuro.
                     </div>
 
                     <div class="chart-container">
@@ -225,7 +238,11 @@
                     <div class="table-wrapper">
                         <table id="tabelaEvolucao">
                             <thead>
-                                <tr><th>Mês</th><th>Investido</th><th>Juros Acum.</th><th>Total</th></tr>
+                                <tr>
+                                    <th>Mês</th>
+                                    <th>Total Investido</th>
+                                    <th>Rend. Mês</th> <th>Saldo Total</th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
@@ -368,20 +385,30 @@
         let saldoBruto = P;
         
         for(let m = 0; m <= meses; m++) {
+            let rendimentoMensal = 0;
+            
             if (m > 0) {
-                saldoBruto = saldoBruto * (1 + i) + M;
+                // Calcula quanto rendeu SÓ de juros neste mês
+                rendimentoMensal = saldoBruto * i;
+                
+                // Atualiza o saldo: (Saldo anterior + Juros) + Aporte
+                saldoBruto = saldoBruto + rendimentoMensal + M;
                 totalInvestido += M;
             }
+
+            // A cada 6 meses (ou no final), guarda dados para o gráfico
             if (m % 6 === 0 || m === meses) { 
                 labels.push(m);
                 dataInvestido.push(totalInvestido);
                 dataBruto.push(saldoBruto);
             }
+            
+            // Popula tabela (todo mês)
             if (m > 0) {
                 globalTableData.push([
                     m, 
                     totalInvestido.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
-                    (saldoBruto - totalInvestido).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+                    rendimentoMensal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}), // Coluna Nova
                     saldoBruto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
                 ]);
             }
@@ -392,7 +419,8 @@
         const fragment = document.createDocumentFragment();
         globalTableData.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td><strong>${row[3]}</strong></td>`;
+            // Nota: agora row tem 4 itens, o índice 2 é o rendimento mensal
+            tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td class="rend-mes">+ ${row[2]}</td><td><strong>${row[3]}</strong></td>`;
             fragment.appendChild(tr);
         });
         tbody.appendChild(fragment);
@@ -423,10 +451,7 @@
             valorPerdaInflacao = saldoFinalReal - valorReal; 
             saldoFinalReal = valorReal;
 
-            let colchaoReal = totalInvestido / deflator;
             const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-            
-            document.getElementById('valColchao').innerText = fmt.format(colchaoReal);
             msgBox.style.display = 'block';
             rowInf.style.display = 'flex';
         } else {
@@ -565,7 +590,7 @@
             
             if (pdfData.inflacao !== 'Não calc.') {
                 doc.setTextColor(230, 126, 34); 
-                doc.text(`Reposição Inflacionária: ${pdfData.inflacao}`, 20, startY + 26);
+                doc.text(`Perda Inflacionária: ${pdfData.inflacao}`, 20, startY + 26);
                 doc.setTextColor(40, 167, 69);
                 doc.setFont("helvetica", "bold");
                 doc.text(`Poder de Compra Real: ${pdfData.liquido}`, 20, startY + 36);
@@ -586,7 +611,7 @@
             doc.text("Evolução Mensal", 15, startY + 145);
             doc.autoTable({
                 startY: startY + 150,
-                head: [['Mês', 'Investido', 'Juros Acum.', 'Total']],
+                head: [['Mês', 'Investido', 'Rend. Mês', 'Total']],
                 body: globalTableData,
                 theme: 'grid',
                 headStyles: { fillColor: [0, 86, 179] }, 
