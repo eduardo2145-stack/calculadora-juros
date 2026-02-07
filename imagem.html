@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Editor e Conversor de Imagens. Converta, Redimensione e Comprima fotos online.">
-    <title>Conversor e Editor de Imagens | JurosWeb</title>
+    <meta name="description" content="Editor e Conversor de Imagens Online. Converta WEBP, JPG, PNG e PDF gratuitamente.">
+    <title>Editor de Imagens | JurosWeb</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
     <script>
@@ -17,80 +17,67 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
     <style>
-        :root { --primary: #0056b3; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
+        :root { --primary: #004494; --accent: #00d26a; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
 
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        
+        /* HEADER PORTAL */
+        header { background: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 15px 0; margin-bottom: 30px; }
+        .header-content { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-wrap: wrap; gap: 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-size: 1.5rem; font-weight: 800; }
+        .logo-area img { height: 45px; background: white; border-radius: 8px; padding: 2px; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover { color: white; }
+        .btn-cta { background: var(--accent); color: #003366 !important; padding: 8px 20px; border-radius: 5px; font-weight: 800 !important; }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 
-        /* HEADER */
-        header { margin-bottom: 30px; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        #logoSite { max-height: 50px; width: auto; display: block; }
-        .menu-links { display: flex; gap: 20px; }
-        .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
-        .menu-links a:hover { color: var(--primary); }
-        .menu-links a.active { color: var(--primary); }
-
-        /* UI TOOL */
+        /* UI FERRAMENTA */
         .converter-box { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 700px; margin: 0 auto; border-top: 5px solid var(--primary); }
-        
-        h1 { color: var(--primary); margin-bottom: 10px; text-align: center; }
+        h1 { color: var(--primary); margin-bottom: 5px; text-align: center; }
         .subtitle { color: #666; margin-bottom: 30px; text-align: center; display: block; }
-
         .control-group { margin-bottom: 20px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: #444; }
-        
-        select, input[type="number"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; box-sizing: border-box; }
-        
+        select, input[type="number"] { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
         .upload-area { border: 2px dashed #ccc; padding: 30px; border-radius: 10px; cursor: pointer; transition: 0.3s; background: #fdfdfd; text-align: center; }
         .upload-area:hover { border-color: var(--primary); background: #f0f7ff; }
-        .upload-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; }
-
-        /* AJUSTES AVANÇADOS */
+        .upload-icon { font-size: 2.5rem; display: block; margin-bottom: 10px; color: var(--primary); }
         .advanced-options { background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; border: 1px solid #eee; }
-        .row-inputs { display: flex; gap: 15px; }
-        .col { flex: 1; }
+        .btn-download { background: var(--accent); color: #003366; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; width: 100%; transition: 0.3s; display: block; margin-top: 20px; }
+        .btn-download:hover { background: #00b359; transform: translateY(-2px); }
+        .preview-container { margin-top: 30px; display: none; text-align: center; }
+        #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        input[type="range"] { width: 100%; cursor: pointer; }
-        .quality-val { float: right; color: var(--primary); font-weight: bold; }
-
-        /* PREVIEW */
-        .preview-container { margin-top: 30px; display: none; text-align: center; border-top: 1px solid #eee; padding-top: 20px; }
-        #preview-img { max-width: 100%; max-height: 300px; border-radius: 8px; border: 1px solid #ddd; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        
-        .btn-download { background: var(--secondary); color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; font-size: 1.2rem; cursor: pointer; width: 100%; transition: 0.3s; display: block; }
-        .btn-download:hover { background: #218838; transform: translateY(-2px); }
-
-        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        
-        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
+        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; background: white; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <nav>
-            <div class="nav-content">
-                <a href="index.html"><img src="logo.png" id="logoSite" alt="JurosWeb"></a>
-                <div class="menu-links">
-                    <a href="index.html">Financeiro</a>
-                    <a href="utilidades.html" class="active">Ferramentas</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+<header>
+    <div class="header-content">
+        <a href="index.html" class="logo-area"><img src="logo.png" id="logoSite" alt="JurosWeb"><span>JurosWeb</span></a>
+        <div class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="utilidades.html" class="active">Ferramentas</a>
+            <a href="index.html#noticias">Notícias</a>
+            <a href="utilidades.html" class="btn-cta">Simuladores</a>
+        </div>
+    </div>
+</header>
 
+<div class="container">
     <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div class="converter-box">
-        <h1>Conversor & Editor</h1>
-        <span class="subtitle">Converta, redimensione e comprima suas imagens.</span>
+        <h1>Editor de Imagens</h1>
+        <span class="subtitle">Converta, redimensione e comprima suas fotos.</span>
 
         <div class="control-group">
             <label>1. Formato de Saída:</label>
@@ -99,57 +86,47 @@
                 <option value="image/png">PNG (Transparente)</option>
                 <option value="image/webp">WEBP (Web)</option>
                 <option value="application/pdf">PDF (Documento)</option>
-                <option value="image/bmp">BMP (Bitmap)</option>
             </select>
         </div>
 
         <div class="control-group">
             <label>2. Carregar Imagem:</label>
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <span class="upload-icon">📷</span>
-                <span id="uploadText">Toque para selecionar</span>
+                <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+                <span id="uploadText">Toque para selecionar o arquivo</span>
             </div>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
         </div>
 
         <div id="advancedPanel" class="advanced-options">
             <label style="color: var(--primary); margin-bottom: 15px;">3. Ajustes (Opcional)</label>
-            
-            <div class="row-inputs" style="margin-bottom: 15px;">
-                <div class="col">
-                    <label style="font-size: 0.85rem;">Largura (px)</label>
-                    <input type="number" id="imgWidth" oninput="calcularAltura()">
-                </div>
-                <div class="col">
-                    <label style="font-size: 0.85rem;">Altura (px)</label>
-                    <input type="number" id="imgHeight" oninput="calcularLargura()">
-                </div>
+            <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                <div style="flex: 1;"><label style="font-size:0.8rem;">Largura (px)</label><input type="number" id="imgWidth" oninput="calcularAltura()"></div>
+                <div style="flex: 1;"><label style="font-size:0.8rem;">Altura (px)</label><input type="number" id="imgHeight" oninput="calcularLargura()"></div>
             </div>
-
             <div id="qualityGroup">
-                <label style="font-size: 0.85rem;">Qualidade / Compressão <span id="qualityDisplay" class="quality-val">90%</span></label>
-                <input type="range" id="qualityRange" min="10" max="100" value="90" oninput="atualizarQualidadeDisplay()">
-                <p style="font-size: 0.75rem; color: #777; margin-top: 5px;">Menor % = Arquivo mais leve.</p>
+                <label style="font-size:0.8rem;">Qualidade: <span id="qualityDisplay">90%</span></label>
+                <input type="range" id="qualityRange" min="10" max="100" value="90" style="width:100%;" oninput="document.getElementById('qualityDisplay').innerText = this.value + '%'">
             </div>
         </div>
 
         <div class="preview-container" id="previewContainer">
             <img id="preview-img" alt="Preview">
             <button id="downloadBtn" class="btn-download" onclick="baixarArquivo()">⬇️ Baixar Imagem</button>
-            <p id="fileSizeInfo" style="margin-top: 10px; font-size: 0.8rem; color: #666;"></p>
         </div>
     </div>
-<div class="seo-article" style="background: white; padding: 40px; border-radius: 15px; margin-top: 40px; color: #444;">
-    <h2 style="color: #0056b3;">Por que converter suas imagens?</h2>
-    <p>Converter formatos de imagem é essencial para compatibilidade e otimização na web. Cada formato tem sua especialidade:</p>
-    <ul>
-        <li><strong>JPG (JPEG):</strong> O melhor para fotografias. Possui alta compressão, mantendo um tamanho de arquivo pequeno, ideal para enviar por WhatsApp ou E-mail.</li>
-        <li><strong>PNG:</strong> O único que suporta <strong>fundo transparente</strong>. É perfeito para logotipos, ícones e gráficos que precisam de alta qualidade.</li>
-        <li><strong>WEBP:</strong> O formato moderno do Google. Ele consegue ser muito mais leve que o JPG mantendo a mesma qualidade, fazendo sites carregarem mais rápido.</li>
-        <li><strong>PDF:</strong> Transforma sua imagem em um documento oficial, ideal para enviar fotos de documentos (RG, CNH) para bancos e empresas.</li>
-    </ul>
-    <p>Nossa ferramenta processa tudo no seu próprio navegador, garantindo total privacidade, já que suas fotos nunca são enviadas para um servidor externo.</p>
-</div>
+
+    <div class="seo-article">
+        <h2 style="color: #004494;">Por que converter suas imagens?</h2>
+        <p>Converter formatos de imagem é essencial para compatibilidade e otimização na web. Cada formato tem sua especialidade:</p>
+        <ul>
+            <li><strong>JPG:</strong> O melhor para fotografias. Alta compressão e leveza.</li>
+            <li><strong>PNG:</strong> Suporta fundo transparente. Ideal para logos.</li>
+            <li><strong>PDF:</strong> Transforma sua imagem em documento oficial.</li>
+        </ul>
+        <p>Nossa ferramenta processa tudo no seu navegador para total privacidade.</p>
+    </div>
+
     <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
 
     <footer>
@@ -161,120 +138,69 @@
 <script>
     const fileInput = document.getElementById('fileInput');
     const advancedPanel = document.getElementById('advancedPanel');
-    const qualityGroup = document.getElementById('qualityGroup');
     const previewContainer = document.getElementById('previewContainer');
-    
-    let originalImg = null;
-    let originalName = "";
-    let aspectRatio = 1;
+    let originalImg = null; let originalName = ""; let aspectRatio = 1;
 
-    fileInput.addEventListener('change', function(e) {
-        if(e.target.files[0]) carregarImagem(e.target.files[0]);
-    });
+    fileInput.addEventListener('change', function(e) { if(e.target.files[0]) carregarImagem(e.target.files[0]); });
 
     function carregarImagem(file) {
-        document.getElementById('uploadText').innerText = file.name;
-        originalName = file.name;
-        
+        document.getElementById('uploadText').innerText = file.name; originalName = file.name;
         const reader = new FileReader();
         reader.onload = function(event) {
             originalImg = new Image();
             originalImg.onload = function() {
-                // Configura dimensoes iniciais
                 document.getElementById('imgWidth').value = originalImg.width;
                 document.getElementById('imgHeight').value = originalImg.height;
                 aspectRatio = originalImg.width / originalImg.height;
-
                 advancedPanel.style.display = 'block';
-                atualizarPreview(); // Gera o primeiro preview
+                atualizarPreview();
             };
             originalImg.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    function calcularAltura() {
-        let w = parseFloat(document.getElementById('imgWidth').value);
-        if(w) document.getElementById('imgHeight').value = Math.round(w / aspectRatio);
-    }
-
-    function calcularLargura() {
-        let h = parseFloat(document.getElementById('imgHeight').value);
-        if(h) document.getElementById('imgWidth').value = Math.round(h * aspectRatio);
-    }
-
-    function atualizarQualidadeDisplay() {
-        document.getElementById('qualityDisplay').innerText = document.getElementById('qualityRange').value + '%';
-    }
+    function calcularAltura() { let w = parseFloat(document.getElementById('imgWidth').value); if(w) document.getElementById('imgHeight').value = Math.round(w / aspectRatio); }
+    function calcularLargura() { let h = parseFloat(document.getElementById('imgHeight').value); if(h) document.getElementById('imgWidth').value = Math.round(h * aspectRatio); }
 
     function atualizarPreview() {
         if(!originalImg) return;
-        
-        // Esconde slider de qualidade se for PNG (PNG não comprime com perda igual JPG)
-        const formato = document.getElementById('formatSelect').value;
-        if(formato === 'image/png') qualityGroup.style.opacity = '0.5'; 
-        else qualityGroup.style.opacity = '1';
-
-        // Atualiza botão
-        let ext = formato.split('/')[1];
-        if(ext === 'jpeg') ext = 'jpg';
-        if(formato === 'application/pdf') ext = 'pdf';
-        
-        const btn = document.getElementById('downloadBtn');
-        btn.innerText = `⬇️ Baixar ${ext.toUpperCase()}`;
-        
-        // Mostra preview simples (não processa em tempo real para não travar se for imagem 4k)
+        let ext = document.getElementById('formatSelect').value.split('/')[1];
+        if(ext === 'jpeg') ext = 'jpg'; if(ext === 'pdf') ext = 'pdf';
+        document.getElementById('downloadBtn').innerText = `⬇️ Baixar ${ext.toUpperCase()}`;
         document.getElementById('preview-img').src = originalImg.src;
         previewContainer.style.display = 'block';
     }
 
     function baixarArquivo() {
         if (!originalImg) return;
-
         const w = parseInt(document.getElementById('imgWidth').value);
         const h = parseInt(document.getElementById('imgHeight').value);
         const quality = parseInt(document.getElementById('qualityRange').value) / 100;
         const formato = document.getElementById('formatSelect').value;
-
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
+        const canvas = document.createElement('canvas'); canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext('2d');
-
-        // Fundo branco para JPG/BMP/PDF
-        if (formato === 'image/jpeg' || formato === 'image/bmp' || formato === 'application/pdf') {
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, w, h);
-        }
-
-        // Redimensionamento suave
+        if (formato !== 'image/png') { ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, w, h); }
         ctx.drawImage(originalImg, 0, 0, w, h);
         
         let nomeBase = originalName.split('.').slice(0, -1).join('.');
-
-        // GERAÇÃO DO ARQUIVO
         if (formato === 'application/pdf') {
             const { jsPDF } = window.jspdf;
             const orientacao = w > h ? 'l' : 'p';
             const doc = new jsPDF(orientacao, 'mm', 'a4');
             const imgData = canvas.toDataURL('image/jpeg', quality);
-            
-            const pW = doc.internal.pageSize.getWidth();
-            const pH = doc.internal.pageSize.getHeight();
+            const pW = doc.internal.pageSize.getWidth(); const pH = doc.internal.pageSize.getHeight();
             const ratio = Math.min((pW-20)/w, (pH-20)/h);
-            
             doc.addImage(imgData, 'JPEG', 10, 10, w*ratio, h*ratio);
             doc.save(`${nomeBase}_editado.pdf`);
         } else {
-            const dataUrl = canvas.toDataURL(formato, quality);
             const link = document.createElement('a');
             let ext = formato.split('/')[1].replace('jpeg', 'jpg');
             link.download = `${nomeBase}_editado.${ext}`;
-            link.href = dataUrl;
+            link.href = canvas.toDataURL(formato, quality);
             link.click();
         }
     }
 </script>
-
 </body>
 </html>
