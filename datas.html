@@ -3,132 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Datas e Prazos. Calcule dias entre datas ou some dias a uma data.">
-    <title>Calculadora de Dias e Datas | JurosWeb</title>
+    <meta name="description" content="Calculadora de Datas. Conte dias entre datas ou some prazos de vencimento.">
+    <title>Calculadora de Datas | JurosWeb</title>
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3C46NXBG96');
-    </script>
-
+    <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-3C46NXBG96');</script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
 
     <style>
-        :root { --primary: #0056b3; --secondary: #28a745; --bg: #f4f6f9; --white: #ffffff; --text: #333; }
-
+        :root { --primary: #004494; --accent: #00d26a; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        
+        /* HEADER PORTAL */
+        header { background: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 15px 0; margin-bottom: 30px; }
+        .header-content { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-wrap: wrap; gap: 20px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-size: 1.5rem; font-weight: 800; }
+        .logo-area img { height: 45px; background: white; border-radius: 8px; padding: 2px; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
+        .nav-links a:hover { color: white; }
+        .btn-cta { background: var(--accent); color: #003366 !important; padding: 8px 20px; border-radius: 5px; font-weight: 800 !important; }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-
-        /* HEADER */
-        header { margin-bottom: 30px; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 10px 0; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .nav-content { display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        #logoSite { max-height: 50px; width: auto; display: block; }
-        .menu-links { display: flex; gap: 20px; }
-        .menu-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
-        .menu-links a:hover { color: var(--primary); }
-        .menu-links a.active { color: var(--primary); }
-
-        /* UI CALCULADORA */
         .grid-dates { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        
         .card { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); }
-        
         h2 { color: var(--primary); margin-top: 0; font-size: 1.3rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        
         .input-group { margin-bottom: 15px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.9rem; }
         input { width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
-        
-        button { background: var(--secondary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        button:hover { background: #218838; transform: translateY(-2px); }
-
-        .result { margin-top: 20px; padding: 15px; background: #eef2f7; border-radius: 8px; text-align: center; display: none; border: 1px solid #dde2e6; }
+        button { background: var(--accent); color: #003366; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: 800; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #00b359; }
+        .result { margin-top: 20px; padding: 15px; background: #eef2f7; border-radius: 8px; text-align: center; display: none; }
         .res-val { color: var(--primary); font-size: 1.5rem; font-weight: 800; display: block; }
-        
-        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        
-        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
+        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; border-radius: 8px; }
+        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
+        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; background: white; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <nav>
-            <div class="nav-content">
-                <a href="index.html"><img src="logo.png" id="logoSite" alt="JurosWeb"></a>
-                <div class="menu-links">
-                    <a href="index.html">Financeiro</a>
-                    <a href="utilidades.html" class="active">Ferramentas</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+<header>
+    <div class="header-content">
+        <a href="index.html" class="logo-area"><img src="logo.png" id="logoSite" alt="JurosWeb"><span>JurosWeb</span></a>
+        <div class="nav-links">
+            <a href="index.html">Início</a>
+            <a href="utilidades.html" class="active">Ferramentas</a>
+            <a href="index.html#noticias">Notícias</a>
+            <a href="utilidades.html" class="btn-cta">Simuladores</a>
+        </div>
+    </div>
+</header>
 
+<div class="container">
     <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
-    <h1 style="text-align: center; color: var(--primary); margin-bottom: 40px;">Calculadora de Dias e Prazos</h1>
+    <h1 style="text-align: center; color: var(--primary); margin-bottom: 40px;">Calculadora de Datas</h1>
 
     <div class="grid-dates">
-        
         <div class="card">
             <h2>📅 Dias entre duas datas</h2>
-            <div class="input-group">
-                <label>Data Inicial</label>
-                <input type="date" id="date1_start">
-            </div>
-            <div class="input-group">
-                <label>Data Final</label>
-                <input type="date" id="date1_end">
-            </div>
-            <button onclick="calcDiff()">Calcular Diferença</button>
-            
-            <div id="res1" class="result">
-                <span>Diferença:</span>
-                <span id="valDiff" class="res-val">0 dias</span>
-            </div>
+            <div class="input-group"><label>Data Inicial</label><input type="date" id="date1_start"></div>
+            <div class="input-group"><label>Data Final</label><input type="date" id="date1_end"></div>
+            <button onclick="calcDiff()">CALCULAR</button>
+            <div id="res1" class="result"><span>Diferença:</span><span id="valDiff" class="res-val">0 dias</span></div>
         </div>
 
         <div class="card">
             <h2>➕ Somar dias a uma data</h2>
-            <div class="input-group">
-                <label>Data de Início</label>
-                <input type="date" id="date2_start">
-            </div>
-            <div class="input-group">
-                <label>Quantos dias somar? (Use - para subtrair)</label>
-                <input type="number" id="days_to_add" placeholder="Ex: 30 ou -10">
-            </div>
-            <button onclick="calcAdd()">Calcular Nova Data</button>
-
-            <div id="res2" class="result">
-                <span>A data será:</span>
-                <span id="valNewDate" class="res-val">--/--/----</span>
-                <small id="weekDay" style="color:#666; display:block; margin-top:5px;"></small>
-            </div>
+            <div class="input-group"><label>Data Início</label><input type="date" id="date2_start"></div>
+            <div class="input-group"><label>Dias (Use - para subtrair)</label><input type="number" id="days_to_add" placeholder="30"></div>
+            <button onclick="calcAdd()">SOMAR</button>
+            <div id="res2" class="result"><span>A data será:</span><span id="valNewDate" class="res-val">--/--/--</span></div>
         </div>
-
     </div>
-<div class="seo-article" style="background: white; padding: 40px; border-radius: 15px; margin-top: 40px; color: #444;">
-    <h2 style="color: #0056b3;">Por que usar uma Calculadora de Datas?</h2>
-    <p>Calcular prazos e datas de cabeça é difícil e sujeito a erros, principalmente quando envolve meses com 28, 30 ou 31 dias, ou anos bissextos. Nossa ferramenta elimina essa complexidade.</p>
 
-    <h3>Principais Utilidades no Dia a Dia</h3>
-    <p>Esta calculadora é essencial para diversas situações:</p>
-    <ul>
-        <li><strong>Investimentos:</strong> Calcular exatamente quantos dias seu dinheiro ficará rendendo até o vencimento de um título (CDB, LCI, LCA).</li>
-        <li><strong>Jurídico e Contratos:</strong> Advogados e contadores usam para saber a data exata de prazos processuais ou vencimento de contratos de aluguel (ex: "Daqui a 90 dias").</li>
-        <li><strong>Planejamento Pessoal:</strong> Descobrir quantos dias faltam para suas férias, casamento ou a data provável de um parto.</li>
-        <li><strong>Gestão de Projetos:</strong> Definir cronogramas somando dias à data de início de uma tarefa.</li>
-    </ul>
-    <p>Utilizamos o calendário gregoriano padrão para garantir precisão total na contagem de dias corridos entre quaisquer datas.</p>
-</div>
+    <div class="seo-article">
+        <h2 style="color: #004494;">Por que usar uma Calculadora de Datas?</h2>
+        <p>Calcular prazos e datas de cabeça é difícil. Nossa ferramenta elimina erros com anos bissextos e meses irregulares.</p>
+        <p>Útil para vencimento de boletos, prazos de entrega, contagem regressiva para férias e gestão de projetos.</p>
+    </div>
+
     <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
 
     <footer>
@@ -138,44 +94,24 @@
 </div>
 
 <script>
-    // Define data de hoje nos inputs
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('date1_start').value = today;
-    document.getElementById('date1_end').value = today;
-    document.getElementById('date2_start').value = today;
+    document.getElementById('date1_start').value = today; document.getElementById('date1_end').value = today; document.getElementById('date2_start').value = today;
 
     function calcDiff() {
-        const d1 = new Date(document.getElementById('date1_start').value);
-        const d2 = new Date(document.getElementById('date1_end').value);
-        
-        if(isNaN(d1) || isNaN(d2)) return;
-
-        // Diferença em milissegundos
-        const diffTime = Math.abs(d2 - d1);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        
-        document.getElementById('valDiff').innerText = diffDays + (diffDays === 1 ? " dia" : " dias");
+        const d1 = new Date(document.getElementById('date1_start').value); const d2 = new Date(document.getElementById('date1_end').value);
+        if(isNaN(d1)||isNaN(d2)) return;
+        const diffDays = Math.ceil(Math.abs(d2 - d1) / (1000 * 60 * 60 * 24)); 
+        document.getElementById('valDiff').innerText = diffDays + (diffDays===1?" dia":" dias");
         document.getElementById('res1').style.display = 'block';
     }
 
     function calcAdd() {
-        const d1 = new Date(document.getElementById('date2_start').value);
-        const days = parseInt(document.getElementById('days_to_add').value);
-
-        if(isNaN(d1) || isNaN(days)) return;
-
-        // Adiciona dias (cuidado com fuso horário, usar UTC ou setDate resolve)
-        const resultDate = new Date(d1);
-        resultDate.setDate(resultDate.getDate() + days + 1); // +1 para corrigir bug de fuso em alguns browsers
-
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const dataFormatada = resultDate.toLocaleDateString('pt-BR', options); // Ex: segunda-feira, 10 de agosto...
-
+        const d1 = new Date(document.getElementById('date2_start').value); const days = parseInt(document.getElementById('days_to_add').value);
+        if(isNaN(d1)||isNaN(days)) return;
+        const resultDate = new Date(d1); resultDate.setDate(resultDate.getDate() + days + 1);
         document.getElementById('valNewDate').innerText = resultDate.toLocaleDateString('pt-BR');
-        document.getElementById('weekDay').innerText = dataFormatada;
         document.getElementById('res2').style.display = 'block';
     }
 </script>
-
 </body>
 </html>
