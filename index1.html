@@ -40,7 +40,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA */
+        /* BUSCA (SEM BORDA BRANCA) */
         .search-box { 
             display: flex; align-items: center; 
             background: rgba(255,255,255,0.15); 
@@ -126,7 +126,7 @@
         .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; }
         .news-meta { font-size: 0.8rem; color: #888; margin-top: auto; }
 
-        /* --- SEÇÃO DE ARTIGOS (NOVO) --- */
+        /* GUIA DO INVESTIDOR (COMENTÁRIOS) */
         .info-section { margin-top: 60px; background: white; border-radius: 8px; border: 1px solid #eee; padding: 30px; }
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 20px; }
         .info-card h3 { color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -135,7 +135,14 @@
 
         .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
         
-        footer { background: #111; color: #ccc; padding: 50px 0; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; text-align: center; }
+        /* --- RODAPÉ ORGANIZADO --- */
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
@@ -172,7 +179,7 @@
                  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80';">
             <div class="featured-overlay">
                 <span class="featured-tag">Destaque do Dia</span>
-                <h2 class="featured-title" id="heroTitle">Mercado financeiro: Acompanhe as principais movimentações...</h2>
+                <h2 class="featured-title" id="heroTitle">Mercado aguarda definições econômicas...</h2>
             </div>
         </a>
 
@@ -284,13 +291,14 @@
 <footer>
     <div class="footer-inner">
         <div class="footer-col">
-            <h4>JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira.</p>
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
         </div>
         <div class="footer-col">
             <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
             <a href="regra3.html">Regra de 3</a>
-            <a href="porcentagem.html">Calculadora de %</a>
+            <a href="porcentagem.html">Calculadora de Porcentagem</a>
             <a href="datas.html">Contador de Dias</a>
             <a href="imagem.html">Editor de Imagens</a>
         </div>
@@ -298,6 +306,7 @@
             <h4>Legal</h4>
             <a href="politica.html">Política de Privacidade</a>
             <a href="#">Termos de Uso</a>
+            <a href="#">Anuncie Conosco</a>
             <a href="#">Contato</a>
         </div>
     </div>
@@ -522,7 +531,7 @@
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
-                // Tenta achar imagem do Hero (Local > API > Online)
+                
                 let heroImg = `IMG/news1.jpg`; 
                 document.getElementById('heroImg').src = heroImg;
                 document.getElementById('heroImg').onerror = function() {
