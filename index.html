@@ -297,24 +297,25 @@
 </div>
 
 <script>
-    // --- 1. NOTÍCIAS (COM IMAGENS ESTÁVEIS) ---
+    // --- 1. NOTÍCIAS (SISTEMA DE LEITURA AVANÇADA DE HTML) ---
     async function carregarNoticias(termoBusca = '') {
-        let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
+        let query = termoBusca ? termoBusca : 'mercado financeiro bolsa brasil'; // Ajustei o termo para vir imagens melhores
         
         const titulo = document.getElementById('newsTitle');
         if(titulo) titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
 
+        // Usando RSS do Google News
         const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         
-        // LISTA DE IMAGENS ATUALIZADA (Links mais estáveis)
+        // IMAGENS DE BACKUP (Garantia visual)
         const backups = [
-            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 1. Gráfico de Mercado
-            'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80', // 2. Jornal Financeiro (Substituto)
-            'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80', // 3. Moedas/Câmbio (Substituto)
-            'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=600&q=80', // 4. Dinheiro Real
-            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80', // 5. Notebook/Trabalho (Substituto)
-            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80'  // 6. Tablet/Gráfico
+            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 1. Gráfico
+            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // 2. Touro
+            'https://images.unsplash.com/photo-1526304640152-d4619684e484?auto=format&fit=crop&w=600&q=80', // 3. Dólar/Gráfico
+            'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80', // 4. Moedas
+            'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80', // 5. Prédios/Negócios
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80'  // 6. Notebook
         ];
 
         try {
@@ -330,27 +331,46 @@
                 return;
             }
 
-            // Ordena por data
+            // Ordena por data (Garante que a mais nova fique no topo)
             data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+            // Prepara o leitor de HTML
+            const parser = new DOMParser();
 
             // Pega as 6 primeiras
             data.items.slice(0, 6).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
+                
                 const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour: '2-digit', minute:'2-digit'});
                 
-                let backupImg = backups[index % backups.length];
                 let imgUrl = "";
+                let backupImg = backups[index % backups.length];
 
-                if (item.enclosure && item.enclosure.link) imgUrl = item.enclosure.link;
-                else if (item.thumbnail) imgUrl = item.thumbnail;
+                // 1. Tenta pegar do campo oficial "enclosure"
+                if (item.enclosure && item.enclosure.link) {
+                    imgUrl = item.enclosure.link;
+                } 
+                // 2. Tenta pegar do campo "thumbnail"
+                else if (item.thumbnail) {
+                    imgUrl = item.thumbnail;
+                }
+                // 3. TÉCNICA DO PARSER (Lê o HTML da descrição para achar a tag <img> real)
                 else {
-                    const imgMatch = item.description.match(/<img[^>]+src=["']([^"']+)["']/);
-                    if(imgMatch && imgMatch[1]) imgUrl = imgMatch[1];
+                    const doc = parser.parseFromString(item.description, 'text/html');
+                    const imgTag = doc.querySelector('img');
+                    if(imgTag && imgTag.src) {
+                        imgUrl = imgTag.src;
+                    }
                 }
 
+                // 4. Correção de links que começam com //
                 if (imgUrl && imgUrl.startsWith('//')) imgUrl = 'https:' + imgUrl;
-                if (!imgUrl) imgUrl = backupImg;
+
+                // 5. SE DEPOIS DE TUDO ESTIVER VAZIO, USA O BACKUP NA HORA
+                if (!imgUrl || imgUrl.length < 5) {
+                    imgUrl = backupImg;
+                }
 
                 card.innerHTML = `
                     <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
