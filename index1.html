@@ -40,7 +40,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA (SEM BORDA QUADRADA + TEXTO BRANCO) */
+        /* BUSCA */
         .search-box { 
             display: flex; align-items: center; 
             background: rgba(255,255,255,0.15); 
@@ -51,16 +51,8 @@
             transition: 0.3s;
         }
         .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        
         .search-box input { 
-            flex: 1; 
-            background: transparent !important; 
-            border: none !important; 
-            outline: none !important; 
-            color: #ffffff !important; /* CORREÇÃO DA COR DO TEXTO */
-            font-size: 1rem; 
-            box-shadow: none !important;
-            appearance: none !important;
+            flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 1rem; box-shadow: none !important; appearance: none !important;
         }
         .search-box input::placeholder { color: rgba(255,255,255,0.7); }
         .search-box i { color: white; cursor: pointer; margin-left: 10px; }
@@ -134,6 +126,13 @@
         .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; }
         .news-meta { font-size: 0.8rem; color: #888; margin-top: auto; }
 
+        /* --- SEÇÃO DE ARTIGOS (NOVO) --- */
+        .info-section { margin-top: 60px; background: white; border-radius: 8px; border: 1px solid #eee; padding: 30px; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 20px; }
+        .info-card h3 { color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .info-card p { font-size: 0.9rem; color: #555; line-height: 1.6; text-align: justify; }
+        .info-card i { color: var(--accent); }
+
         .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
         
         footer { background: #111; color: #ccc; padding: 50px 0; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; text-align: center; }
@@ -170,10 +169,10 @@
     <div class="hero-section" id="heroSection">
         <a href="#" class="featured-card" id="heroLink" target="_blank">
             <img src="IMG/news1.jpg" class="featured-img" id="heroImg" alt="Destaque" 
-                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=800&q=80';">
+                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80';">
             <div class="featured-overlay">
                 <span class="featured-tag">Destaque do Dia</span>
-                <h2 class="featured-title" id="heroTitle">Mercado aguarda definições econômicas...</h2>
+                <h2 class="featured-title" id="heroTitle">Mercado financeiro: Acompanhe as principais movimentações...</h2>
             </div>
         </a>
 
@@ -260,13 +259,51 @@
         <div class="news-grid" id="newsGrid">Carregando...</div>
     </div>
 
+    <div class="info-section">
+        <div class="section-title" style="margin-bottom:20px;">Guia do Investidor Iniciante</div>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3><i class="fas fa-magic"></i> A Mágica dos Juros Compostos</h3>
+                <p>Albert Einstein teria dito que os juros compostos são a oitava maravilha do mundo. Eles funcionam como uma bola de neve: você ganha juros não apenas sobre o dinheiro que investiu, mas também sobre os juros que esse dinheiro já rendeu. Começar cedo é o segredo.</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-shield-alt"></i> Reserva de Emergência</h3>
+                <p>Antes de investir em renda variável, é crucial ter uma reserva. O ideal é guardar de 6 a 12 meses do seu custo de vida mensal em um investimento de alta liquidez e baixo risco, como o Tesouro Selic ou CDBs de liquidez diária, para imprevistos.</p>
+            </div>
+            <div class="info-card">
+                <h3><i class="fas fa-balance-scale"></i> Diversificação é Chave</h3>
+                <p>Nunca coloque "todos os ovos na mesma cesta". Diversificar seus investimentos entre diferentes classes (Renda Fixa, Ações, Fundos Imobiliários e Internacional) ajuda a reduzir riscos e aumentar o potencial de retorno da sua carteira a longo prazo.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="ad-slot">Publicidade Rodapé</div>
 
 </div>
 
 <footer>
-    <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
-    <a href="politica.html" style="color:#777;">Política de Privacidade</a>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="porcentagem.html">Calculadora de %</a>
+            <a href="datas.html">Contador de Dias</a>
+            <a href="imagem.html">Editor de Imagens</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+            <a href="#">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
 </footer>
 
 <script>
@@ -350,6 +387,7 @@
             }
         }
 
+        // Preenche Tabela
         const tbody = document.querySelector('#tabelaEvolucao tbody');
         tbody.innerHTML = '';
         let showData = globalTableData.length > 50 ? [...globalTableData.slice(0,12), ...globalTableData.slice(-12)] : globalTableData;
@@ -358,6 +396,7 @@
             tbody.innerHTML += tr;
         });
 
+        // Totais e Impostos
         let lucro = saldoBruto - totalInvestido;
         let valorIR = 0;
         let saldoLiquido = saldoBruto;
@@ -453,6 +492,7 @@
         const query = termo || 'investimentos mercado financeiro brasil';
         
         // BACKUPS DE IMAGENS (Online + Local)
+        // DICA: Coloque suas imagens na pasta IMG com nome news1.jpg até news6.jpg
         const backups = [
             'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=600&q=80',
             'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80',
@@ -482,7 +522,7 @@
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
-                
+                // Tenta achar imagem do Hero (Local > API > Online)
                 let heroImg = `IMG/news1.jpg`; 
                 document.getElementById('heroImg').src = heroImg;
                 document.getElementById('heroImg').onerror = function() {
