@@ -3,60 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor de Imagens | JurosWeb</title>
+    <title>Editor de Imagens Online | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #8B0000; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        header { background: var(--primary); padding: 15px 0; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; text-align: center; }
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; float:left; }
-        .nav-links a { color: white; float: right; text-decoration: none; font-weight: bold; margin-top: 5px; }
-        
-        .upload-area { background: white; padding: 50px; border: 2px dashed #ccc; border-radius: 8px; margin-top: 50px; cursor: pointer; transition: 0.3s; }
-        .upload-area:hover { border-color: var(--primary); background: #fff0f0; }
+        :root { --primary: #8B0000; --bg: #f8f9fa; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .nav-links a { float: right; color: white; text-decoration: none; font-weight: bold; margin-top: 5px; }
+
+        .upload-area { background: white; padding: 60px; border: 3px dashed #ccc; border-radius: 8px; margin-top: 40px; cursor: pointer; text-align: center; transition: 0.3s; }
+        .upload-area:hover { border-color: var(--primary); background: #fffdfd; }
         .upload-area i { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
         
-        .editor-area { display: none; margin-top: 30px; background: white; padding: 20px; border-radius: 8px; }
-        canvas { max-width: 100%; border: 1px solid #ddd; }
-        .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; }
-        button { padding: 10px 20px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background: var(--primary); }
+        .editor-container { display: none; margin-top: 30px; background: white; padding: 20px; border-radius: 8px; text-align: center; }
+        canvas { max-width: 100%; border: 1px solid #ddd; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
-        footer { background: #111; color: #999; padding: 40px 0; margin-top: auto; text-align: center; border-top: 4px solid var(--primary); }
+        .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        button { padding: 12px 25px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: var(--primary); }
+        button.download { background: var(--primary); }
+        button.download:hover { background: #600000; }
+
+        .seo-content { margin-top: 60px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .seo-content h2 { color: var(--primary); margin-top: 0; }
+        .seo-content p { color: #666; line-height: 1.7; text-align: justify; margin-bottom: 15px; }
+
+        footer { background: #111; color: #999; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="container" style="display:block; overflow:hidden;">
+    <div class="container">
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
         <nav class="nav-links"><a href="index.html">VOLTAR</a></nav>
     </div>
 </header>
 
 <div class="container">
-    <h2 style="color:#444; margin-top:40px;">Editor Rápido de Imagens</h2>
+    <h1 style="color:var(--primary); margin-top:40px; text-align:center;">Editor Rápido de Imagens</h1>
     
     <div class="upload-area" onclick="document.getElementById('fileIn').click()">
         <i class="fas fa-cloud-upload-alt"></i>
-        <h3>Clique para enviar uma imagem</h3>
-        <p>Formatos: JPG, PNG</p>
+        <h3>Arraste sua imagem ou clique aqui</h3>
+        <p>Processamento 100% no navegador. Suas fotos não são enviadas para nenhum servidor.</p>
         <input type="file" id="fileIn" hidden accept="image/*" onchange="carregarImagem(this)">
     </div>
 
-    <div class="editor-area" id="editor">
+    <div class="editor-container" id="editor">
         <canvas id="canvas"></canvas>
         <div class="controls">
-            <button onclick="filtro('pb')">Preto e Branco</button>
-            <button onclick="filtro('sepia')">Sépia</button>
-            <button onclick="limpar()">Original</button>
-            <button onclick="download()" style="background:var(--primary);">Baixar</button>
+            <button onclick="filtro('pb')"><i class="fas fa-adjust"></i> Preto e Branco</button>
+            <button onclick="filtro('sepia')"><i class="fas fa-camera-retro"></i> Sépia</button>
+            <button onclick="limpar()"><i class="fas fa-undo"></i> Original</button>
+            <button class="download" onclick="download()"><i class="fas fa-download"></i> Baixar Imagem</button>
         </div>
     </div>
+
+    <article class="seo-content">
+        <h2>Edição de Imagens com Segurança e Privacidade</h2>
+        <p>Diferente de outros sites que exigem o upload da sua imagem para um servidor desconhecido, o editor do JurosWeb funciona inteiramente no seu navegador (Client-Side). Isso significa que a foto nunca sai do seu computador ou celular, garantindo total privacidade e segurança para seus documentos ou fotos pessoais.</p>
+
+        <h3>Filtros Rápidos</h3>
+        <p>Nossa ferramenta oferece filtros instantâneos para converter suas imagens. O filtro <strong>Preto e Branco</strong> é ideal para digitalização de documentos e impressão econômica. O filtro <strong>Sépia</strong> adiciona um tom envelhecido e artístico, perfeito para redes sociais ou álbuns digitais.</p>
+
+        <h3>Rapidez e Compatibilidade</h3>
+        <p>Como não há necessidade de upload e download via internet, a edição é instantânea, dependendo apenas da velocidade do seu dispositivo. Compatível com formatos JPG, PNG e WebP.</p>
+    </article>
 </div>
 
-<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+<footer>
+    <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
+    <a href="politica.html" style="color:#777;">Política de Privacidade</a>
+</footer>
 
 <script>
     let img = new Image();
@@ -69,8 +91,10 @@
             reader.onload = function(e) {
                 img.src = e.target.result;
                 img.onload = function() {
-                    canvas.width = img.width > 800 ? 800 : img.width;
-                    canvas.height = img.height * (canvas.width / img.width);
+                    let maxW = 800;
+                    let scale = Math.min(maxW / img.width, 1);
+                    canvas.width = img.width * scale;
+                    canvas.height = img.height * scale;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     document.querySelector('.upload-area').style.display = 'none';
                     document.getElementById('editor').style.display = 'block';
@@ -81,6 +105,7 @@
     }
 
     function filtro(tipo) {
+        // Redesenha original
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
@@ -91,9 +116,9 @@
                 data[i] = avg; data[i + 1] = avg; data[i + 2] = avg;
             } else if(tipo === 'sepia') {
                 const r = data[i], g = data[i+1], b = data[i+2];
-                data[i] = r * 0.393 + g * 0.769 + b * 0.189;
-                data[i+1] = r * 0.349 + g * 0.686 + b * 0.168;
-                data[i+2] = r * 0.272 + g * 0.534 + b * 0.131;
+                data[i] = (r * 0.393) + (g * 0.769) + (b * 0.189);
+                data[i+1] = (r * 0.349) + (g * 0.686) + (b * 0.168);
+                data[i+2] = (r * 0.272) + (g * 0.534) + (b * 0.131);
             }
         }
         ctx.putImageData(imageData, 0, 0);
@@ -102,7 +127,7 @@
     function limpar() { ctx.drawImage(img, 0, 0, canvas.width, canvas.height); }
     function download() {
         const link = document.createElement('a');
-        link.download = 'jurosweb-editada.png';
+        link.download = 'imagem-editada-jurosweb.png';
         link.href = canvas.toDataURL();
         link.click();
     }
