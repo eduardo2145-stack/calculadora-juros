@@ -25,40 +25,30 @@
         
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         
-        /* --- TICKER CUSTOMIZADO (AZUL E LENTO) --- */
+        /* --- TICKER SUPER LENTO (80s) --- */
         .stock-ticker-wrap {
-            background: var(--primary); /* AZUL DO SITE */
+            background: var(--primary);
             color: white;
             overflow: hidden;
             height: 45px;
             line-height: 45px;
             position: relative;
-            border-bottom: 4px solid var(--secondary); /* Linha verde embaixo para destaque */
+            border-bottom: 4px solid var(--secondary);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
         .stock-ticker {
             display: inline-block;
             white-space: nowrap;
-            /* 45s = Bem devagar. Aumente para ficar mais lento ainda */
-            animation: ticker 45s linear infinite; 
-            padding-left: 100%; /* Começa fora da tela */
+            animation: ticker 80s linear infinite; /* MUDEI PARA 80s (Mais devagar) */
+            padding-left: 100%;
         }
 
-        /* Pausa a animação quando passa o mouse */
-        .stock-ticker-wrap:hover .stock-ticker {
-            animation-play-state: paused;
-        }
+        .stock-ticker-wrap:hover .stock-ticker { animation-play-state: paused; }
 
-        .stock-item {
-            display: inline-block;
-            margin-right: 40px;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        .stock-up { color: #81ff9d; font-weight: bold; } /* Verde claro para ler no azul */
-        .stock-down { color: #ff9999; font-weight: bold; } /* Vermelho claro para ler no azul */
+        .stock-item { display: inline-block; margin-right: 50px; font-weight: 600; font-size: 0.95rem; }
+        .stock-up { color: #81ff9d; font-weight: bold; }
+        .stock-down { color: #ff9999; font-weight: bold; }
 
         @keyframes ticker {
             0% { transform: translate3d(0, 0, 0); }
@@ -77,21 +67,25 @@
         .menu-links a:hover { color: var(--primary); }
         .menu-links a.active { color: var(--primary); }
 
-        /* --- SESSÃO DE NOTÍCIAS --- */
+        /* --- SESSÃO DE NOTÍCIAS (GRID COM IMAGENS) --- */
         .news-section { margin-top: 50px; }
-        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .section-title { border-left: 5px solid var(--secondary); padding-left: 15px; color: #333; margin: 0; font-size: 1.5rem; }
-        .last-update { font-size: 0.8rem; color: #888; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .section-title { border-left: 5px solid var(--secondary); padding-left: 15px; color: #333; margin: 0; font-size: 1.5rem; font-weight: 800; }
+        .last-update { font-size: 0.8rem; color: #888; background: #eee; padding: 4px 10px; border-radius: 20px; }
         
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .news-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; height: 100%; border: 1px solid #eee; }
-        .news-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-        .news-tag { background: var(--primary); color: white; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; width: fit-content; border-radius: 4px; margin-bottom: 10px; }
-        .news-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .news-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #222; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .news-meta { font-size: 0.85rem; color: #999; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
-        .news-link { text-decoration: none; color: var(--primary); font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 5px; }
-        .news-link:hover { text-decoration: underline; }
+        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .news-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; height: 100%; border: 1px solid #f0f0f0; }
+        .news-card:hover { transform: translateY(-7px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+        
+        .news-img-container { height: 180px; overflow: hidden; position: relative; background: #f4f4f4; }
+        .news-img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .news-card:hover .news-img { transform: scale(1.05); }
+        
+        .news-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
+        .news-tag { color: var(--secondary); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .news-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: #222; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .news-date { font-size: 0.8rem; color: #999; margin-top: auto; display: flex; align-items: center; gap: 5px; }
 
         /* CALCULADORA (CSS) */
         .tabs { display: flex; justify-content: center; margin-bottom: 20px; border-bottom: 2px solid #e9ecef; }
@@ -352,10 +346,20 @@
 </div>
 
 <script>
-    // --- 1. LÓGICA DE NOTÍCIAS AUTOMÁTICAS ---
+    // --- 1. LÓGICA DE NOTÍCIAS AUTOMÁTICAS COM IMAGENS ---
     async function carregarNoticias() {
-        const rssUrl = 'https://news.google.com/rss/search?q=investimentos+brasil+economia&hl=pt-BR&gl=BR&ceid=BR:pt-419';
+        const rssUrl = 'https://news.google.com/rss/search?q=investimentos+bolsa+economia+brasil&hl=pt-BR&gl=BR&ceid=BR:pt-419';
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+
+        // Banco de imagens de backup (Caso o Google não mande foto)
+        const backupImages = [
+            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=500&q=60', // Gráfico Dourado
+            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=500&q=60', // Touro Bolsa
+            'https://images.unsplash.com/photo-1579532551690-494ea48ddc0e?auto=format&fit=crop&w=500&q=60', // Dinheiro
+            'https://images.unsplash.com/photo-1526304640152-d4619684e484?auto=format&fit=crop&w=500&q=60', // Gráfico Colorido
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500&q=60', // Notebook
+            'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=500&q=60'  // Jornal
+        ];
 
         try {
             const response = await fetch(apiUrl);
@@ -363,20 +367,27 @@
             const grid = document.getElementById('newsGrid');
             grid.innerHTML = ''; 
 
-            data.items.slice(0, 3).forEach(item => {
+            // Pega as 6 primeiras notícias (para fazer 2 linhas de 3)
+            data.items.slice(0, 6).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
+                
                 const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'});
                 
+                // Tenta pegar imagem da notícia ou usa uma do backup (rotativa)
+                let imgUrl = item.enclosure?.link || item.thumbnail || backupImages[index % backupImages.length];
+
                 card.innerHTML = `
-                    <div class="news-content">
-                        <div>
+                    <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
+                        <div class="news-img-container">
+                            <img src="${imgUrl}" class="news-img" alt="Imagem da notícia">
+                        </div>
+                        <div class="news-content">
                             <div class="news-tag">Mercado</div>
                             <div class="news-title">${item.title}</div>
-                            <div class="news-meta">📅 ${dataPub} • 📰 Google News</div>
+                            <div class="news-date">📅 ${dataPub}</div>
                         </div>
-                        <a href="${item.link}" target="_blank" class="news-link">Ler notícia completa →</a>
-                    </div>
+                    </a>
                 `;
                 grid.appendChild(card);
             });
@@ -384,10 +395,11 @@
 
         } catch (erro) {
             console.error(erro);
+            document.getElementById('newsGrid').innerHTML = '<p style="text-align:center;">Não foi possível carregar as notícias.</p>';
         }
     }
 
-    // --- 2. LÓGICA DO TICKER (SIMULADO PARA SER AZUL E LENTO) ---
+    // --- 2. LÓGICA DO TICKER (BEM DEVAGAR - 80s) ---
     function loadTicker() {
         const stocks = [
             {t: 'IBOV', v: '128.500', up: true},
@@ -397,19 +409,19 @@
             {t: 'BBAS3', v: '27,90', up: false},
             {t: 'WEGE3', v: '25,40', up: true},
             {t: 'DOLAR', v: '5,15', up: true},
-            {t: 'BITCOIN', v: '250.000', up: true}
+            {t: 'BITCOIN', v: '250.000', up: true},
+            {t: 'CDI', v: '10,75%', up: true},
+            {t: 'IPCA', v: '4,50%', up: false}
         ];
 
         let html = '';
-        // Duplicamos a lista algumas vezes para o loop infinito ficar suave
-        const loopStocks = [...stocks, ...stocks, ...stocks];
+        // Multiplica a lista 4x para o loop ser perfeito e demorado
+        const loopStocks = [...stocks, ...stocks, ...stocks, ...stocks];
 
         loopStocks.forEach(s => {
-            // Gera uma variaçãozinha aleatória visual
             let variacao = (Math.random() * 2).toFixed(2);
             let arrow = s.up ? '▲' : '▼';
             let colorClass = s.up ? 'stock-up' : 'stock-down';
-            
             html += `<span class="stock-item">${s.t} R$ ${s.v} <span class="${colorClass}">${arrow} ${variacao}%</span></span>`;
         });
         
@@ -421,7 +433,6 @@
         carregarNoticias();
         loadTicker();
     };
-
 
     // --- 3. LÓGICA DA CALCULADORA (ORIGINAL) ---
     const moneyInputs = document.querySelectorAll('.money-input');
