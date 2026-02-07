@@ -6,13 +6,13 @@
     <meta name="description" content="Portal JurosWeb. O seu portal de finanças, cotações e simuladores.">
     <title>JurosWeb | Portal Financeiro</title>
     
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- ESTILO (VERMELHO PREMIUM) --- */
+        /* --- DESIGN PREMIUM (VERMELHO) --- */
         :root { 
             --primary: #8B0000; 
             --primary-dark: #600000; 
@@ -40,7 +40,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA (SEM BORDA QUADRADA) */
+        /* BUSCA (CORRIGIDA) */
         .search-box { 
             display: flex; align-items: center; 
             background: rgba(255,255,255,0.15); 
@@ -48,21 +48,11 @@
             padding: 5px 20px; 
             border-radius: 50px; 
             width: 350px; 
-            transition: 0.3s;
         }
-        .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        
         .search-box input { 
-            flex: 1; 
-            background: transparent !important; 
-            border: none !important; 
-            outline: none !important; 
-            color: white; 
-            font-size: 1rem; 
-            box-shadow: none !important;
-            appearance: none !important; /* Remove estilo nativo */
+            flex: 1; background: transparent !important; border: none !important; outline: none !important; color: white; font-size: 1rem; box-shadow: none !important; 
         }
-        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
         .search-box i { color: white; cursor: pointer; margin-left: 10px; }
 
         .nav-menu { display: flex; gap: 20px; }
@@ -224,6 +214,7 @@
                 <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;"><span>Rendimento Bruto:</span> <strong style="color:var(--success);" id="resBrutoJuros">R$ 0,00</strong></div>
                 <div id="rowIR" style="display:none; justify-content:space-between; padding:5px 0; color:var(--danger);"><span>(-) Imposto de Renda:</span> <strong id="resIR">R$ 0,00</strong></div>
                 <div id="rowInflacao" style="display:none; justify-content:space-between; padding:5px 0; color:var(--accent);"><span>(i) Perda Inflacionária:</span> <strong id="resInflacao">R$ 0,00</strong></div>
+                <div style="display:flex; justify-content:space-between; padding:10px 0; font-weight:bold; background:#eee;"><span>Poder de Compra Real:</span> <strong id="resTotalLiquido">R$ 0,00</strong></div>
                 
                 <div style="height:300px; margin-top:20px;"><canvas id="chartRendimento"></canvas></div>
 
@@ -269,7 +260,7 @@
 </footer>
 
 <script>
-    // --- 1. CONFIGURAÇÕES E DADOS ---
+    // --- 1. CONFIGURAÇÕES ---
     const moneyInputs = document.querySelectorAll('.money-input');
     let chartRend = null;
     let chartMetaInst = null;
@@ -295,7 +286,7 @@
         return parseFloat(limpo) || 0; 
     }
 
-    // --- 2. CALCULADORA (COMPLETA) ---
+    // --- 2. CALCULADORA ---
     function openTab(tab) {
         document.getElementById('rendimento').style.display = tab === 'rendimento' ? 'block' : 'none';
         document.getElementById('meta').style.display = tab === 'meta' ? 'block' : 'none';
@@ -338,8 +329,8 @@
                 dataInvestido.push(totalInvestido);
                 dataBruto.push(saldoBruto);
             }
-            // Tabela
-            if(m > 0 && (m % 1 === 0)) {
+            // ADICIONA NA TABELA
+            if(m > 0 && (m % 1 === 0)) { 
                 globalTableData.push([
                     m, 
                     totalInvestido.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
@@ -348,6 +339,9 @@
                 ]);
             }
         }
+
+        // MOSTRAR RESULTADOS (IMPORTANTE: ISSO VEM ANTES DO GRÁFICO PARA GARANTIR)
+        document.getElementById('results-area').style.display = 'block';
 
         // Preenche Tabela
         const tbody = document.querySelector('#tabelaEvolucao tbody');
@@ -391,21 +385,22 @@
         document.getElementById('resBrutoJuros').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         document.getElementById('resTotalLiquido').innerText = poderCompra.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         
-        document.getElementById('results-area').style.display = 'block';
-
-        const ctx = document.getElementById('chartRendimento').getContext('2d');
-        if (chartRend) chartRend.destroy();
-        chartRend = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    { label: 'Total Acumulado', data: dataBruto, borderColor: '#8B0000', backgroundColor: 'rgba(139,0,0,0.1)', fill: true },
-                    { label: 'Dinheiro Investido', data: dataInvestido, borderColor: '#555', borderDash: [5,5], fill: false }
-                ]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
+        // GRÁFICO (DENTRO DE TRY/CATCH PARA NÃO TRAVAR SE FALHAR)
+        try {
+            const ctx = document.getElementById('chartRendimento').getContext('2d');
+            if (chartRend) chartRend.destroy();
+            chartRend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Total Acumulado', data: dataBruto, borderColor: '#8B0000', backgroundColor: 'rgba(139,0,0,0.1)', fill: true },
+                        { label: 'Dinheiro Investido', data: dataInvestido, borderColor: '#555', borderDash: [5,5], fill: false }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        } catch(e) { console.log("Erro gráfico", e); }
 
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText, liquido: document.getElementById('resTotalLiquido').innerText };
     }
@@ -426,11 +421,13 @@
         document.getElementById('resMetaMensal').innerText = pmt.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         document.getElementById('meta-res').style.display = 'block';
         
-        const ctx = document.getElementById('chartMeta').getContext('2d');
-        if (chartMetaInst) chartMetaInst.destroy();
-        let labels=[], data=[], saldo=ini;
-        for(let m=0; m<=mes; m++) { if(m%6===0 || m===mes) { labels.push(m); data.push(saldo); } saldo = saldo*(1+i)+pmt; }
-        chartMetaInst = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Evolução da Meta', data: data, borderColor: '#00d26a', fill: true }] } });
+        try {
+            const ctx = document.getElementById('chartMeta').getContext('2d');
+            if (chartMetaInst) chartMetaInst.destroy();
+            let labels=[], data=[], saldo=ini;
+            for(let m=0; m<=mes; m++) { if(m%6===0 || m===mes) { labels.push(m); data.push(saldo); } saldo = saldo*(1+i)+pmt; }
+            chartMetaInst = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Evolução da Meta', data: data, borderColor: '#00d26a', fill: true }] } });
+        } catch(e){}
     }
 
     async function gerarPDF() {
@@ -439,14 +436,13 @@
         doc.setFontSize(20); doc.setTextColor(139,0,0); doc.text("JurosWeb - Relatório", 20, 20);
         doc.setFontSize(12); doc.setTextColor(0,0,0);
         doc.text(`Total: ${pdfData.total}`, 20, 40); doc.text(`Investido: ${pdfData.investido}`, 20, 50);
-        
         try {
             const canvas = document.getElementById('chartRendimento');
             const imgData = canvas.toDataURL('image/png');
             doc.addImage(imgData, 'PNG', 20, 70, 170, 90);
         } catch(e) {}
         
-        doc.autoTable({ startY: 170, head: [['Mês', 'Investido', 'Juros', 'Total']], body: globalTableData.slice(0, 24) }); // Imprime primeiros 24 meses
+        doc.autoTable({ startY: 170, head: [['Mês', 'Investido', 'Juros', 'Total']], body: globalTableData.slice(0, 24) });
         doc.save('relatorio.pdf');
     }
 
@@ -454,7 +450,9 @@
     async function loadNews(termo = '') {
         const query = termo || 'investimentos mercado financeiro brasil';
         
-        // IMAGENS DE BACKUP (ONLINE) + LOCAIS NA LÓGICA DE BAIXO
+        // BACKUPS DE IMAGENS (Online + Local)
+        // DICA: Coloque suas imagens na pasta IMG com nome news1.jpg até news6.jpg
+        // O código vai tentar usar a local, se não achar, usa a online do Unsplash.
         const backups = [
             'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=600&q=80',
             'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80',
@@ -464,36 +462,28 @@
             'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80'
         ];
         
-        // Notícias de Fallback (Se API falhar) - COM LINKS REAIS
-        const fallbackNews = [
-            {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje", enclosure: {link: backups[0]}},
-            {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje", enclosure: {link: backups[1]}},
-            {title: "Banco Central mantém taxa Selic: O que muda?", link: "https://www.google.com/search?q=taxa+selic", enclosure: {link: backups[2]}},
-            {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "https://www.google.com/search?q=acoes+tecnologia", enclosure: {link: backups[3]}},
-            {title: "Entenda como a inflação afeta seus investimentos", link: "https://www.google.com/search?q=inflacao+investimentos", enclosure: {link: backups[4]}},
-            {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "https://www.google.com/search?q=bitcoin+hoje", enclosure: {link: backups[5]}}
-        ];
-
         const grid = document.getElementById('newsGrid');
         
         const renderNews = (items) => {
             grid.innerHTML = '';
-            // 1. HERO (Destaque)
+            // 1. HERO
             if(items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
-                // Tenta achar imagem do Hero (Local > API > Online)
-                let heroImg = `IMG/news1.jpg`; // Tenta local primeiro
-                // Fallback via onerror no HTML
+                // Tenta Imagem Local -> API -> Online
+                let heroImg = `IMG/news1.jpg`; 
                 document.getElementById('heroImg').src = heroImg;
+                // Se der erro no local, troca para online
+                document.getElementById('heroImg').onerror = function() {
+                    this.src = hero.enclosure?.link || backups[0];
+                };
             }
 
             // 2. GRID
             items.slice(1, 7).forEach((item, idx) => {
-                // Tenta imagem local, se não tiver usa backup online
-                let imgLocal = `IMG/news${(idx%6)+1}.jpg`; 
-                let imgOnline = backups[idx % backups.length];
+                let imgLocal = `IMG/news${(idx%6)+1}.jpg`;
+                let imgOnline = backups[(idx+1) % backups.length];
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
@@ -503,7 +493,7 @@
                     <div class="news-body">
                         <div class="news-tag">Mercado</div>
                         <div class="news-title">${item.title}</div>
-                        <div class="news-meta">Ler mais →</div>
+                        <div class="news-meta">📅 ${new Date(item.pubDate).toLocaleDateString()}</div>
                     </div>
                 </a>`;
             });
@@ -513,13 +503,21 @@
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`);
             const data = await res.json();
             
-            if(data.items && data.items.length > 0) {
+            if(data.status === 'ok' && data.items.length > 0) {
                 renderNews(data.items);
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
             } else { throw new Error("Vazio"); }
         } catch(e) {
             console.log("Usando Backup");
-            renderNews(fallbackNews);
+            const fakeNews = [
+                {title: "Ibovespa fecha em alta com otimismo fiscal", pubDate: new Date(), link: "https://google.com/search?q=ibovespa", enclosure: {link: backups[0]}},
+                {title: "Dólar opera estável aguardando decisão do FED", pubDate: new Date(), link: "https://google.com/search?q=dolar", enclosure: {link: backups[1]}},
+                {title: "Banco Central mantém taxa Selic", pubDate: new Date(), link: "https://google.com/search?q=selic", enclosure: {link: backups[2]}},
+                {title: "Empresas de tecnologia lideram ganhos na bolsa", pubDate: new Date(), link: "https://google.com/search?q=acoes+tech", enclosure: {link: backups[3]}},
+                {title: "Entenda como a inflação afeta seus investimentos", pubDate: new Date(), link: "https://google.com/search?q=inflacao", enclosure: {link: backups[4]}},
+                {title: "Bitcoin atinge nova máxima histórica", pubDate: new Date(), link: "https://google.com/search?q=bitcoin", enclosure: {link: backups[5]}}
+            ];
+            renderNews(fakeNews);
         }
     }
 
@@ -552,7 +550,6 @@
     window.onload = function() {
         loadNews();
         loadTicker();
-        
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
