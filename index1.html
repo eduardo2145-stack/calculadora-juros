@@ -49,32 +49,34 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -1px; }
         .logo i { color: var(--accent); }
         
-        /* --- BUSCA CORRIGIDA (FLEXBOX PERFEITO) --- */
+        /* --- BUSCA CORRIGIDA (SEM BORDA QUADRADA) --- */
         .search-box { 
             display: flex; 
-            align-items: center; /* Centraliza verticalmente */
+            align-items: center; 
+            justify-content: space-between;
             background: rgba(255,255,255,0.15); 
             border: 1px solid rgba(255,255,255,0.3); 
-            padding: 5px 15px; 
-            border-radius: 50px; /* Redondo igual imagem */
+            padding: 8px 20px; 
+            border-radius: 50px; /* Redondo */
             width: 350px; 
             transition: 0.3s; 
         }
         .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
+        
         .search-box input { 
-            flex: 1; /* Ocupa o espaço todo */
-            background: transparent; 
-            border: none; 
+            background: transparent !important; 
+            border: none !important; /* Remove o quadrado branco */
             color: white; 
+            width: 90%; 
             outline: none; 
             font-size: 1rem; 
-            padding: 5px 0;
+            box-shadow: none !important; /* Remove sombras padrão */
         }
-        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
+        
         .search-box i { 
             color: white; 
             cursor: pointer; 
-            margin-left: 10px; /* Espaço entre texto e lupa */
             font-size: 1.1rem;
         }
 
@@ -84,7 +86,7 @@
 
         @media (max-width: 768px) {
             .header-container { flex-direction: column; gap: 15px; }
-            .search-box { width: 100%; }
+            .search-box { width: 100%; box-sizing: border-box; }
             .nav-menu { overflow-x: auto; width: 100%; padding-bottom: 5px; white-space: nowrap; }
         }
 
@@ -94,12 +96,12 @@
         /* HERO SECTION */
         .hero-section { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-top: 20px; }
         @media (max-width: 900px) { .hero-section { grid-template-columns: 1fr; } }
-        .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; text-decoration: none; color: white; display: block; }
-        .featured-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-        .featured-card:hover .featured-img { transform: scale(1.05); }
+        .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; text-decoration: none; color: white; display: block; background: #000; }
+        .featured-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; opacity: 0.9; }
+        .featured-card:hover .featured-img { transform: scale(1.05); opacity: 0.7; }
         .featured-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px; box-sizing: border-box; }
         .featured-tag { background: var(--primary); color: white; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-        .featured-title { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .featured-title { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
 
         /* SIDEBAR */
         .side-widget { background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
@@ -107,7 +109,7 @@
         .ranking-list { list-style: none; padding: 0; margin: 0; }
         .ranking-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; align-items: center; }
         .rank-name { font-weight: 700; color: #444; }
-        .rank-val.up { color: var(--success); } .rank-val.down { color: var(--danger); }
+        .rank-val.up { color: var(--success); font-weight: bold; } .rank-val.down { color: var(--danger); font-weight: bold; }
 
         /* FERRAMENTAS */
         .tools-title { margin-top: 40px; margin-bottom: 10px; font-size: 1.2rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
@@ -345,12 +347,12 @@
         });
     });
     
-    // FUNÇÃO PARSE MONEY CORRIGIDA (REMOVE R$ E PONTOS)
+    // --- FUNÇÃO CORRIGIDA PARA LER NÚMEROS ---
     function parseMoney(str) { 
         if(!str) return 0;
-        // Remove tudo que não for dígito ou vírgula
+        // 1. Remove tudo que NÃO for número ou vírgula
         let limpo = str.toString().replace(/[^\d,]/g, '');
-        // Troca vírgula por ponto
+        // 2. Troca vírgula por ponto para o sistema entender
         limpo = limpo.replace(',', '.');
         return parseFloat(limpo) || 0; 
     }
