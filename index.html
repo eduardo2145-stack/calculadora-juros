@@ -40,10 +40,15 @@
         .header-content { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-wrap: wrap; gap: 20px; }
         .logo-area { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-size: 1.5rem; font-weight: 800; }
         .logo-area img { height: 45px; background: white; border-radius: 8px; padding: 2px; }
-        .search-bar { background: rgba(255,255,255,0.15); padding: 8px 15px; border-radius: 50px; display: flex; align-items: center; width: 300px; border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* BUSCA ATIVA */
+        .search-bar { background: rgba(255,255,255,0.15); padding: 8px 15px; border-radius: 50px; display: flex; align-items: center; width: 300px; border: 1px solid rgba(255,255,255,0.2); transition: 0.3s; }
+        .search-bar:focus-within { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
         .search-bar input { background: transparent; border: none; color: white; width: 100%; outline: none; font-size: 0.9rem; }
         .search-bar input::placeholder { color: rgba(255,255,255,0.7); }
-        .search-bar i { color: rgba(255,255,255,0.7); }
+        .search-bar i { color: rgba(255,255,255,0.7); cursor: pointer; }
+        .search-bar i:hover { color: white; }
+
         .nav-links { display: flex; gap: 25px; }
         .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
         .nav-links a:hover { color: white; }
@@ -63,6 +68,7 @@
         /* NOTÍCIAS */
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px; }
         .section-title { border-left: 5px solid var(--accent); padding-left: 15px; color: #222; margin: 0; font-size: 1.6rem; font-weight: 800; }
+        .last-update { font-size: 0.8rem; color: #888; background: #eee; padding: 4px 10px; border-radius: 20px; }
         .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
         .news-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; height: 100%; border: 1px solid #eee; }
         .news-card:hover { transform: translateY(-7px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
@@ -112,7 +118,6 @@
         .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
         footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; background: white; }
         
-        /* CORREÇÃO DO ALINHAMENTO E TOOLTIP */
         .toggles-area { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
         .toggle-group { margin-bottom: 12px; }
         .toggle-label { display: flex; align-items: center; cursor: pointer; font-size: 0.95rem; color: #555; gap: 10px; }
@@ -135,8 +140,8 @@
             <span>JurosWeb</span>
         </a>
         <div class="search-bar">
-            <input type="text" placeholder="Pesquisar notícias, ações...">
-            <i class="fas fa-search"></i>
+            <input type="text" id="campoBusca" placeholder="Pesquisar notícias (ex: Petrobras, Dólar)...">
+            <i class="fas fa-search" onclick="realizarBusca()"></i>
         </div>
         <div class="nav-links">
             <a href="index.html" class="active">Início</a>
@@ -188,7 +193,7 @@
                             <input type="checkbox" id="checkInflacao">
                             <span>Descontar Inflação (IPCA)</span>
                             <div class="tooltip">?
-                                <span class="tooltiptext">Remove o efeito da inflação para mostrar o "Poder de Compra Real" (quanto seu dinheiro valeria hoje).</span>
+                                <span class="tooltiptext">Remove o efeito da inflação para mostrar o "Poder de Compra Real".</span>
                             </div>
                         </label>
                     </div>
@@ -277,7 +282,7 @@
 
     <div id="noticias" class="news-section">
         <div class="section-header">
-            <h2 class="section-title">Últimas do Mercado</h2>
+            <h2 class="section-title" id="newsTitle">Últimas do Mercado</h2>
             <span class="last-update" id="lastUpdate">Atualizando...</span>
         </div>
         <div class="news-grid" id="newsGrid"><p style="padding:20px; color:#999;">Carregando notícias...</p></div>
@@ -293,28 +298,65 @@
 </div>
 
 <script>
-    async function carregarNoticias() {
-        const rssUrl = 'https://news.google.com/rss/search?q=investimentos+bolsa+economia+brasil&hl=pt-BR&gl=BR&ceid=BR:pt-419';
+    // --- 1. NOTÍCIAS (COM BUSCA FUNCIONAL) ---
+    async function carregarNoticias(termoBusca = '') {
+        // Se usuário digitou, usa o termo. Se não, usa o padrão.
+        let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
+        
+        // Atualiza o título da seção para dar feedback
+        const titulo = document.getElementById('newsTitle');
+        titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
+
+        const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
+        
         const backups = ['https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80', 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80'];
 
         try {
+            // Mostra "Buscando..." se for uma pesquisa
+            if(termoBusca) document.getElementById('newsGrid').innerHTML = '<p style="padding:20px; color:#666;">Pesquisando...</p>';
+
             const response = await fetch(apiUrl);
             const data = await response.json();
             const grid = document.getElementById('newsGrid');
             grid.innerHTML = ''; 
+            
+            if(data.items.length === 0) {
+                grid.innerHTML = '<p style="padding:20px; color:#666;">Nenhuma notícia encontrada para este termo.</p>';
+                return;
+            }
+
             data.items.slice(0, 6).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = 'news-card';
                 const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'});
-                let imgUrl = item.enclosure?.link || item.thumbnail || backups[index];
-                card.innerHTML = `<a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;"><div class="news-img-container"><img src="${imgUrl}" class="news-img" onerror="this.onerror=null;this.src='${backups[index]}';" alt="Notícia"></div><div class="news-content"><div class="news-tag">Mercado</div><div class="news-title">${item.title}</div><div class="news-footer"><span><i class="far fa-calendar-alt"></i> ${dataPub}</span><span>Ler mais →</span></div></div></a>`;
+                let imgUrl = item.enclosure?.link || item.thumbnail || backups[index % backups.length];
+                card.innerHTML = `<a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;"><div class="news-img-container"><img src="${imgUrl}" class="news-img" onerror="this.onerror=null;this.src='${backups[index % backups.length]}';" alt="Notícia"></div><div class="news-content"><div class="news-tag">Mercado</div><div class="news-title">${item.title}</div><div class="news-footer"><span><i class="far fa-calendar-alt"></i> ${dataPub}</span><span>Ler mais →</span></div></div></a>`;
                 grid.appendChild(card);
             });
             document.getElementById('lastUpdate').innerText = 'Atualizado agora';
         } catch (erro) { console.error(erro); }
     }
 
+    // Função ativada pelo clique na Lupa ou Enter
+    function realizarBusca() {
+        let input = document.getElementById('campoBusca');
+        let termo = input.value.trim();
+        if (termo) {
+            carregarNoticias(termo);
+            // Rola suavemente até a seção de notícias
+            document.getElementById('noticias').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    // Permitir busca com tecla Enter
+    document.getElementById('campoBusca').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            realizarBusca();
+        }
+    });
+
+    // --- 2. TICKER ---
     function loadTicker() {
         const stocks = [{t: 'IBOV', v: '128.500', up: true}, {t: 'PETR4', v: '38,50', up: false}, {t: 'VALE3', v: '68,20', up: true}, {t: 'ITUB4', v: '33,10', up: true}, {t: 'DOLAR', v: '5,15', up: true}, {t: 'BITCOIN', v: '250.000', up: true}, {t: 'CDI', v: '10,75%', up: true}, {t: 'IPCA', v: '4,50%', up: false}, {t: 'WEGE3', v: '25,40', up: true}, {t: 'BBAS3', v: '27,90', up: false}];
         let html = '';
@@ -330,6 +372,7 @@
 
     window.onload = function() { carregarNoticias(); loadTicker(); };
 
+    // --- 3. CALCULADORA (MANTIDA) ---
     const moneyInputs = document.querySelectorAll('.money-input');
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
@@ -409,7 +452,6 @@
         let valorPerdaInflacao = 0;
         let saldoLiquidoNominal = saldoBruto; 
         
-        // CÁLCULO IR
         if (usarIR) {
             let dias = meses * 30;
             let aliquotaIR = 0.15;
@@ -425,7 +467,6 @@
             document.getElementById('rowIR').style.display = 'none';
         }
 
-        // CÁLCULO INFLAÇÃO
         if(usarInflacao) {
             document.getElementById('boxInflacao').style.display = 'block';
             let inflacaoRate = parseFloat(document.getElementById('taxaInflacao').value) || 4.5;
