@@ -6,48 +6,86 @@
     <title>Política de Privacidade | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #8B0000; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
-        header { background: var(--primary); padding: 15px 0; }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        :root { --primary: #8B0000; --primary-dark: #600000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; line-height: 1.6; }
+        
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
-        
-        .content-box { background: white; padding: 40px; margin-top: 30px; border-radius: 8px; border: 1px solid #eee; color: #444; line-height: 1.8; }
-        h1 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        h2 { margin-top: 30px; color: #333; }
-        
-        footer { background: #111; color: #999; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+        .logo i { color: var(--accent); }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; float: right; margin-top: 5px; text-transform: uppercase; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--accent); }
+
+        .content-box { background: white; padding: 50px; margin-top: 40px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h1 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 30px; font-size: 2rem; }
+        h2 { margin-top: 30px; color: #333; font-size: 1.4rem; }
+        p { color: #555; margin-bottom: 15px; text-align: justify; }
+
+        /* RODAPÉ PADRÃO */
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: auto; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="container">
+    <div class="container header-flex">
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
-        <a href="index.html" style="float:right; color:white; text-decoration:none; font-weight:bold; margin-top:5px;">VOLTAR</a>
+        <nav class="nav-links"><a href="index.html">VOLTAR</a></nav>
     </div>
 </header>
 
 <div class="container">
     <div class="content-box">
         <h1>Política de Privacidade</h1>
-        <p>Esta Política de Privacidade descreve como o JurosWeb coleta, usa e protege as informações que você nos fornece ao usar este site.</p>
+        <p>A sua privacidade é importante para nós. É política do JurosWeb respeitar a sua privacidade em relação a qualquer informação sua que possamos coletar no site JurosWeb, e outros sites que possuímos e operamos.</p>
 
-        <h2>1. Coleta de Dados</h2>
-        <p>Não coletamos informações pessoais identificáveis (como nome, endereço ou telefone) a menos que você as forneça voluntariamente. As calculadoras funcionam no seu navegador e não enviam dados financeiros para nossos servidores.</p>
+        <h2>1. Informações que coletamos</h2>
+        <p>Solicitamos informações pessoais apenas quando realmente precisamos delas para lhe fornecer um serviço. Fazemo-lo por meios justos e legais, com o seu conhecimento e consentimento. Também informamos por que estamos coletando e como será usado.</p>
 
-        <h2>2. Cookies e Ads</h2>
-        <p>Utilizamos cookies de terceiros, como o Google AdSense e Google Analytics, para melhorar sua experiência e exibir anúncios relevantes. Você pode desativar os cookies nas configurações do seu navegador.</p>
+        <h2>2. Uso de Dados</h2>
+        <p>Apenas retemos as informações coletadas pelo tempo necessário para fornecer o serviço solicitado. Quando armazenamos dados, protegemos dentro de meios comercialmente aceitáveis para evitar perdas e roubos, bem como acesso, divulgação, cópia, uso ou modificação não autorizados.</p>
 
-        <h2>3. Uso das Informações</h2>
-        <p>As informações inseridas nas calculadoras são utilizadas exclusivamente para gerar os resultados no momento do uso e não são armazenadas.</p>
+        <h2>3. Cookies do Google AdSense</h2>
+        <p>O Google, como fornecedor de terceiros, utiliza cookies para exibir anúncios. O uso do cookie DART permite que o Google exiba anúncios para seus usuários com base em sua visita ao nosso site e a outros sites na Internet. Os usuários podem optar por não usar o cookie DART visitando a política de privacidade da rede de conteúdo e anúncios do Google.</p>
 
-        <h2>4. Consentimento</h2>
-        <p>Ao utilizar nosso site, você concorda com nossa política de privacidade.</p>
+        <h2>4. Compromisso do Usuário</h2>
+        <p>O usuário se compromete a fazer uso adequado dos conteúdos e da informação que o JurosWeb oferece no site e com caráter enunciativo, mas não limitativo: A) Não se envolver em atividades que sejam ilegais ou contrárias à boa fé a à ordem pública; B) Não difundir propaganda ou conteúdo de natureza racista, xenofóbica, ou azar, qualquer tipo de pornografia ilegal, de apologia ao terrorismo ou contra os direitos humanos.</p>
     </div>
 </div>
 
-<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="porcentagem.html">Porcentagem</a>
+            <a href="datas.html">Contador de Dias</a>
+            <a href="imagem.html">Editor de Imagens</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
 
 </body>
 </html>
