@@ -297,7 +297,7 @@
 </div>
 
 <script>
-    // --- 1. NOTÍCIAS (COM NOVAS IMAGENS DE BACKUP) ---
+    // --- 1. NOTÍCIAS (COM IMAGENS ESTÁVEIS) ---
     async function carregarNoticias(termoBusca = '') {
         let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
         
@@ -307,14 +307,14 @@
         const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         
-        // NOVOS LINKS DE BACKUP (Testados e Funcionando)
+        // LISTA DE IMAGENS ATUALIZADA (Links mais estáveis)
         const backups = [
-            'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // 1. Touro da Bolsa
-            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 2. Gráfico de Velas
-            'https://images.unsplash.com/photo-1621504450168-b8c48c19871d?auto=format&fit=crop&w=600&q=80', // 3. Bitcoin Dourado
-            'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=600&q=80', // 4. Notas de Dinheiro
-            'https://images.unsplash.com/photo-1616077744360-77a360485981?auto=format&fit=crop&w=600&q=80', // 5. Calculadora Financeira
-            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80'  // 6. Notebook Trabalho
+            'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // 1. Gráfico de Mercado
+            'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=600&q=80', // 2. Jornal Financeiro (Substituto)
+            'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?auto=format&fit=crop&w=600&q=80', // 3. Moedas/Câmbio (Substituto)
+            'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&w=600&q=80', // 4. Dinheiro Real
+            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80', // 5. Notebook/Trabalho (Substituto)
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80'  // 6. Tablet/Gráfico
         ];
 
         try {
@@ -356,7 +356,7 @@
                     <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                         <div class="news-img-container">
                             <img src="${imgUrl}" class="news-img" 
-                                 onerror="this.src='${backupImg}'; this.onerror=null;" 
+                                 onerror="this.onerror=null; this.src='${backupImg}';" 
                                  alt="Imagem da notícia">
                         </div>
                         <div class="news-content">
