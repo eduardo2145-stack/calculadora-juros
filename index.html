@@ -297,26 +297,25 @@
 </div>
 
 <script>
-   // --- 1. NOTÍCIAS (COM BUSCA, ORDENAÇÃO E CORREÇÃO DE IMAGEM) ---
+    // --- 1. NOTÍCIAS (COM BUSCA, ORDENAÇÃO E EXTRATOR DE IMAGEM 2.0) ---
     async function carregarNoticias(termoBusca = '') {
         let query = termoBusca ? termoBusca : 'investimentos bolsa economia brasil';
         
         // Atualiza título visualmente
         const titulo = document.getElementById('newsTitle');
-        titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
+        if(titulo) titulo.innerText = termoBusca ? `Resultados para: "${termoBusca}"` : 'Últimas do Mercado';
 
-        // URL da API
         const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=pt-BR&gl=BR&ceid=BR:pt-419`;
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
         
-        // Imagens de Backup (Caso a notícia venha sem foto)
+        // Banco de Imagens Genéricas (Caso falhe tudo)
         const backups = [
             'https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=600&q=80', // Gráfico
             'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=600&q=80', // Touro
-            'https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?auto=format&fit=crop&w=600&q=80', // Tech/Cripto
-            'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=600&q=80', // Dinheiro
-            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80', // Notebook
-            'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80'  // Calculadora
+            'https://images.unsplash.com/photo-1565514020176-dbf2277cc154?auto=format&fit=crop&w=600&q=80', // Dinheiro
+            'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&w=600&q=80', // Bitcoin
+            'https://images.unsplash.com/photo-1554224155-9ffd48f43606?auto=format&fit=crop&w=600&q=80', // Calculadora
+            'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80'  // Notebook
         ];
 
         try {
@@ -327,12 +326,12 @@
             const grid = document.getElementById('newsGrid');
             grid.innerHTML = ''; 
             
-            if(data.items.length === 0) {
+            if(!data.items || data.items.length === 0) {
                 grid.innerHTML = '<p style="padding:20px; color:#666;">Nenhuma notícia encontrada.</p>';
                 return;
             }
 
-            // 1. ORDENAÇÃO POR DATA (Mais novo primeiro)
+            // Ordena por data (Mais recente primeiro)
             data.items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 
             // Pega as 6 primeiras
@@ -340,32 +339,40 @@
                 const card = document.createElement('div');
                 card.className = 'news-card';
                 
-                // Formata Data
                 const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour: '2-digit', minute:'2-digit'});
                 
-                // 2. LÓGICA AVANÇADA PARA PEGAR IMAGEM
-                // Tenta Enclosure > Thumbnail > Procura img no conteúdo > Backup
-                let imgUrl = backups[index % backups.length]; // Começa com o backup por segurança
-                
+                // --- LÓGICA DE IMAGEM ROBUSTA ---
+                let imgUrl = "";
+                let backupImg = backups[index % backups.length]; // Imagem garantida para este card
+
+                // 1. Tenta pegar do campo "enclosure" (Padrão RSS)
                 if (item.enclosure && item.enclosure.link) {
                     imgUrl = item.enclosure.link;
-                } else if (item.thumbnail) {
+                } 
+                // 2. Tenta pegar do campo "thumbnail"
+                else if (item.thumbnail) {
                     imgUrl = item.thumbnail;
-                } else {
-                    // Tenta achar tag <img src="..."> dentro da descrição HTML
+                }
+                // 3. Tenta extrair tag <img src="..."> de dentro do texto da notícia
+                else {
                     const imgMatch = item.description.match(/<img[^>]+src="([^">]+)"/);
-                    if(imgMatch) {
+                    if(imgMatch && imgMatch[1]) {
                         imgUrl = imgMatch[1];
                     }
                 }
 
-                // Cria o HTML do Card
+                // 4. Se depois de tudo ainda estiver vazio, usa o backup AGORA
+                if (!imgUrl || imgUrl.length < 10) {
+                    imgUrl = backupImg;
+                }
+
+                // HTML do Card
                 card.innerHTML = `
                     <a href="${item.link}" target="_blank" style="text-decoration:none; color:inherit; display:flex; flex-direction:column; height:100%;">
                         <div class="news-img-container">
                             <img src="${imgUrl}" class="news-img" 
-                                 onerror="this.onerror=null; this.src='${backups[index % backups.length]}';" 
-                                 alt="Notícia">
+                                 onerror="this.onerror=null; this.src='${backupImg}';" 
+                                 alt="Imagem da notícia">
                         </div>
                         <div class="news-content">
                             <div class="news-tag">Mercado</div>
@@ -380,28 +387,32 @@
                 grid.appendChild(card);
             });
             
-            document.getElementById('lastUpdate').innerText = 'Atualizado: ' + new Date().toLocaleTimeString();
+            const updateSpan = document.getElementById('lastUpdate');
+            if(updateSpan) updateSpan.innerText = 'Atualizado: ' + new Date().toLocaleTimeString();
 
-        } catch (erro) { console.error(erro); }
+        } catch (erro) { 
+            console.error(erro);
+            document.getElementById('newsGrid').innerHTML = '<p style="padding:20px; color:red;">Erro ao carregar notícias.</p>';
+        }
     }
 
-    // Função ativada pelo clique na Lupa ou Enter
+    // Função de Busca (Lupa ou Enter)
     function realizarBusca() {
         let input = document.getElementById('campoBusca');
         let termo = input.value.trim();
         if (termo) {
             carregarNoticias(termo);
-            // Rola suavemente até a seção de notícias
             document.getElementById('noticias').scrollIntoView({ behavior: 'smooth' });
         }
     }
 
-    // Permitir busca com tecla Enter
-    document.getElementById('campoBusca').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            realizarBusca();
-        }
-    });
+    // Ativa busca no Enter
+    const buscaInput = document.getElementById('campoBusca');
+    if(buscaInput){
+        buscaInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') realizarBusca();
+        });
+    }
 
     // --- 2. TICKER ---
     function loadTicker() {
@@ -414,12 +425,17 @@
             let colorClass = s.up ? 'stock-up' : 'stock-down';
             html += `<span class="stock-item">${s.t} R$ ${s.v} <span class="${colorClass}">${arrow} ${variacao}%</span></span>`;
         });
-        document.getElementById('stockTicker').innerHTML = html;
+        const tickerElem = document.getElementById('stockTicker');
+        if(tickerElem) tickerElem.innerHTML = html;
     }
 
-    window.onload = function() { carregarNoticias(); loadTicker(); };
+    // INICIALIZAÇÃO
+    window.onload = function() { 
+        carregarNoticias(); 
+        loadTicker(); 
+    };
 
-    // --- 3. CALCULADORA (MANTIDA) ---
+    // --- 3. CALCULADORA ---
     const moneyInputs = document.querySelectorAll('.money-input');
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
@@ -448,6 +464,7 @@
         if(event && event.target) event.target.closest('button').classList.add('active');
     }
 
+    // Calcula Rendimento
     function calcularRendimento() {
         let P = parseMoney(document.getElementById('valorInicial').value);
         let M = parseMoney(document.getElementById('aporteMensal').value);
@@ -485,14 +502,16 @@
         }
 
         const tbody = document.querySelector('#tabelaEvolucao tbody');
-        tbody.innerHTML = ''; 
-        const fragment = document.createDocumentFragment();
-        globalTableData.forEach(row => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td class="rend-mes">+ ${row[2]}</td><td><strong>${row[3]}</strong></td>`;
-            fragment.appendChild(tr);
-        });
-        tbody.appendChild(fragment);
+        if(tbody) {
+            tbody.innerHTML = ''; 
+            const fragment = document.createDocumentFragment();
+            globalTableData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td class="rend-mes">+ ${row[2]}</td><td><strong>${row[3]}</strong></td>`;
+                fragment.appendChild(tr);
+            });
+            tbody.appendChild(fragment);
+        }
 
         let lucroBruto = saldoBruto - totalInvestido;
         let valorIR = 0;
@@ -545,6 +564,7 @@
         pdfData = { bruto: fmt.format(saldoBruto), nominal: fmt.format(saldoLiquidoNominal), investido: fmt.format(totalInvestido), ir: usarIR ? '- ' + fmt.format(valorIR) : 'Isento', inflacao: usarInflacao ? '- ' + fmt.format(valorPerdaInflacao) : 'Não calc.', liquido: document.getElementById('resTotalLiquido').innerText };
     }
 
+    // Calcula Meta
     function calcularMeta() {
         let objetivo = parseMoney(document.getElementById('metaValor').value);
         let anos = parseFloat(document.getElementById('metaAnos').value);
@@ -568,6 +588,7 @@
         chartMetaInst = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Evolução', data: data, borderColor: '#00d26a', backgroundColor: 'rgba(0,210,106,0.1)', fill: true }] }, options: { responsive: true, maintainAspectRatio: false, elements:{point:{radius:0}}, scales:{x:{display:false}} } });
     }
 
+    // Funções Auxiliares
     function getLogoBase64() {
         return new Promise((resolve) => {
             const img = document.getElementById('logoSite');
