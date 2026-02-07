@@ -3,17 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Portal JurosWeb. Finanças, Cotações e Simuladores.">
     <title>JurosWeb | Portal Financeiro</title>
-    
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3C46NXBG96');
-    </script>
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -23,533 +14,381 @@
     <style>
         :root { 
             --primary: #8B0000; 
-            --primary-dark: #600000; 
             --secondary: #212529; 
             --accent: #dca72e; 
-            --text: #333; 
-            --bg: #f8f9fa; 
+            --bg: #f4f6f9; 
             --white: #ffffff;
-            --success: #28a745;
-            --danger: #dc3545;
         }
         
-        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 0; }
         
         /* TICKER */
-        .stock-ticker-wrap { background: #111; color: #eee; height: 35px; line-height: 35px; overflow: hidden; position: relative; font-size: 0.85rem; border-bottom: 2px solid var(--primary); width: 100%; }
-        .stock-ticker { display: inline-block; white-space: nowrap; animation: ticker 120s linear infinite; padding-left: 100%; }
-        .stock-item { display: inline-block; margin-right: 40px; font-weight: 500; }
-        .stock-up { color: #4cd137; } .stock-down { color: #e84118; }
+        .ticker-wrap { background: #111; color: #eee; height: 35px; line-height: 35px; overflow: hidden; border-bottom: 2px solid var(--primary); white-space: nowrap; }
+        .ticker-item { display: inline-block; padding-left: 100%; animation: ticker 40s linear infinite; }
+        .tick { display: inline-block; margin-right: 40px; font-size: 0.9rem; }
+        .up { color: #4cd137; } .down { color: #e84118; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 
         /* HEADER */
-        header { background: var(--primary); color: white; padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; width: 100%; }
-        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: -1px; }
-        .logo i { color: var(--accent); }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 999; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         
-        /* BUSCA (SEM QUADRADO BRANCO) */
-        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 20px; border-radius: 50px; width: 350px; transition: 0.3s; }
-        .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        .search-box input { flex: 1; background: transparent !important; border: none !important; color: white; outline: none; font-size: 1rem; box-shadow: none !important; }
-        .search-box input::placeholder { color: rgba(255,255,255,0.8); }
-        .search-box i { color: white; cursor: pointer; margin-left: 10px; }
+        /* BUSCA CORRIGIDA */
+        .search-box { 
+            display: flex; align-items: center; 
+            background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            border-radius: 50px; 
+            padding: 5px 15px; 
+            width: 350px;
+        }
+        .search-box input { 
+            background: transparent; border: none; color: white; flex: 1; outline: none; font-size: 1rem; 
+        }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box i { color: white; cursor: pointer; }
 
-        .nav-menu { display: flex; gap: 20px; }
-        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
-        .nav-menu a:hover { color: var(--accent); }
-
-        @media (max-width: 768px) {
-            .header-container { flex-direction: column; gap: 15px; }
-            .search-box { width: 100%; box-sizing: border-box; }
-            .nav-menu { overflow-x: auto; width: 100%; padding-bottom: 5px; white-space: nowrap; }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; margin-left: 20px; text-transform: uppercase; font-size: 0.85rem; }
+        
+        @media(max-width: 768px) {
+            .header-flex { flex-direction: column; gap: 15px; }
+            .search-box { width: 100%; }
+            .nav-links { overflow-x: auto; width: 100%; white-space: nowrap; padding-bottom: 5px; }
         }
 
-        /* CONTAINER */
-        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; }
+        /* HERO & DESTAQUE */
+        .hero-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-top: 30px; }
+        @media(max-width:900px){ .hero-grid { grid-template-columns: 1fr; } }
 
-        /* HERO SECTION */
-        .hero-section { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-top: 20px; }
-        @media (max-width: 900px) { .hero-section { grid-template-columns: 1fr; } }
-        .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.15); cursor: pointer; text-decoration: none; color: white; display: block; background: #000; }
-        .featured-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; opacity: 0.9; }
-        .featured-card:hover .featured-img { transform: scale(1.05); opacity: 0.7; }
-        .featured-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 30px; box-sizing: border-box; }
-        .featured-tag { background: var(--primary); color: white; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; border-radius: 3px; display: inline-block; margin-bottom: 10px; }
-        .featured-title { font-size: 2rem; font-weight: 800; line-height: 1.2; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .main-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; display: block; color: white; text-decoration: none; background: #000; }
+        .main-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
+        .main-card:hover .main-img { opacity: 0.6; transform: scale(1.05); }
+        .main-text { position: absolute; bottom: 0; left: 0; padding: 30px; background: linear-gradient(transparent, black); width: 100%; box-sizing: border-box; }
+        .tag { background: var(--primary); padding: 4px 10px; font-size: 0.7rem; font-weight: bold; border-radius: 3px; text-transform: uppercase; }
+        
+        /* RANKING SIDEBAR */
+        .ranking-box { background: white; border-radius: 8px; border: 1px solid #ddd; overflow: hidden; }
+        .rank-head { background: var(--secondary); color: white; padding: 10px 15px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; border-bottom: 3px solid var(--accent); }
+        .rank-list li { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .rank-list { list-style: none; padding: 0; margin: 0; }
 
-        /* SIDEBAR */
-        .side-widget { background: white; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #eee; display: flex; flex-direction: column; }
-        .widget-header { background: var(--secondary); color: white; padding: 12px 15px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; border-bottom: 3px solid var(--accent); }
-        .ranking-list { list-style: none; padding: 0; margin: 0; }
-        .ranking-item { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; align-items: center; }
-        .rank-name { font-weight: 700; color: #444; }
-        .rank-val.up { color: var(--success); font-weight: bold; } .rank-val.down { color: var(--danger); font-weight: bold; }
-
-        /* FERRAMENTAS */
-        .tools-title { margin-top: 40px; margin-bottom: 10px; font-size: 1.2rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
-        .tools-title::after { content: ''; flex-grow: 1; height: 2px; background: #eee; }
-        .tools-bar { background: var(--primary); border-radius: 8px; padding: 20px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 20px; box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2); }
-        .tool-link { display: flex; flex-direction: column; align-items: center; color: white; text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; opacity: 0.9; }
-        .tool-link:hover { opacity: 1; transform: translateY(-3px); }
-        .tool-icon { font-size: 1.8rem; margin-bottom: 8px; color: var(--accent); }
+        /* FERRAMENTAS BAR */
+        .tools-bar { background: var(--primary); margin-top: 40px; padding: 20px; border-radius: 8px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px; box-shadow: 0 5px 15px rgba(139,0,0,0.2); }
+        .tool-item { color: white; text-decoration: none; font-weight: bold; display: flex; flex-direction: column; align-items: center; font-size: 0.9rem; transition: 0.3s; }
+        .tool-item:hover { transform: translateY(-3px); opacity: 0.9; }
+        .tool-item i { font-size: 1.5rem; margin-bottom: 5px; color: var(--accent); }
 
         /* CALCULADORA */
-        .calc-section { margin-top: 40px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #eee; }
-        .section-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; display:flex; justify-content:space-between; align-items:center; }
-        .input-group label { font-size: 0.85rem; text-transform: uppercase; color: #777; font-weight: 700; }
-        input[type="text"], input[type="number"] { width: 100%; border: 2px solid #eee; border-radius: 4px; padding: 12px; font-weight: 600; color: #333; box-sizing: border-box; }
-        input:focus { border-color: var(--primary); outline: none; }
-        .btn-calc { background: var(--primary); color: white; border-radius: 4px; text-transform: uppercase; font-weight: 800; padding: 15px; border: none; width: 100%; cursor: pointer; transition: 0.3s; margin-top: 15px; }
-        .btn-calc:hover { background: #600000; transform: translateY(-2px); }
-        .btn-pdf { background: #333; margin-top: 20px; font-size: 0.9rem; width: 100%; display: block; }
+        .calc-box { background: white; padding: 30px; margin-top: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .calc-title { font-size: 1.5rem; color: var(--primary); font-weight: 800; margin-bottom: 20px; border-left: 5px solid var(--primary); padding-left: 15px; display: flex; justify-content: space-between; }
         
-        .result-box { background: #fdfdfd; border: 1px dashed #ddd; padding: 20px; border-radius: 4px; margin-top: 20px; display: none; }
-        .big-result { font-size: 2.5rem; font-weight: 900; color: var(--primary); display: block; margin: 10px 0; text-align: center; }
-        .result-grid-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
-        @media(max-width:768px){ .result-grid-layout { grid-template-columns: 1fr; } }
-        .tip-card { background: #fffbe6; border: 1px solid #ffe58f; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; }
-        .tip-title { font-weight: bold; color: #d48806; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
-        .tip-content { font-size: 0.9rem; color: #555; font-style: italic; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .input-wrap label { font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .input-wrap input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; font-weight: 600; box-sizing: border-box; }
+        .input-wrap input:focus { border-color: var(--primary); outline: none; }
+        
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; font-weight: 800; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; transition: 0.3s; text-transform: uppercase; }
+        .btn-calc:hover { background: #600000; }
 
-        /* NEWS */
+        .result-area { background: #fdfdfd; border: 1px dashed #ddd; padding: 20px; margin-top: 20px; display: none; text-align: center; }
+        .total-val { font-size: 2.5rem; color: var(--primary); font-weight: 900; display: block; margin: 10px 0; }
+        .row-res { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+
+        /* NOTÍCIAS GRID */
         .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 30px; }
-        .news-card { background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-        .news-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: var(--primary); }
-        .news-img-box { height: 180px; overflow: hidden; background: #eee; }
-        .news-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .news-body { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; }
-        .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; }
-        .news-meta { font-size: 0.8rem; color: #888; margin-top: auto; }
+        .news-item { background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+        .news-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .news-thumb { height: 180px; width: 100%; object-fit: cover; }
+        .news-info { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+        .news-h { font-weight: 700; margin-bottom: 10px; line-height: 1.4; color: #222; }
+        .news-date { font-size: 0.8rem; color: #888; margin-top: auto; }
 
-        .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
-        
-        /* FOOTER */
-        footer { background: #111; color: #ccc; padding: 50px 0; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
-        .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
-        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; }
-        .footer-col a { color: #888; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
-        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
-        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        footer { background: #111; color: #999; padding: 40px 0; margin-top: 60px; text-align: center; font-size: 0.9rem; border-top: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="stock-ticker-wrap">
-    <div class="stock-ticker" id="stockTicker">Carregando cotações...</div>
+<div class="ticker-wrap">
+    <div class="ticker-item" id="tickerContent">Carregando mercado...</div>
 </div>
 
 <header>
-    <div class="header-container">
+    <div class="container header-flex">
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        
         <div class="search-box">
-            <input type="text" id="campoBusca" placeholder="Pesquisar (ex: PETR4, Dólar)...">
-            <i class="fas fa-search" onclick="realizarBusca()"></i>
+            <input type="text" id="campoBusca" placeholder="Pesquisar (ex: Dólar, Selic)...">
+            <i class="fas fa-search" onclick="buscar()"></i>
         </div>
-        <div class="nav-menu">
+
+        <nav class="nav-links">
             <a href="index.html">Início</a>
             <a href="utilidades.html">Ferramentas</a>
             <a href="#simulador">Calculadoras</a>
             <a href="#noticias">Notícias</a>
-        </div>
+        </nav>
     </div>
 </header>
 
-<div class="main-container">
+<div class="container">
 
-    <div class="ad-slot">Publicidade Topo</div>
-
-    <div class="hero-section" id="heroSection">
-        <a href="#" class="featured-card">
-            <img src="IMG/news1.jpg" class="featured-img" alt="Destaque">
-            <div class="featured-overlay">
-                <span class="featured-tag">Destaque do Dia</span>
-                <h2 class="featured-title" id="heroTitle">Mercado financeiro: Acompanhe as principais movimentações...</h2>
+    <div class="hero-grid">
+        <a href="#" class="main-card" id="heroLink">
+            <img src="https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&w=800&q=80" class="main-img" id="heroImg">
+            <div class="main-text">
+                <span class="tag">Destaque do Dia</span>
+                <h2 style="margin:5px 0; font-size:1.8rem;" id="heroTitle">Mercado financeiro: Acompanhe as principais tendências</h2>
             </div>
         </a>
 
-        <aside class="side-widget">
-            <div class="widget-header">Rankings B3 (Simulado)</div>
-            <ul class="ranking-list" id="rankingList"></ul>
+        <aside class="ranking-box">
+            <div class="rank-head">Cotações B3</div>
+            <ul class="rank-list" id="rankList">
+                <li><span>IBOV</span><span class="up">128.500 ▲</span></li>
+                <li><span>DÓLAR</span><span class="down">5.15 ▼</span></li>
+                <li><span>PETR4</span><span class="up">38.20 ▲</span></li>
+                <li><span>VALE3</span><span class="down">62.10 ▼</span></li>
+                <li><span>BITCOIN</span><span class="up">$96k ▲</span></li>
+            </ul>
         </aside>
     </div>
 
-    <div class="tools-title"><i class="fas fa-tools"></i> Ferramentas & Simuladores</div>
     <div class="tools-bar">
-        <a href="index.html" class="tool-link"><i class="fas fa-chart-line tool-icon"></i> Juros Compostos</a>
-        <a href="regra3.html" class="tool-link"><i class="fas fa-calculator tool-icon"></i> Regra de 3</a>
-        <a href="porcentagem.html" class="tool-link"><i class="fas fa-percentage tool-icon"></i> Porcentagem</a>
-        <a href="datas.html" class="tool-link"><i class="fas fa-calendar-alt tool-icon"></i> Dias e Datas</a>
-        <a href="imagem.html" class="tool-link"><i class="fas fa-image tool-icon"></i> Editor IMG</a>
+        <a href="index.html" class="tool-item"><i class="fas fa-chart-line"></i> Juros Compostos</a>
+        <a href="regra3.html" class="tool-item"><i class="fas fa-calculator"></i> Regra de 3</a>
+        <a href="porcentagem.html" class="tool-item"><i class="fas fa-percentage"></i> Porcentagem</a>
+        <a href="datas.html" class="tool-item"><i class="fas fa-calendar-alt"></i> Dias e Datas</a>
+        <a href="imagem.html" class="tool-item"><i class="fas fa-image"></i> Editor IMG</a>
     </div>
 
-    <div class="calc-section" id="simulador">
-        <div class="section-title">
-            <span>Simulador de Investimentos</span>
-            <div style="font-size:0.9rem;">
-                <button onclick="openTab('rendimento')" id="btn-rend" style="padding:5px 15px; background:var(--primary); color:white; border:none; border-radius:4px; cursor:pointer;">Rendimento</button>
-                <button onclick="openTab('meta')" id="btn-meta" style="padding:5px 15px; background:#eee; color:#333; border:none; border-radius:4px; cursor:pointer;">Meta</button>
-            </div>
+    <div class="calc-box" id="simulador">
+        <div class="calc-title">Simulador de Juros Compostos</div>
+        
+        <div class="form-grid">
+            <div class="input-wrap"><label>Valor Inicial</label><input type="text" class="money" id="v_ini" placeholder="R$ 1.000,00"></div>
+            <div class="input-wrap"><label>Aporte Mensal</label><input type="text" class="money" id="v_men" placeholder="R$ 500,00"></div>
+            <div class="input-wrap"><label>Taxa Anual (%)</label><input type="number" id="v_taxa" placeholder="10.5"></div>
+            <div class="input-wrap"><label>Anos</label><input type="number" id="v_anos" placeholder="10"></div>
         </div>
 
-        <div id="rendimento">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="input-group"><label>Valor Inicial</label><input type="text" class="money-input" id="valorInicial" placeholder="R$ 1.000,00"></div>
-                <div class="input-group"><label>Aporte Mensal</label><input type="text" class="money-input" id="aporteMensal" placeholder="R$ 500,00"></div>
-                <div class="input-group"><label>Taxa Anual (%)</label><input type="number" id="taxaJuros" placeholder="10.5"></div>
-                <div class="input-group"><label>Anos</label><input type="number" id="anos" placeholder="10"></div>
-            </div>
+        <button class="btn-calc" onclick="calcular()">Simular Agora</button>
+
+        <div class="result-area" id="resultado">
+            <small>RESULTADO ESTIMADO</small>
+            <span class="total-val" id="res_total">R$ 0,00</span>
             
-            <div style="margin: 15px 0; display:flex; gap:20px;">
-                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="checkbox" id="checkIR"> Descontar IR</label>
-                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="checkbox" id="checkInflacao"> Descontar Inflação</label>
-            </div>
-
-            <button class="btn-calc" onclick="calcularRendimento()">SIMULAR AGORA</button>
-
-            <div id="results-area" class="result-box">
-                <small>SALDO FINAL ESTIMADO</small>
-                <span id="resTotalBruto" class="big-result">R$ 0,00</span>
-                
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;"><span>Total Investido:</span> <strong id="resInvestido">R$ 0,00</strong></div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0;"><span>Rendimento Bruto:</span> <strong style="color:var(--success);" id="resBrutoJuros">R$ 0,00</strong></div>
-                <div id="rowIR" style="display:none; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0; color:var(--danger);"><span>(-) Imposto de Renda:</span> <strong id="resIR">R$ 0,00</strong></div>
-                <div id="rowInflacao" style="display:none; justify-content:space-between; border-bottom:1px solid #eee; padding:5px 0; color:var(--accent);"><span>(i) Perda Inflacionária:</span> <strong id="resInflacao">R$ 0,00</strong></div>
-                
-                <div class="result-grid-layout">
-                    <div style="height:300px;"><canvas id="chartRendimento"></canvas></div>
-                    <div class="tip-card" id="tipBox">
-                        <div class="tip-title"><i class="fas fa-lightbulb"></i> Dica do Especialista</div>
-                        <div class="tip-content" id="tipText">Invista com consistência.</div>
-                    </div>
-                </div>
-
-                <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')"><i class="fas fa-file-pdf"></i> Baixar Relatório PDF</button>
-            </div>
-        </div>
-
-        <div id="meta" style="display:none;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
-                <div class="input-group"><label>Objetivo (R$)</label><input type="text" class="money-input" id="metaValor"></div>
-                <div class="input-group"><label>Prazo (Anos)</label><input type="number" id="metaAnos"></div>
-                <div class="input-group"><label>Tenho Hoje</label><input type="text" class="money-input" id="metaInicial"></div>
-                <div class="input-group"><label>Rentabilidade (%)</label><input type="number" id="metaTaxa"></div>
-            </div>
-            <button class="btn-calc" onclick="calcularMeta()">CALCULAR APORTE</button>
-            <div id="meta-res" class="result-box">
-                <small>VOCÊ PRECISA INVESTIR POR MÊS:</small>
-                <span id="resMetaMensal" class="big-result">R$ 0,00</span>
-                <div style="height:250px; margin-top:20px;"><canvas id="chartMeta"></canvas></div>
-            </div>
+            <div class="row-res"><span>Investido:</span> <strong id="res_inv">R$ 0,00</strong></div>
+            <div class="row-res"><span>Juros Ganhos:</span> <strong style="color:green;" id="res_juros">R$ 0,00</strong></div>
+            
+            <div style="height:300px; margin-top:20px;"><canvas id="chart"></canvas></div>
+            
+            <button class="btn-calc" style="background:#333; margin-top:15px; font-size:0.9rem;" onclick="baixarPDF()">
+                <i class="fas fa-file-pdf"></i> Baixar Relatório PDF
+            </button>
         </div>
     </div>
 
-    <div id="noticias" style="margin-top:50px;">
-        <div class="section-title">Últimas do Mercado <small id="lastUpdate" style="font-size:0.8rem; color:#777; font-weight:normal;"></small></div>
-        <div class="news-grid" id="newsGrid">Carregando...</div>
-    </div>
+    <h2 style="margin-top:50px; color:var(--primary); border-left:5px solid var(--primary); padding-left:15px;">Últimas do Mercado</h2>
+    <div class="news-grid" id="newsGrid">
+        </div>
 
-    <div class="ad-slot">Publicidade Rodapé</div>
+    <div style="background:#eee; text-align:center; padding:30px; margin:40px 0; color:#999; border:1px dashed #ccc;">Publicidade</div>
 
 </div>
 
 <footer>
-    <div class="footer-inner">
-        <div class="footer-col">
-            <h4>JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Ferramentas</h4>
-            <a href="regra3.html">Regra de 3</a>
-            <a href="porcentagem.html">Calculadora de %</a>
-            <a href="datas.html">Contador de Dias</a>
-            <a href="imagem.html">Editor de Imagens</a>
-        </div>
-        <div class="footer-col">
-            <h4>Legal</h4>
-            <a href="politica.html">Política de Privacidade</a>
-            <a href="#">Termos de Uso</a>
-            <a href="#">Contato</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
-    </div>
+    <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
+    <p><a href="politica.html" style="color:#777;">Política de Privacidade</a></p>
 </footer>
 
 <script>
-    // --- 1. CONFIGURAÇÕES ---
-    const financialTips = [
-        "A Regra dos 72: Divida 72 pela taxa de juros anual para saber em quantos anos seu dinheiro dobra.",
-        "Reserva de Emergência: Tenha de 6 a 12 meses do custo de vida guardados.",
-        "Juros Compostos: O tempo é seu maior aliado. Comece cedo.",
-        "Diversificação: Não coloque todos os ovos na mesma cesta.",
-        "Inflação: Lembre-se sempre de descontar a inflação para ver o ganho real."
-    ];
+    // --- 1. CONFIGURAÇÕES GERAIS ---
+    let myChart = null;
+    let pdfValues = {};
 
-    const moneyInputs = document.querySelectorAll('.money-input');
-    let chartRend = null;
-    let chartMetaInst = null;
-    let pdfData = {};
-
-    // MÁSCARA DINHEIRO VISUAL
-    moneyInputs.forEach(input => {
+    // MÁSCARA DE DINHEIRO
+    document.querySelectorAll('.money').forEach(input => {
         input.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if(value === '') return;
-            value = (parseInt(value) / 100).toFixed(2) + '';
-            value = value.replace('.', ',');
-            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-            e.target.value = 'R$ ' + value;
+            let v = e.target.value.replace(/\D/g,'');
+            v = (v/100).toFixed(2) + '';
+            v = v.replace(".", ",");
+            v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            e.target.value = 'R$ ' + v;
         });
     });
-    
-    // FUNÇÃO BLINDADA PARA LER NÚMERO
-    function parseMoney(str) { 
+
+    function parseM(str) {
         if(!str) return 0;
-        let limpo = str.toString().replace(/[^\d,]/g, '');
-        limpo = limpo.replace(',', '.');
-        return parseFloat(limpo) || 0; 
+        return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
     }
 
-    // --- 2. CALCULADORA (ISOLADA E SEGURA) ---
-    function openTab(tab) {
-        document.getElementById('rendimento').style.display = tab === 'rendimento' ? 'block' : 'none';
-        document.getElementById('meta').style.display = tab === 'meta' ? 'block' : 'none';
-        
-        document.getElementById('btn-rend').style.background = tab === 'rendimento' ? 'var(--primary)' : '#eee';
-        document.getElementById('btn-rend').style.color = tab === 'rendimento' ? 'white' : '#333';
-        document.getElementById('btn-meta').style.background = tab === 'meta' ? 'var(--primary)' : '#eee';
-        document.getElementById('btn-meta').style.color = tab === 'meta' ? 'white' : '#333';
-    }
+    // --- 2. CALCULADORA ---
+    function calcular() {
+        let ini = parseM(document.getElementById('v_ini').value);
+        let men = parseM(document.getElementById('v_men').value);
+        let tax = parseFloat(document.getElementById('v_taxa').value) || 0;
+        let ano = parseFloat(document.getElementById('v_anos').value);
 
-    function calcularRendimento() {
-        // Leitura dos dados
-        let P = parseMoney(document.getElementById('valorInicial').value);
-        let M = parseMoney(document.getElementById('aporteMensal').value);
-        let taxaAnual = parseFloat(document.getElementById('taxaJuros').value) || 0;
-        let anos = parseFloat(document.getElementById('anos').value);
-        let usarIR = document.getElementById('checkIR').checked;
-        let usarInflacao = document.getElementById('checkInflacao').checked;
+        if(!ano || ano <= 0) { alert("Informe os anos!"); return; }
 
-        if (!anos || anos <= 0) {
-            alert("Por favor, preencha o tempo em anos para simular.");
-            return;
-        }
-
-        // Cálculos
-        let meses = anos * 12;
-        let i = Math.pow(1 + (taxaAnual / 100), 1 / 12) - 1;
-        let labels = [];
-        let dataInvestido = [];
-        let dataBruto = [];
-        
-        let totalInvestido = P;
-        let saldoBruto = P;
-
-        for(let m = 0; m <= meses; m++) {
-            let rendimentoMes = 0;
-            if (m > 0) {
-                rendimentoMes = saldoBruto * i;
-                saldoBruto += rendimentoMes + M;
-                totalInvestido += M;
-            }
-            if (m % 6 === 0 || m === meses) {
-                labels.push(m);
-                dataInvestido.push(totalInvestido);
-                dataBruto.push(saldoBruto);
-            }
-        }
-
-        let lucro = saldoBruto - totalInvestido;
-        let valorIR = 0;
-        let saldoLiquido = saldoBruto;
-        
-        if (usarIR) {
-            let aliquota = 0.15; 
-            if (meses < 6) aliquota = 0.225; else if (meses < 12) aliquota = 0.20; else if (meses < 24) aliquota = 0.175;
-            valorIR = lucro * aliquota;
-            saldoLiquido -= valorIR;
-            document.getElementById('rowIR').style.display = 'flex';
-            document.getElementById('resIR').innerText = '- ' + valorIR.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        } else {
-            document.getElementById('rowIR').style.display = 'none';
-        }
-
-        let poderCompra = saldoLiquido;
-        if(usarInflacao) {
-            let inflacao = 4.5; 
-            let deflator = Math.pow(1 + (inflacao/100), anos);
-            poderCompra = saldoLiquido / deflator;
-            let perda = saldoLiquido - poderCompra;
-            document.getElementById('rowInflacao').style.display = 'flex';
-            document.getElementById('resInflacao').innerText = '- ' + perda.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        } else {
-            document.getElementById('rowInflacao').style.display = 'none';
-        }
-
-        document.getElementById('resTotalBruto').innerText = saldoLiquido.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('resInvestido').innerText = totalInvestido.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('resBrutoJuros').innerText = lucro.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('resTotalLiquido').innerText = poderCompra.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        
-        document.getElementById('results-area').style.display = 'block';
-
-        // Tenta desenhar gráfico
-        try {
-            const ctx = document.getElementById('chartRendimento').getContext('2d');
-            if (chartRend) chartRend.destroy();
-            chartRend = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Total Acumulado', data: dataBruto, borderColor: '#8B0000', backgroundColor: 'rgba(139,0,0,0.1)', fill: true },
-                        { label: 'Dinheiro Investido', data: dataInvestido, borderColor: '#555', borderDash: [5,5], fill: false }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
-        } catch(e) { console.log("Erro no gráfico (mas cálculo funcionou):", e); }
-
-        const randomTip = financialTips[Math.floor(Math.random() * financialTips.length)];
-        document.getElementById('tipText').innerText = randomTip;
-
-        pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText, liquido: document.getElementById('resTotalLiquido').innerText };
-    }
-
-    function calcularMeta() {
-        let obj = parseMoney(document.getElementById('metaValor').value);
-        let ano = parseFloat(document.getElementById('metaAnos').value);
-        let ini = parseMoney(document.getElementById('metaInicial').value);
-        let tax = parseFloat(document.getElementById('metaTaxa').value);
-        
-        if(!obj || !ano) return alert("Preencha os campos obrigatórios.");
-        
-        let mes = ano * 12;
+        let meses = ano * 12;
         let i = Math.pow(1 + (tax/100), 1/12) - 1;
-        let pmt = (obj - ini * Math.pow(1+i, mes)) / ( (Math.pow(1+i, mes) - 1) / i );
-        if(pmt < 0) pmt = 0;
-
-        document.getElementById('resMetaMensal').innerText = pmt.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('meta-res').style.display = 'block';
+        let total = ini;
+        let investido = ini;
         
-        try {
-            const ctx = document.getElementById('chartMeta').getContext('2d');
-            if (chartMetaInst) chartMetaInst.destroy();
-            let labels=[], data=[], saldo=ini;
-            for(let m=0; m<=mes; m++) { if(m%6===0 || m===mes) { labels.push(m); data.push(saldo); } saldo = saldo*(1+i)+pmt; }
-            chartMetaInst = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: 'Evolução da Meta', data: data, borderColor: '#00d26a', fill: true }] } });
-        } catch(e) { console.log("Erro gráfico meta", e); }
+        // Arrays para o gráfico
+        let labels = [];
+        let dataTotal = [];
+        let dataInv = [];
+
+        for(let c=0; c<=meses; c++) {
+            if(c > 0) {
+                total = total * (1+i) + men;
+                investido += men;
+            }
+            if(c % 6 === 0 || c === meses) { // Otimiza gráfico
+                labels.push(c);
+                dataTotal.push(total);
+                dataInv.push(investido);
+            }
+        }
+
+        // Exibe Resultados
+        let fmt = {style:'currency', currency:'BRL'};
+        document.getElementById('res_total').innerText = total.toLocaleString('pt-BR', fmt);
+        document.getElementById('res_inv').innerText = investido.toLocaleString('pt-BR', fmt);
+        document.getElementById('res_juros').innerText = (total - investido).toLocaleString('pt-BR', fmt);
+        document.getElementById('resultado').style.display = 'block';
+
+        // Gera Gráfico
+        const ctx = document.getElementById('chart').getContext('2d');
+        if(myChart) myChart.destroy();
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Total', data: dataTotal, borderColor: '#8B0000', backgroundColor: 'rgba(139,0,0,0.1)', fill: true },
+                    { label: 'Investido', data: dataInv, borderColor: '#555', borderDash: [5,5], fill: false }
+                ]
+            }
+        });
+
+        // Salva para PDF
+        pdfValues = { total: document.getElementById('res_total').innerText, inv: document.getElementById('res_inv').innerText };
     }
 
-    async function gerarPDF() {
+    // --- 3. PDF ---
+    async function baixarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(22); doc.setTextColor(139,0,0);
         doc.text("JurosWeb - Relatório", 20, 20);
-        doc.setFontSize(12); doc.setTextColor(0,0,0);
-        doc.text(`Total Investido: ${pdfData.investido}`, 20, 40);
-        doc.text(`Saldo Final: ${pdfData.total}`, 20, 50);
-        doc.text(`Poder de Compra: ${pdfData.liquido}`, 20, 60);
+        doc.text(`Total Acumulado: ${pdfValues.total}`, 20, 40);
+        doc.text(`Total Investido: ${pdfValues.inv}`, 20, 50);
         
         try {
-            const canvas = document.getElementById('chartRendimento');
-            const imgData = canvas.toDataURL('image/png');
-            doc.addImage(imgData, 'PNG', 20, 70, 170, 90);
+            const canvas = document.getElementById('chart');
+            const img = canvas.toDataURL("image/png");
+            doc.addImage(img, 'PNG', 15, 60, 180, 100);
         } catch(e) {}
         
-        doc.save('relatorio_jurosweb.pdf');
+        doc.save("simulacao.pdf");
     }
 
-    // --- 3. NOTÍCIAS & TICKER (COM IMAGENS LOCAIS) ---
-    async function loadNews(termo = '') {
-        const query = termo || 'investimentos mercado financeiro brasil';
-        
-        // BACKUPS LOCAIS (PASTA IMG)
-        const backups = [ 'IMG/news1.jpg', 'IMG/news2.jpg', 'IMG/news3.jpg', 'IMG/news4.jpg', 'IMG/news5.jpg', 'IMG/news6.jpg' ];
+    // --- 4. NOTÍCIAS BLINDADAS (HÍBRIDAS) ---
+    // Links de Imagens Garantidos
+    const imgBackups = [
+        'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=600&q=80',
+        'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80',
+        'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&q=80',
+        'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?w=600&q=80',
+        'https://images.unsplash.com/photo-1554224155-9ffd48f43606?w=600&q=80',
+        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80'
+    ];
+
+    // Dados de Notícia "Offline" (Se a API falhar, usa isso)
+    const fallbackNews = [
+        {title: "Ibovespa fecha em alta com otimismo fiscal", date: "Hoje"},
+        {title: "Dólar recua aguardando decisão do FED", date: "Hoje"},
+        {title: "Banco Central mantém taxa Selic estável", date: "Ontem"},
+        {title: "Entenda como investir em Fundos Imobiliários", date: "Ontem"},
+        {title: "Bitcoin supera marca histórica de valorização", date: "2 dias atrás"},
+        {title: "Petrobras anuncia novos dividendos", date: "2 dias atrás"}
+    ];
+
+    async function carregarNoticias(termo = '') {
+        const query = termo || 'investimentos brasil';
         const grid = document.getElementById('newsGrid');
         
-        const renderNews = (items) => {
+        // Função interna para desenhar
+        const render = (lista) => {
             grid.innerHTML = '';
-            items.forEach((item, idx) => {
-                let img = backups[idx % backups.length];
-                // Tenta link da API, se não tiver, usa local
+            lista.forEach((item, i) => {
+                let img = imgBackups[i % imgBackups.length];
+                // Tenta pegar imagem real se existir
                 if(item.enclosure?.link) img = item.enclosure.link;
                 
                 grid.innerHTML += `
-                <a href="${item.link}" target="_blank" class="news-card">
-                    <div class="news-img-box"><img src="${img}" onerror="this.src='${backups[idx % backups.length]}'"></div>
-                    <div class="news-body">
-                        <div class="news-tag">Mercado</div>
-                        <div class="news-title">${item.title}</div>
-                        <div class="news-meta">📅 ${new Date(item.pubDate).toLocaleDateString()}</div>
+                <a href="${item.link || '#'}" target="_blank" class="news-item">
+                    <img src="${img}" class="news-thumb">
+                    <div class="news-info">
+                        <div class="news-h">${item.title}</div>
+                        <div class="news-date">📅 ${item.pubDate ? new Date(item.pubDate).toLocaleDateString() : item.date}</div>
                     </div>
                 </a>`;
             });
         };
 
         try {
+            // Tenta buscar na API
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`);
             const data = await res.json();
             
             if(data.status === 'ok' && data.items.length > 0) {
-                renderNews(data.items.slice(0, 6));
+                render(data.items.slice(0, 6)); // Sucesso: usa API
+                // Atualiza destaque
                 document.getElementById('heroTitle').innerText = data.items[0].title;
-            } else { throw new Error("Vazio"); }
+                document.getElementById('heroLink').href = data.items[0].link;
+            } else {
+                throw new Error("API Falhou");
+            }
         } catch(e) {
-            console.log("Modo Offline");
-            const fakeNews = [
-                {title: "Ibovespa opera em alta com otimismo no cenário fiscal", pubDate: new Date(), link: "#"},
-                {title: "Dólar recua frente ao real após novos dados dos EUA", pubDate: new Date(), link: "#"},
-                {title: "Banco Central sinaliza manutenção da taxa Selic", pubDate: new Date(), link: "#"},
-                {title: "Empresas de tecnologia lideram ganhos na bolsa hoje", pubDate: new Date(), link: "#"},
-                {title: "Entenda como a inflação impacta seus investimentos", pubDate: new Date(), link: "#"},
-                {title: "Bitcoin atinge nova máxima histórica nesta manhã", pubDate: new Date(), link: "#"}
-            ];
-            renderNews(fakeNews);
+            console.log("Usando Backup de Notícias");
+            render(fallbackNews); // Falha: usa notícias fixas
         }
     }
 
-    function realizarBusca() {
+    // --- 5. BUSCA ---
+    function buscar() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            loadNews(val);
-            document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
+            carregarNoticias(val);
+            document.getElementById('newsGrid').scrollIntoView({behavior:'smooth'});
         }
     }
+    
+    // Ativa enter na busca
+    document.getElementById('campoBusca').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') buscar();
+    });
 
-    function loadTicker() {
-        const stocks = [
-            {n:'IBOV', v:'128.500', c:'up', p:'+0.8%'}, {n:'PETR4', v:'38,20', c:'down', p:'-1.2%'}, 
-            {n:'VALE3', v:'62,50', c:'up', p:'+0.5%'}, {n:'DÓLAR', v:'5,22', c:'up', p:'+0.1%'},
-            {n:'BITCOIN', v:'$95k', c:'up', p:'+2%'}, {n:'CDI', v:'10,75%', c:'up', p:''}
-        ];
-        let tickerHTML = '';
-        let rankingHTML = '';
-        
-        [...stocks, ...stocks].forEach(s => {
-            let arrow = s.c==='up' ? '▲' : '▼';
-            tickerHTML += `<span class="stock-item">${s.n} <span class="stock-${s.c}">${s.v} ${arrow}</span></span>`;
-            if(rankingHTML.length < 500) rankingHTML += `<li class="ranking-item"><span class="rank-name">${s.n}</span><span class="rank-val ${s.c}">${s.v} ${s.p}</span></li>`;
-        });
-        document.getElementById('stockTicker').innerHTML = tickerHTML;
-        document.getElementById('rankingList').innerHTML = rankingHTML;
-    }
+    // --- 6. TICKER ---
+    const ticks = [
+        {n:'IBOV', v:'128k', c:'up'}, {n:'PETR4', v:'38.20', c:'down'}, 
+        {n:'VALE3', v:'62.50', c:'up'}, {n:'DÓLAR', v:'5.22', c:'up'},
+        {n:'BTC', v:'$96k', c:'up'}
+    ];
+    let tickHtml = '';
+    [...ticks, ...ticks].forEach(t => {
+        let arrow = t.c==='up'?'▲':'▼';
+        tickHtml += `<span class="tick">${t.n} <span class="${t.c}">${t.v} ${arrow}</span></span>`;
+    });
+    document.getElementById('tickerContent').innerHTML = tickHtml;
 
-    // Inicialização
-    window.onload = function() {
-        carregarNoticias();
-        loadTicker();
-        
-        const campoBusca = document.getElementById('campoBusca');
-        if(campoBusca) {
-            campoBusca.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') realizarBusca();
-            });
-        }
-    };
+    // INICIAR
+    carregarNoticias();
 </script>
 
 </body>
