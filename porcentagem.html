@@ -3,199 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Porcentagem Online. Calcule descontos, aumentos e variações percentuais.">
     <title>Calculadora de Porcentagem | JurosWeb</title>
-
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-3C46NXBG96');
-    </script>
-    
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2032917726612847" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #004494; --accent: #00d26a; --text: #333; --bg: #f4f6f9; --white: #ffffff; }
+        /* (MESMO CSS DA REGRA DE 3 PARA MANTER PADRÃO) */
+        :root { --primary: #8B0000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .logo i { color: var(--accent); }
+        .nav-links a { color: white; text-decoration: none; font-weight: 600; margin-left: 20px; text-transform: uppercase; font-size: 0.85rem; float:right; margin-top:5px;}
         
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        .grid-calc { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin: 40px 0; }
+        .card { background: white; padding: 30px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .card h3 { color: var(--primary); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 1.1rem; }
         
-        /* HEADER PORTAL */
-        header { background: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.1); padding: 15px 0; margin-bottom: 30px; }
-        .header-content { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; flex-wrap: wrap; gap: 20px; }
-        .logo-area { display: flex; align-items: center; gap: 10px; color: white; text-decoration: none; font-size: 1.5rem; font-weight: 800; }
-        .logo-area img { height: 45px; background: white; border-radius: 8px; padding: 2px; }
-        .nav-links { display: flex; gap: 25px; }
-        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: 0.3s; }
-        .nav-links a:hover { color: white; }
-        .btn-cta { background: var(--accent); color: #003366 !important; padding: 8px 20px; border-radius: 5px; font-weight: 800 !important; }
-
-        .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-
-        /* UI FERRAMENTA */
-        .tool-header { text-align: center; margin-bottom: 40px; }
-        .tool-header h1 { color: var(--primary); margin-bottom: 5px; }
-        .tool-header p { color: #666; }
-
-        .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        input { padding: 10px; border: 2px solid #eee; border-radius: 4px; width: 80px; text-align: center; font-weight: bold; }
+        input:focus { border-color: var(--primary); outline: none; }
         
-        .card { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 5px solid var(--primary); transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .calc-row { display: flex; align-items: center; gap: 10px; margin: 20px 0; flex-wrap: wrap; }
+        .btn-small { background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .result-small { font-weight: 900; color: var(--primary); font-size: 1.2rem; margin-left: auto; }
         
-        .card h3 { margin-top: 0; color: #444; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; font-weight: 700; }
-        
-        .input-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #eee; }
-        .input-row span { font-weight: 600; color: #555; font-size: 0.9rem; white-space: nowrap; }
-        
-        input { width: 100%; padding: 8px; border: 2px solid #ddd; border-radius: 6px; text-align: center; font-size: 1.1rem; font-weight: bold; color: var(--primary); outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--primary); background: #fff; }
-        
-        button { background: var(--accent); color: #003366; border: none; padding: 12px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 1rem; margin-top: 10px; transition: 0.3s; }
-        button:hover { background: #00b359; transform: translateY(-2px); }
-
-        .result { background: #eef2f7; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center; font-weight: bold; color: #333; display: none; border: 1px solid #dce4ec; }
-        .result strong { color: var(--primary); font-size: 1.4rem; display: block; margin-top: 5px; }
-
-        .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 30px 0; font-size: 0.8rem; color: #999; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
-        footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; background: white; }
+        footer { background: #111; color: #999; padding: 40px 0; margin-top: auto; text-align: center; font-size: 0.9rem; border-top: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-content">
-        <a href="index.html" class="logo-area"><img src="logo.png" id="logoSite" alt="JurosWeb"><span>JurosWeb</span></a>
-        <div class="nav-links">
-            <a href="index.html">Início</a>
-            <a href="index.html#noticias">Notícias</a>
-            <a href="utilidades.html" class="btn-cta">Simuladores</a>
-        </div>
+    <div class="container">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="index.html">Voltar</a></nav>
     </div>
 </header>
 
 <div class="container">
-    <div class="tool-header">
-        <h1>Calculadora de Porcentagem</h1>
-        <p>Escolha o tipo de cálculo abaixo e resolva em segundos.</p>
-    </div>
-
-    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
-
-    <div class="calc-grid">
-        
+    <h2 style="margin-top:40px; color:var(--primary);">Calculadoras de Porcentagem</h2>
+    
+    <div class="grid-calc">
         <div class="card">
-            <h3><i class="fas fa-percentage"></i> Quanto vale X% de Y?</h3>
-            <div class="input-row">
+            <h3>Quanto é X% de um valor?</h3>
+            <div class="calc-row">
                 <span>Quanto é</span>
-                <input type="number" id="c1_num1" placeholder="20">
+                <input type="number" id="p1_taxa" placeholder="10">
+                <span>% de</span>
+                <input type="number" id="p1_val" placeholder="100">
+            </div>
+            <div class="calc-row">
+                <button class="btn-small" onclick="calc1()">Calcular</button>
+                <span class="result-small" id="res1">0</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>O valor X é qual % do total?</h3>
+            <div class="calc-row">
+                <span>O valor</span>
+                <input type="number" id="p2_part" placeholder="20">
+                <span>é quantos % de</span>
+                <input type="number" id="p2_total" placeholder="100">
+            </div>
+            <div class="calc-row">
+                <button class="btn-small" onclick="calc2()">Calcular</button>
+                <span class="result-small" id="res2">0%</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Aumento Percentual (Soma)</h3>
+            <div class="calc-row">
+                <span>Valor</span>
+                <input type="number" id="p3_val" placeholder="100">
+                <span>+ mais</span>
+                <input type="number" id="p3_taxa" placeholder="10">
                 <span>%</span>
             </div>
-            <div class="input-row">
-                <span>de</span>
-                <input type="number" id="c1_num2" placeholder="500">
+            <div class="calc-row">
+                <button class="btn-small" onclick="calc3()">Calcular</button>
+                <span class="result-small" id="res3">0</span>
             </div>
-            <button onclick="calc1()">CALCULAR</button>
-            <div id="res1" class="result">Resultado: <strong id="val1">0</strong></div>
         </div>
-
-        <div class="card">
-            <h3><i class="fas fa-chart-pie"></i> X é quantos % de Y?</h3>
-            <div class="input-row">
-                <span>O valor</span>
-                <input type="number" id="c2_num1" placeholder="50">
-            </div>
-            <div class="input-row">
-                <span>é quantos % de</span>
-                <input type="number" id="c2_num2" placeholder="200">
-            </div>
-            <button onclick="calc2()">CALCULAR</button>
-            <div id="res2" class="result">Resultado: <strong id="val2">0%</strong></div>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-chart-line"></i> Aumento ou Desconto</h3>
-            <div class="input-row">
-                <span>Valor Inicial</span>
-                <input type="number" id="c3_num1" placeholder="100">
-            </div>
-            <div class="input-row">
-                <span>Valor Final</span>
-                <input type="number" id="c3_num2" placeholder="150">
-            </div>
-            <button onclick="calc3()">CALCULAR</button>
-            <div id="res3" class="result">Variação de: <strong id="val3">0%</strong></div>
-        </div>
-
     </div>
-
-    <div class="seo-article">
-        <h2 style="color: #004494;">Como Calcular Porcentagem de Forma Simples</h2>
-        <p>A porcentagem é essencial para finanças, descontos em lojas e aumentos salariais. Nossa ferramenta resolve os três problemas mais comuns:</p>
-        <ol>
-            <li><strong>Descobrir o valor:</strong> "Quanto é 20% de R$ 500?" (Ideal para saber o valor de um desconto).</li>
-            <li><strong>Descobrir a taxa:</strong> "R$ 50 é quantos por cento de R$ 200?" (Ideal para saber quanto economizou).</li>
-            <li><strong>Variação Percentual:</strong> "O preço subiu de 100 para 150. Qual foi o aumento?" (Fundamental para investidores).</li>
-        </ol>
-    </div>
-
-    <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
-
-    <footer>
-        <p>&copy; 2026 JurosWeb.com.br</p>
-        <p style="margin-top: 10px;"><a href="politica.html" style="color: #999; text-decoration: none;">Política de Privacidade</a></p>
-    </footer>
-
 </div>
 
+<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+
 <script>
-    function formatar(valor) {
-        return valor.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
-    }
-
-    // Calc 1: Quanto é X% de Y
     function calc1() {
-        let pct = parseFloat(document.getElementById('c1_num1').value);
-        let total = parseFloat(document.getElementById('c1_num2').value);
-        if(isNaN(pct) || isNaN(total)) return;
-        let res = (pct / 100) * total;
-        document.getElementById('val1').innerText = formatar(res);
-        document.getElementById('res1').style.display = 'block';
+        let pct = parseFloat(document.getElementById('p1_taxa').value);
+        let val = parseFloat(document.getElementById('p1_val').value);
+        if(pct && val) document.getElementById('res1').innerText = ((val * pct) / 100).toFixed(2);
     }
-
-    // Calc 2: X é quantos % de Y
     function calc2() {
-        let parte = parseFloat(document.getElementById('c2_num1').value);
-        let total = parseFloat(document.getElementById('c2_num2').value);
-        if(isNaN(parte) || isNaN(total)) return;
-        let res = (parte / total) * 100;
-        document.getElementById('val2').innerText = formatar(res) + '%';
-        document.getElementById('res2').style.display = 'block';
+        let part = parseFloat(document.getElementById('p2_part').value);
+        let total = parseFloat(document.getElementById('p2_total').value);
+        if(part && total) document.getElementById('res2').innerText = ((part / total) * 100).toFixed(2) + '%';
     }
-
-    // Calc 3: Variação (Aumento/Queda)
     function calc3() {
-        let inicio = parseFloat(document.getElementById('c3_num1').value);
-        let fim = parseFloat(document.getElementById('c3_num2').value);
-        if(isNaN(inicio) || isNaN(fim)) return;
-        let diferenca = fim - inicio;
-        let res = (diferenca / inicio) * 100;
-        
-        let texto = res > 0 ? "📈 Aumento de " : "📉 Queda de ";
-        document.getElementById('val3').innerText = texto + formatar(Math.abs(res)) + '%';
-        
-        let elemVal3 = document.getElementById('val3');
-        if(res > 0) elemVal3.style.color = '#00d26a'; // Verde
-        else if(res < 0) elemVal3.style.color = '#dc3545'; // Vermelho
-        else elemVal3.style.color = '#333';
-
-        document.getElementById('res3').style.display = 'block';
+        let val = parseFloat(document.getElementById('p3_val').value);
+        let pct = parseFloat(document.getElementById('p3_taxa').value);
+        if(val && pct) document.getElementById('res3').innerText = (val * (1 + pct/100)).toFixed(2);
     }
 </script>
-
 </body>
 </html>
