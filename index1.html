@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="Portal JurosWeb. Cotações da B3, Notícias de Economia e Simuladores de Investimento.">
-    <title>JurosWeb | Portal Financeiro e Calculadoras</title>
+    <title>JurosWeb | Portal Financeiro</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3C46NXBG96"></script>
     <script>
@@ -21,18 +21,50 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        :root { --primary: #0056b3; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; --danger: #dc3545; }
+        :root { --primary: #0056b3; --primary-dark: #004494; --secondary: #28a745; --text: #333; --bg: #f4f6f9; --white: #ffffff; --danger: #dc3545; --warning: #e67e22; }
         
         body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
         
-        /* --- TICKER DE AÇÕES (NOVIDADE) --- */
-        .stock-ticker-wrap { background: #1a1a1a; color: white; overflow: hidden; height: 40px; line-height: 40px; position: relative; border-bottom: 3px solid var(--secondary); }
-        .stock-ticker { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; padding-left: 100%; }
-        .stock-item { display: inline-block; margin-right: 30px; font-weight: bold; font-size: 0.9rem; }
-        .stock-up { color: #00ff00; }
-        .stock-down { color: #ff4444; }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+        /* --- TICKER CUSTOMIZADO (AZUL E LENTO) --- */
+        .stock-ticker-wrap {
+            background: var(--primary); /* AZUL DO SITE */
+            color: white;
+            overflow: hidden;
+            height: 45px;
+            line-height: 45px;
+            position: relative;
+            border-bottom: 4px solid var(--secondary); /* Linha verde embaixo para destaque */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
         
+        .stock-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            /* 45s = Bem devagar. Aumente para ficar mais lento ainda */
+            animation: ticker 45s linear infinite; 
+            padding-left: 100%; /* Começa fora da tela */
+        }
+
+        /* Pausa a animação quando passa o mouse */
+        .stock-ticker-wrap:hover .stock-ticker {
+            animation-play-state: paused;
+        }
+
+        .stock-item {
+            display: inline-block;
+            margin-right: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        .stock-up { color: #81ff9d; font-weight: bold; } /* Verde claro para ler no azul */
+        .stock-down { color: #ff9999; font-weight: bold; } /* Vermelho claro para ler no azul */
+
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
 
         /* HEADER & MENU */
@@ -45,19 +77,23 @@
         .menu-links a:hover { color: var(--primary); }
         .menu-links a.active { color: var(--primary); }
 
-        /* --- SESSÃO DE NOTÍCIAS (NOVIDADE) --- */
+        /* --- SESSÃO DE NOTÍCIAS --- */
         .news-section { margin-top: 50px; }
-        .section-title { border-left: 5px solid var(--secondary); padding-left: 15px; color: #333; margin-bottom: 20px; }
+        .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .section-title { border-left: 5px solid var(--secondary); padding-left: 15px; color: #333; margin: 0; font-size: 1.5rem; }
+        .last-update { font-size: 0.8rem; color: #888; }
+        
         .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .news-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; }
-        .news-card:hover { transform: translateY(-5px); }
-        .news-img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
-        .news-content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .news-title { font-size: 1rem; font-weight: bold; margin-bottom: 10px; color: #333; line-height: 1.4; }
-        .news-date { font-size: 0.8rem; color: #999; margin-bottom: 10px; }
-        .news-link { text-decoration: none; color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+        .news-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; display: flex; flex-direction: column; height: 100%; border: 1px solid #eee; }
+        .news-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .news-tag { background: var(--primary); color: white; padding: 4px 10px; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; width: fit-content; border-radius: 4px; margin-bottom: 10px; }
+        .news-content { padding: 25px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .news-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: #222; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .news-meta { font-size: 0.85rem; color: #999; margin-bottom: 15px; display: flex; align-items: center; gap: 5px; }
+        .news-link { text-decoration: none; color: var(--primary); font-weight: bold; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 5px; }
+        .news-link:hover { text-decoration: underline; }
 
-        /* REAPROVEITANDO CSS DA CALCULADORA */
+        /* CALCULADORA (CSS) */
         .tabs { display: flex; justify-content: center; margin-bottom: 20px; border-bottom: 2px solid #e9ecef; }
         .tab-btn { padding: 15px 30px; border: none; background: none; font-size: 1.1rem; font-weight: 600; color: #6c757d; cursor: pointer; transition: 0.3s; border-bottom: 3px solid transparent; }
         .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
@@ -71,24 +107,43 @@
         label { display: block; margin-bottom: 5px; font-weight: 600; color: #555; font-size: 0.9rem; }
         input { width: 100%; padding: 12px; border: 2px solid #dfe6e9; border-radius: 8px; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
         input:focus { border-color: var(--primary); outline: none; }
+        .toggles-area { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; }
+        .toggle-group { display: flex; align-items: center; margin-bottom: 12px; }
+        .toggle-label { display: flex; align-items: center; font-size: 0.95rem; margin: 0; cursor: pointer; width: 100%; gap: 10px; }
+        .toggle-label input[type="checkbox"] { margin: 0; width: 20px; height: 20px; flex-shrink: 0; }
+        .tooltip { position: relative; display: inline-block; border-bottom: 1px dotted black; cursor: help; margin-left: 5px; color: var(--primary); font-weight: bold; width: 18px; height: 18px; text-align: center; border-radius: 50%; border: 1px solid var(--primary); font-size: 12px; line-height: 16px; }
+        .tooltip .tooltiptext { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: normal; }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
         .btn-calc { width: 100%; padding: 15px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
         .btn-calc:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        .btn-pdf { background-color: #dc3545; margin-top: 20px; font-size: 14px; padding: 10px; }
+        .result-side { background-color: #fcfcfc; display: flex; flex-direction: column; }
+        #results-area, #results-area-meta { display: none; }
+        .big-number { text-align: center; margin-bottom: 15px; } .big-number span { display: block; font-weight: 800; } .big-number small { color: #888; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .extrato-box { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .extrato-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; color: #555; }
+        .extrato-row.destaque { font-weight: bold; color: #333; font-size: 1rem; border-top: 2px solid #eee; margin-top: 5px; padding-top: 10px; border-bottom: none; }
+        .val-red { color: var(--danger); font-weight: 500; } .val-orange { color: var(--warning); font-weight: 500; }
+        #msgPoupanca { background-color: #d4edda; color: #155724; padding: 15px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 20px; text-align: center; display: none; border: 1px solid #c3e6cb; }
+        .table-wrapper { margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; background: white; }
+        th { background: #e9ecef; position: sticky; top: 0; padding: 10px; text-align: right; color: #555; z-index: 1; font-weight: 700; }
+        td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #f1f1f1; color: #666; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
+        th:first-child, td:first-child { text-align: center; }
+        td.rend-mes { color: var(--secondary); font-weight: 600; }
+        .chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
+        .seo-article { background: var(--white); padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.03); color: #444; margin-top: 40px; }
+        .seo-article h2 { color: #0056b3; border-left: 5px solid var(--primary); padding-left: 15px; margin-top: 30px; }
         .ad-slot { background: #eee; border: 1px dashed #ccc; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; display: flex; align-items: center; justify-content: center; }
         footer { text-align: center; padding: 40px; color: #888; font-size: 0.9rem; border-top: 1px solid #ddd; margin-top: 40px; }
-        
-        /* Classes auxiliares da calculadora (escondidas para economizar espaço aqui, mas necessárias) */
-        .big-number { text-align: center; margin-bottom: 15px; } .big-number span { display: block; font-weight: 800; }
-        .extrato-box { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-        .extrato-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #eee; font-size: 0.95rem; color: #555; }
-        .toggles-area { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .result-side { display:none; } /* Inicia escondido */
     </style>
 </head>
 <body>
 
 <div class="stock-ticker-wrap">
     <div class="stock-ticker" id="stockTicker">
-        <span class="stock-item">Carregando cotações B3...</span>
+        <span class="stock-item">Carregando mercado...</span>
     </div>
 </div>
 
@@ -106,105 +161,233 @@
                 </div>
             </div>
         </nav>
+        <div style="text-align: center;">
+            <p style="color: #7f8c8d; margin-top: 0; margin-bottom: 0;">Portal de Finanças e Calculadoras</p>
+        </div>
     </header>
-
-    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('rendimento')">Simular Investimento</button>
         <button class="tab-btn" onclick="openTab('meta')">Calcular Meta</button>
     </div>
 
+    <div class="ad-slot" style="height: 90px;">Publicidade Topo</div>
+
     <div id="rendimento" class="tab-content active">
         <div class="calc-wrapper">
             <div class="form-side padding-box">
-                <div class="input-group"><label>Valor Inicial</label><input type="text" id="valorInicial" class="money-input" placeholder="R$ 0,00"></div>
-                <div class="input-group"><label>Aporte Mensal</label><input type="text" id="aporteMensal" class="money-input" placeholder="R$ 0,00"></div>
-                <div class="input-group"><label>Taxa Anual (%)</label><input type="number" id="taxaJuros" placeholder="10.5"></div>
-                <div class="input-group"><label>Anos</label><input type="number" id="anos" placeholder="5"></div>
-                <button class="btn-calc" onclick="calcularRendimento()">Simular Agora</button>
-            </div>
-            <div class="result-side padding-box" style="display:block; text-align:center; padding-top:100px; color:#999;" id="placeholderResult">
-                <h3>Preencha ao lado para simular</h3>
-                <p>Veja a mágica dos juros compostos acontecer.</p>
-            </div>
-             <div class="result-side padding-box" id="results-area" style="display:none;">
-                <h3 style="margin-top:0; text-align:center;">Resultado</h3>
-                <div class="big-number"><small>Saldo Total</small><span id="resTotalBruto" style="color:var(--primary); font-size:2rem;">R$ 0,00</span></div>
+                <div class="input-group">
+                    <label>Valor Inicial</label>
+                    <input type="text" id="valorInicial" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
                 </div>
-        </div>
-    </div>
-    
-    <div id="meta" class="tab-content">
-        <div style="text-align:center; padding: 40px; background:white; border-radius:15px;">
-            <h3>Calculadora de Meta Financeira</h3>
-            <p>Em breve aqui (use o código original para preencher)</p>
+                <div class="input-group">
+                    <label>Aporte Mensal</label>
+                    <input type="text" id="aporteMensal" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Taxa de Juros Anual (%)</label>
+                    <input type="number" id="taxaJuros" placeholder="10.5" inputmode="decimal">
+                </div>
+                <div class="input-group">
+                    <label>Período (Anos)</label>
+                    <input type="number" id="anos" placeholder="5" inputmode="numeric">
+                </div>
+
+                <div class="toggles-area">
+                    <div class="toggle-group">
+                        <label class="toggle-label"><input type="checkbox" id="checkIR"> Descontar Imposto de Renda</label>
+                    </div>
+                    <div class="toggle-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="checkInflacao"> Descontar Inflação
+                            <div class="tooltip">?
+                                <span class="tooltiptext">Remove o efeito da inflação para mostrar o "Poder de Compra Real".</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="boxInflacao" style="display:none; margin-top:10px; padding-left: 30px;">
+                        <label style="font-size: 0.8rem;">IPCA Esperado (% a.a.)</label>
+                        <input type="number" id="taxaInflacao" value="4.5" step="0.1">
+                    </div>
+                </div>
+
+                <button class="btn-calc" onclick="calcularRendimento()">Calcular Tudo</button>
+            </div>
+
+            <div class="result-side padding-box">
+                <div id="intro-rendimento" style="text-align: center; color: #999; margin-top: 50px;">
+                    <p>Preencha os valores para simular.</p>
+                </div>
+                
+                <div id="results-area">
+                    <h3 style="margin-top:0; color: #444; text-align: center;">Resultado da Simulação</h3>
+                    
+                    <div class="big-number">
+                        <small>Saldo Final Estimado</small>
+                        <span id="resTotalBruto" style="color: var(--primary); font-size: 2.5rem;">R$ 0,00</span>
+                    </div>
+
+                    <div class="extrato-box">
+                        <div class="extrato-row">
+                            <span>Total Investido</span>
+                            <span id="resInvestido">R$ 0,00</span>
+                        </div>
+                        <div class="extrato-row">
+                            <span>(+) Rendimento Total</span>
+                            <span id="resBrutoJuros" style="color: var(--secondary);">R$ 0,00</span>
+                        </div>
+                        
+                        <div id="rowIR" class="extrato-row" style="display:none;">
+                            <span>(-) Imposto de Renda</span>
+                            <span id="resIR" class="val-red">- R$ 0,00</span>
+                        </div>
+                        <div id="rowInflacao" class="extrato-row" style="display:none;">
+                            <span>(i) Perda Inflacionária</span>
+                            <span id="resInflacao" class="val-orange">- R$ 0,00</span>
+                        </div>
+
+                        <div class="extrato-row destaque" style="background: #fdfdfd; padding-top: 15px; margin-top: 10px; border-top: 1px solid #eee;">
+                            <span style="font-size: 0.9rem; color: #777;">Poder de Compra Real (Hoje)</span>
+                            <span id="resTotalLiquido" style="color: #444; font-size: 1.2rem;">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <div id="msgPoupanca">
+                        💡 <strong>Entenda o resultado:</strong><br>
+                        Seu dinheiro cresceu, mas os preços no mercado também sobem.
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="chartRendimento"></canvas>
+                    </div>
+                    
+                    <h4 style="margin-top: 30px; margin-bottom: 10px; color: #555;">Evolução Mensal</h4>
+                    <div class="table-wrapper">
+                        <table id="tabelaEvolucao">
+                            <thead>
+                                <tr><th>Mês</th><th>Investido</th><th>Rend. Mês</th><th>Saldo Total</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')">📄 Baixar Relatório (PDF)</button>
+
+                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
+                </div>
+            </div>
         </div>
     </div>
 
+    <div id="meta" class="tab-content">
+        <div class="calc-wrapper">
+            <div class="form-side padding-box">
+                <div class="input-group">
+                    <label>Quanto você quer juntar?</label>
+                    <input type="text" id="metaValor" class="money-input" placeholder="R$ 1.000.000,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Em quanto tempo? (Anos)</label>
+                    <input type="number" id="metaAnos" placeholder="10" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Valor Inicial (Opcional)</label>
+                    <input type="text" id="metaInicial" class="money-input" placeholder="R$ 0,00" inputmode="numeric">
+                </div>
+                <div class="input-group">
+                    <label>Rentabilidade Anual (%)</label>
+                    <input type="number" id="metaTaxa" placeholder="10" inputmode="decimal">
+                </div>
+                <button class="btn-calc" style="background-color: var(--secondary);" onclick="calcularMeta()">Calcular Aporte</button>
+            </div>
+
+            <div class="result-side padding-box">
+                <div id="intro-meta" style="text-align: center; color: #999; margin-top: 50px;">
+                    <p>Defina seu sonho e descubra o plano.</p>
+                </div>
+                <div id="results-area-meta">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <small>Investimento Mensal Necessário</small>
+                        <span id="resMetaMensal" style="display:block; font-size: 2rem; font-weight: 800; color: var(--secondary);">R$ 0,00</span>
+                    </div>
+                    <div style="background: #eef2f7; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="margin: 0; font-size: 0.9rem;">Para acumular <strong id="txtMetaAlvo">R$ 0</strong> em <strong id="txtMetaAnos">0</strong> anos.</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartMeta"></canvas>
+                    </div>
+                    <button class="btn-calc btn-pdf" onclick="gerarPDF('meta')">📄 Baixar Planejamento</button>
+                    
+                    <div class="ad-slot" style="height: 60px;">Publicidade</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="news-section">
-        <h2 class="section-title">Últimas do Mercado</h2>
+        <div class="section-header">
+            <h2 class="section-title">Últimas do Mercado</h2>
+            <span class="last-update" id="lastUpdate">Atualizado agora</span>
+        </div>
+        
         <div class="news-grid" id="newsGrid">
-            <p style="text-align:center; width:100%; color:#999;">Carregando notícias...</p>
+            <p style="text-align:center; width:100%; color:#999; padding: 20px;">Carregando notícias...</p>
         </div>
     </div>
 
-
-    <div class="seo-article" style="background: white; padding: 40px; border-radius: 15px; margin-top: 40px; color: #444;">
-        <h2 style="color: #0056b3;">Portal JurosWeb: Sua Central Financeira</h2>
-        <p>Bem-vindo ao novo JurosWeb. Além das nossas tradicionais calculadoras de rendimento e juros compostos, agora você acompanha as cotações da B3 em tempo real e as principais notícias de economia.</p>
+    <div class="seo-article">
+        <h2>Entendendo seus Rendimentos</h2>
+        <p>A JurosWeb é sua aliada na construção de patrimônio. Diferente das calculadoras comuns, nós mostramos a "verdade financeira": o impacto da inflação e do imposto de renda no seu bolso.</p>
+        <p>Agora, com nosso <strong>Portal de Notícias Automático</strong>, você também acompanha o que afeta seus investimentos em tempo real.</p>
+        <div class="ad-slot" style="height: 90px;">Publicidade</div>
     </div>
 
-    <div class="ad-slot" style="height: 90px;">Publicidade Rodapé</div>
-
     <footer>
-        <p>&copy; 2026 JurosWeb.com.br</p>
-        <p style="margin-top: 10px;"><a href="politica.html" style="color: #999; text-decoration: none;">Política de Privacidade</a></p>
+        <p>&copy; 2026 JurosWeb.com.br - Todos os direitos reservados.</p>
+        <p style="margin-top: 10px;">
+            <a href="politica.html" style="color: #999; text-decoration: none; font-size: 0.85rem;">Política de Privacidade</a>
+        </p>
     </footer>
 
 </div>
 
 <script>
-    // 1. CARREGAR NOTÍCIAS (Via RSS do Google News convertido para JSON)
-    async function fetchNews() {
-        const apiKey = 'rss2json'; // Usando serviço público rss2json
-        const rssUrl = 'https://news.google.com/rss/search?q=economia+brasil&hl=pt-BR&gl=BR&ceid=BR:pt-419';
+    // --- 1. LÓGICA DE NOTÍCIAS AUTOMÁTICAS ---
+    async function carregarNoticias() {
+        const rssUrl = 'https://news.google.com/rss/search?q=investimentos+brasil+economia&hl=pt-BR&gl=BR&ceid=BR:pt-419';
         const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
 
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
-            const newsContainer = document.getElementById('newsGrid');
-            newsContainer.innerHTML = ''; // Limpa loading
+            const grid = document.getElementById('newsGrid');
+            grid.innerHTML = ''; 
 
-            // Pega as 3 primeiras notícias apenas para não poluir
             data.items.slice(0, 3).forEach(item => {
-                // Tenta extrair imagem ou usa padrão
-                let imgUrl = item.enclosure?.link || 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=500&q=60';
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                const dataPub = new Date(item.pubDate).toLocaleDateString('pt-BR', {day: '2-digit', month: 'long'});
                 
-                const card = `
-                    <div class="news-card">
-                        <img src="${imgUrl}" class="news-img" alt="Notícia">
-                        <div class="news-content">
-                            <div>
-                                <div class="news-title">${item.title}</div>
-                                <div class="news-date">${new Date(item.pubDate).toLocaleDateString('pt-BR')}</div>
-                            </div>
-                            <a href="${item.link}" target="_blank" class="news-link">Ler notícia completa →</a>
+                card.innerHTML = `
+                    <div class="news-content">
+                        <div>
+                            <div class="news-tag">Mercado</div>
+                            <div class="news-title">${item.title}</div>
+                            <div class="news-meta">📅 ${dataPub} • 📰 Google News</div>
                         </div>
+                        <a href="${item.link}" target="_blank" class="news-link">Ler notícia completa →</a>
                     </div>
                 `;
-                newsContainer.innerHTML += card;
+                grid.appendChild(card);
             });
-        } catch (error) {
-            console.error('Erro ao carregar notícias', error);
+            document.getElementById('lastUpdate').innerText = 'Atualizado em: ' + new Date().toLocaleTimeString();
+
+        } catch (erro) {
+            console.error(erro);
         }
     }
 
-    // 2. CARREGAR TICKER DE AÇÕES (Simulação realista para evitar Bloqueio de API paga)
-    // Para usar dados reais da B3 gratuitos, teríamos que usar a Brapi.dev (mas precisa de chave)
-    // Vou colocar aqui uma lista estática com variação aleatória para dar "vida" ao site
+    // --- 2. LÓGICA DO TICKER (SIMULADO PARA SER AZUL E LENTO) ---
     function loadTicker() {
         const stocks = [
             {t: 'IBOV', v: '128.500', up: true},
@@ -213,14 +396,16 @@
             {t: 'ITUB4', v: '33,10', up: true},
             {t: 'BBAS3', v: '27,90', up: false},
             {t: 'WEGE3', v: '25,40', up: true},
-            {t: 'B3SA3', v: '12,30', up: false},
-            {t: 'BTC', v: '250.000', up: true},
-            {t: 'USD', v: '5,15', up: true}
+            {t: 'DOLAR', v: '5,15', up: true},
+            {t: 'BITCOIN', v: '250.000', up: true}
         ];
 
         let html = '';
-        stocks.forEach(s => {
-            // Gera uma variaçãozinha aleatória só para parecer vivo
+        // Duplicamos a lista algumas vezes para o loop infinito ficar suave
+        const loopStocks = [...stocks, ...stocks, ...stocks];
+
+        loopStocks.forEach(s => {
+            // Gera uma variaçãozinha aleatória visual
             let variacao = (Math.random() * 2).toFixed(2);
             let arrow = s.up ? '▲' : '▼';
             let colorClass = s.up ? 'stock-up' : 'stock-down';
@@ -228,27 +413,309 @@
             html += `<span class="stock-item">${s.t} R$ ${s.v} <span class="${colorClass}">${arrow} ${variacao}%</span></span>`;
         });
         
-        // Duplica para o efeito infinito
-        document.getElementById('stockTicker').innerHTML = html + html + html;
+        document.getElementById('stockTicker').innerHTML = html;
     }
 
-    // INICIAR TUDO
+    // Inicialização
     window.onload = function() {
-        fetchNews();
+        carregarNoticias();
         loadTicker();
-        // Seus scripts da calculadora (máscaras, abas) devem ser chamados aqui também
     };
 
-    // --- FUNÇÕES DA CALCULADORA (MANTENHA AS SUAS AQUI) ---
-    // (Cole aqui as funções calcularRendimento(), calcularMeta(), openTab() e as máscaras que já estavam no seu index.html)
-    function openTab(name){ document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none'); document.getElementById(name).style.display='block'; }
-    function calcularRendimento(){ 
-        // Lógica simplificada só para o botão funcionar no exemplo, use a sua completa!
-        document.getElementById('placeholderResult').style.display='none';
-        document.getElementById('results-area').style.display='block';
-        document.getElementById('resTotalBruto').innerText = 'R$ Calculado...';
+
+    // --- 3. LÓGICA DA CALCULADORA (ORIGINAL) ---
+    const moneyInputs = document.querySelectorAll('.money-input');
+    moneyInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if(value === '') return;
+            value = (parseInt(value) / 100).toFixed(2) + '';
+            value = value.replace('.', ',');
+            value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+            e.target.value = 'R$ ' + value;
+        });
+    });
+    function parseMoney(str) {
+        if (!str) return 0;
+        return parseFloat(str.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
     }
 
+    let chartRend = null;
+    let chartMetaInst = null;
+    let globalTableData = [];
+    let pdfData = { bruto: 0, ir: 0, inflacao: 0, liquido: 0, investido: 0, nominal: 0 };
+
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        if(event && event.target) event.target.closest('button').classList.add('active');
+    }
+
+    document.getElementById('checkInflacao').addEventListener('change', function() {
+        document.getElementById('boxInflacao').style.display = this.checked ? 'block' : 'none';
+    });
+
+    function calcularRendimento() {
+        let P = parseMoney(document.getElementById('valorInicial').value);
+        let M = parseMoney(document.getElementById('aporteMensal').value);
+        let taxaAnual = parseFloat(document.getElementById('taxaJuros').value) || 0;
+        let anos = parseFloat(document.getElementById('anos').value) || 0;
+        let usarIR = document.getElementById('checkIR').checked;
+        let usarInflacao = document.getElementById('checkInflacao').checked;
+        let inflacaoAnual = parseFloat(document.getElementById('taxaInflacao').value) || 0;
+
+        if (anos <= 0) return alert("Informe o período em anos.");
+
+        let meses = anos * 12;
+        let i = (Math.pow(1 + (taxaAnual / 100), 1 / 12) - 1); 
+        
+        let labels = [];
+        let dataInvestido = [];
+        let dataBruto = [];
+        globalTableData = []; 
+
+        let totalInvestido = P;
+        let saldoBruto = P;
+        
+        for(let m = 0; m <= meses; m++) {
+            let rendimentoMensal = 0;
+            if (m > 0) {
+                rendimentoMensal = saldoBruto * i;
+                saldoBruto = saldoBruto + rendimentoMensal + M;
+                totalInvestido += M;
+            }
+            if (m % 6 === 0 || m === meses) { 
+                labels.push(m);
+                dataInvestido.push(totalInvestido);
+                dataBruto.push(saldoBruto);
+            }
+            if (m > 0) {
+                globalTableData.push([
+                    m, 
+                    totalInvestido.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+                    rendimentoMensal.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
+                    saldoBruto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})
+                ]);
+            }
+        }
+
+        const tbody = document.querySelector('#tabelaEvolucao tbody');
+        tbody.innerHTML = ''; 
+        const fragment = document.createDocumentFragment();
+        globalTableData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${row[0]}</td><td>${row[1]}</td><td class="rend-mes">+ ${row[2]}</td><td><strong>${row[3]}</strong></td>`;
+            fragment.appendChild(tr);
+        });
+        tbody.appendChild(fragment);
+
+        let lucroBruto = saldoBruto - totalInvestido;
+        let valorIR = 0;
+        let valorPerdaInflacao = 0;
+        let saldoLiquidoNominal = saldoBruto; 
+        let saldoFinalReal = saldoBruto; 
+
+        if (usarIR) {
+            let dias = meses * 30;
+            let aliquotaIR = 0.15;
+            if (dias <= 180) aliquotaIR = 0.225;
+            else if (dias <= 360) aliquotaIR = 0.20;
+            else if (dias <= 720) aliquotaIR = 0.175;
+            valorIR = lucroBruto * aliquotaIR;
+            saldoLiquidoNominal = saldoBruto - valorIR;
+            saldoFinalReal = saldoLiquidoNominal;
+        }
+
+        const rowInf = document.getElementById('rowInflacao');
+        const msgBox = document.getElementById('msgPoupanca');
+
+        if (usarInflacao) {
+            let deflator = Math.pow(1 + (inflacaoAnual / 100), anos);
+            let valorReal = saldoFinalReal / deflator; 
+            valorPerdaInflacao = saldoFinalReal - valorReal; 
+            saldoFinalReal = valorReal;
+            msgBox.style.display = 'block';
+            rowInf.style.display = 'flex';
+        } else {
+            msgBox.style.display = 'none';
+            rowInf.style.display = 'none';
+        }
+
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        
+        document.getElementById('resInvestido').innerText = fmt.format(totalInvestido);
+        document.getElementById('resBrutoJuros').innerText = fmt.format(lucroBruto);
+        document.getElementById('resTotalBruto').innerText = fmt.format(saldoLiquidoNominal); 
+        document.getElementById('resTotalLiquido').innerText = fmt.format(saldoFinalReal);
+
+        const rowIR = document.getElementById('rowIR');
+        if (usarIR) {
+            rowIR.style.display = 'flex';
+            document.getElementById('resIR').innerText = '- ' + fmt.format(valorIR);
+        } else {
+            rowIR.style.display = 'none';
+        }
+        if(usarInflacao) document.getElementById('resInflacao').innerText = '- ' + fmt.format(valorPerdaInflacao);
+
+        pdfData = {
+            bruto: fmt.format(lucroBruto),
+            nominal: fmt.format(saldoLiquidoNominal),
+            investido: fmt.format(totalInvestido),
+            ir: usarIR ? '- ' + fmt.format(valorIR) : 'Isento',
+            inflacao: usarInflacao ? '- ' + fmt.format(valorPerdaInflacao) : 'Não calc.',
+            liquido: fmt.format(saldoFinalReal)
+        };
+        
+        document.getElementById('intro-rendimento').style.display = 'none';
+        document.getElementById('results-area').style.display = 'block';
+        renderChartRendimento(labels, dataInvestido, dataBruto);
+    }
+
+    function calcularMeta() {
+        let objetivo = parseMoney(document.getElementById('metaValor').value);
+        let anos = parseFloat(document.getElementById('metaAnos').value);
+        let inicial = parseMoney(document.getElementById('metaInicial').value);
+        let taxaAnual = parseFloat(document.getElementById('metaTaxa').value);
+        if (!objetivo || !anos || !taxaAnual) return alert("Preencha os campos obrigatórios.");
+        let meses = anos * 12;
+        let i = (Math.pow(1 + (taxaAnual / 100), 1 / 12) - 1);
+        let fator = Math.pow(1 + i, meses);
+        let futuroInicial = inicial * fator;
+        let falta = objetivo - futuroInicial;
+        let aporte = falta > 0 ? falta / ((fator - 1) / i) : 0;
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('resMetaMensal').innerText = fmt.format(aporte);
+        document.getElementById('txtMetaAlvo').innerText = fmt.format(objetivo);
+        document.getElementById('txtMetaAnos').innerText = anos;
+        document.getElementById('intro-meta').style.display = 'none';
+        document.getElementById('results-area-meta').style.display = 'block';
+        renderChartMeta(inicial, aporte, meses, i);
+    }
+
+    function renderChartRendimento(labels, investido, bruto) {
+        const ctx = document.getElementById('chartRendimento').getContext('2d');
+        if (chartRend) chartRend.destroy();
+        chartRend = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    { label: 'Saldo Total', data: bruto, borderColor: '#0056b3', backgroundColor: 'rgba(0,86,179,0.1)', fill: true, pointRadius: 0 },
+                    { label: 'Investido', data: investido, borderColor: '#6c757d', backgroundColor: 'rgba(108,117,125,0.1)', fill: true, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { x: {display:false} } }
+        });
+    }
+
+    function renderChartMeta(inicial, mensal, meses, i) {
+        const ctx = document.getElementById('chartMeta').getContext('2d');
+        if (chartMetaInst) chartMetaInst.destroy();
+        let labels=[], data=[], saldo=inicial;
+        for(let m=0; m<=meses; m++) {
+            if(m%6===0 || m===meses) { labels.push(m); data.push(saldo); }
+            saldo = saldo*(1+i)+mensal;
+        }
+        chartMetaInst = new Chart(ctx, {
+            type: 'line',
+            data: { labels: labels, datasets: [{ label: 'Evolução', data: data, borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.1)', fill: true }] },
+            options: { responsive: true, maintainAspectRatio: false, elements:{point:{radius:0}}, scales:{x:{display:false}} }
+        });
+    }
+
+    function getLogoBase64() {
+        return new Promise((resolve) => {
+            const img = document.getElementById('logoSite');
+            if (!img || !img.complete || img.naturalHeight === 0) {
+                resolve(null);
+                return;
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            try { resolve(canvas.toDataURL("image/png")); } catch(e) { resolve(null); }
+        });
+    }
+
+    async function gerarPDF(tipo) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const logoData = await getLogoBase64();
+        if (logoData) {
+            doc.addImage(logoData, 'PNG', 15, 10, 40, 0); 
+        } else {
+            doc.setFont("helvetica", "bold"); doc.setFontSize(22); doc.setTextColor(0, 86, 179);
+            doc.text("JurosWeb", 15, 25);
+        }
+
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(100);
+        doc.text(`Gerado em: ${new Date().toLocaleDateString()}`, 150, 20);
+        doc.line(15, 35, 195, 35); 
+
+        let startY = 45; 
+
+        if (tipo === 'rendimento') {
+            doc.setFontSize(14); doc.setTextColor(0);
+            doc.text("Relatório de Rendimento", 15, startY);
+            
+            doc.setFontSize(11);
+            doc.text(`Total Investido: ${pdfData.investido}`, 20, startY + 10);
+            doc.text(`Saldo Final (Nominal): ${pdfData.nominal}`, 20, startY + 18);
+            
+            if (pdfData.inflacao !== 'Não calc.') {
+                doc.setTextColor(230, 126, 34); 
+                doc.text(`Perda Inflacionária: ${pdfData.inflacao}`, 20, startY + 26);
+                doc.setTextColor(40, 167, 69);
+                doc.setFont("helvetica", "bold");
+                doc.text(`Poder de Compra Real: ${pdfData.liquido}`, 20, startY + 36);
+            } else {
+                 doc.text(`Total Final: ${pdfData.nominal}`, 20, startY + 26);
+            }
+
+            const canvas = document.getElementById('chartRendimento');
+            const ctx = canvas.getContext('2d');
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const imgData = canvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 25, startY + 45, 160, 90);
+
+            doc.setTextColor(0); doc.setFont("helvetica", "bold");
+            doc.text("Evolução Mensal", 15, startY + 145);
+            doc.autoTable({
+                startY: startY + 150,
+                head: [['Mês', 'Investido', 'Rend. Mês', 'Total']],
+                body: globalTableData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 86, 179] }, 
+                styles: { fontSize: 9 },
+                margin: { top: 20 }
+            });
+
+        } else {
+            let meta = document.getElementById('txtMetaAlvo').innerText;
+            let aporte = document.getElementById('resMetaMensal').innerText;
+            doc.setFontSize(14); doc.setTextColor(0);
+            doc.text("Planejamento de Meta", 15, startY);
+            doc.setFontSize(12);
+            doc.text(`Objetivo: ${meta}`, 20, startY + 15);
+            doc.text(`Investir Mensalmente: ${aporte}`, 20, startY + 25);
+            
+            const canvas = document.getElementById('chartMeta');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const imgData = canvas.toDataURL('image/png');
+            doc.addImage(imgData, 'PNG', 25, startY + 35, 160, 90);
+        }
+        
+        doc.save("Relatorio-JurosWeb.pdf");
+    }
 </script>
 
 </body>
