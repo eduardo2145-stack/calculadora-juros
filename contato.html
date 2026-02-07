@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS GLOBAL IGUAL AOS OUTROS */
+        :root { --primary: #8B0000; --primary-dark: #600000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; --white: #ffffff; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; line-height: 1.6; }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .logo i { color: var(--accent); }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; float: right; margin-top: 5px; text-transform: uppercase; font-size: 0.85rem; }
+        .nav-links a:hover { color: var(--accent); }
+
+        .contact-box { background: white; padding: 40px; margin-top: 40px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h1 { color: var(--primary); font-size: 2rem; margin-bottom: 20px; text-align: center; }
+        p { text-align: center; color: #666; margin-bottom: 30px; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; }
+        input, textarea { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-family: inherit; font-size: 1rem; }
+        input:focus, textarea:focus { border-color: var(--primary); outline: none; }
+        textarea { height: 150px; resize: vertical; }
+
+        .btn-submit { width: 100%; padding: 15px; background: var(--primary); color: white; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-submit:hover { background: var(--primary-dark); }
+
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: auto; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container header-flex">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="index.html">VOLTAR</a></nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="contact-box">
+        <h1>Fale Conosco</h1>
+        <p>Tem alguma dúvida, sugestão ou encontrou algum erro? Envie uma mensagem.</p>
+
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label>Seu Nome</label>
+                <input type="text" placeholder="Digite seu nome">
+            </div>
+            <div class="form-group">
+                <label>Seu E-mail</label>
+                <input type="email" placeholder="Digite seu e-mail">
+            </div>
+            <div class="form-group">
+                <label>Assunto</label>
+                <input type="text" placeholder="Ex: Parceria, Suporte...">
+            </div>
+            <div class="form-group">
+                <label>Mensagem</label>
+                <textarea placeholder="Escreva sua mensagem aqui..."></textarea>
+            </div>
+            <button type="button" class="btn-submit" onclick="alert('Mensagem enviada com sucesso! (Simulação)')">Enviar Mensagem</button>
+        </form>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="porcentagem.html">Porcentagem</a>
+            <a href="datas.html">Contador de Dias</a>
+            <a href="imagem.html">Editor de Imagens</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
+
+</body>
+</html>
