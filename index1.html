@@ -42,7 +42,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA */
+        /* BUSCA (PRETO TRANSLÚCIDO) */
         .search-box { 
             display: flex; 
             align-items: center; 
@@ -67,9 +67,7 @@
             box-shadow: none !important; 
             width: 100%; 
         }
-        .search-box input::placeholder { 
-            color: rgba(255, 255, 255, 0.7) !important;
-        }
+        .search-box input::placeholder { color: rgba(255, 255, 255, 0.7) !important; }
         .search-box i { color: rgba(255,255,255,0.8); cursor: pointer; transition: 0.3s; }
         .search-box:hover i { color: white; }
 
@@ -172,9 +170,9 @@
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
         .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
         
-        /* CORREÇÃO DO HOVER DO RODAPÉ */
+        /* HOVER RODAPÉ CORRIGIDO */
         .footer-col a { color: #b0b0b0; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
-        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-col a:hover { color: var(--accent); padding-left: 8px; } /* Deslocamento e cor */
         
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
@@ -491,23 +489,6 @@
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText };
     }
 
-    function calcularMeta() {
-        let obj = parseMoney(document.getElementById('metaValor').value);
-        let ano = parseFloat(document.getElementById('metaAnos').value);
-        let ini = parseMoney(document.getElementById('metaInicial').value);
-        let tax = parseFloat(document.getElementById('metaTaxa').value);
-        
-        if(!obj || !ano) return alert("Preencha os campos.");
-        
-        let mes = ano * 12;
-        let i = Math.pow(1 + (tax/100), 1/12) - 1;
-        let pmt = (obj - ini * Math.pow(1+i, mes)) / ( (Math.pow(1+i, mes) - 1) / i );
-        if(pmt < 0) pmt = 0;
-
-        document.getElementById('resMetaMensal').innerText = pmt.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-        document.getElementById('meta-res').style.display = 'block';
-    }
-
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -525,14 +506,14 @@
     async function loadNews(termo = '', isSearch = false) {
         const query = termo || 'investimentos mercado financeiro brasil';
         
-        const backups = [
-            {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje", img: "IMG/news1.jpg"},
-            {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje", img: "IMG/news2.jpg"},
-            {title: "Banco Central mantém taxa Selic: O que muda?", link: "https://www.google.com/search?q=taxa+selic", img: "IMG/news3.jpg"},
-            {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "https://www.google.com/search?q=acoes+tecnologia", img: "IMG/news4.jpg"},
-            {title: "Entenda como a inflação afeta seus investimentos", link: "https://www.google.com/search?q=inflacao+investimentos", img: "IMG/news5.jpg"},
-            {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "https://www.google.com/search?q=bitcoin+hoje", img: "IMG/news6.jpg"},
-            {title: "Renda Fixa volta a ser atrativa com juros altos", link: "https://www.google.com/search?q=renda+fixa", img: "IMG/news1.jpg"}
+        // IMAGENS DE ESTOQUE VARIADAS (Para resolver o problema das fotos iguais)
+        const stockImages = [
+            "https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80",
+            "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=80",
+            "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=800&q=80",
+            "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
+            "https://images.unsplash.com/photo-1554224155-9ffd48f43606?w=800&q=80",
+            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
         ];
 
         const grid = document.getElementById('newsGrid');
@@ -540,36 +521,28 @@
         const renderNews = (items) => {
             grid.innerHTML = '';
             
-            // CORREÇÃO 1: Atualiza o Hero APENAS se NÃO for busca
+            // ATUALIZA HERO APENAS SE NÃO FOR BUSCA
             if (!isSearch && items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
-                let heroImg = hero.img || (hero.enclosure ? hero.enclosure.link : 'IMG/news1.jpg');
+                let heroImg = hero.enclosure ? hero.enclosure.link : stockImages[0];
                 document.getElementById('heroImg').src = heroImg;
-                document.getElementById('heroImg').onerror = function() { this.src = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80'; };
+                document.getElementById('heroImg').onerror = function() { this.src = stockImages[0]; };
             }
 
-            // Define os itens da grade
-            let gridItems = [];
-            if (!isSearch) {
-                // Carregamento inicial: pula o primeiro item (que está no hero)
-                gridItems = items.slice(1);
-            } else {
-                // Busca: usa todos os itens
-                gridItems = items;
-            }
-            
-            // Limita a 6 itens na grade
-            gridItems = gridItems.slice(0, 6);
+            // GRID
+            let list = isSearch ? items : items.slice(1);
+            list = list.slice(0, 6);
 
-            gridItems.forEach((item, idx) => {
-                let imgUrl = item.img || (item.enclosure ? item.enclosure.link : `IMG/news${(idx % 6) + 1}.jpg`);
+            list.forEach((item, idx) => {
+                // Tenta imagem da API ou pega uma da lista rotativa
+                let imgUrl = item.enclosure ? item.enclosure.link : stockImages[idx % stockImages.length];
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
                     <div class="news-img-box">
-                        <img src="${imgUrl}" onerror="this.src='https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80'" class="news-img" loading="lazy">
+                        <img src="${imgUrl}" onerror="this.src='${stockImages[idx % stockImages.length]}'" class="news-img" loading="lazy">
                     </div>
                     <div class="news-body">
                         <div class="news-tag">Mercado</div>
@@ -593,6 +566,15 @@
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
             } else { throw new Error("Vazio"); }
         } catch(e) {
+            // Backup manual em caso de erro
+            const backups = [
+                {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "#"},
+                {title: "Dólar opera estável aguardando decisão do FED", link: "#"},
+                {title: "Banco Central mantém taxa Selic: O que muda?", link: "#"},
+                {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "#"},
+                {title: "Entenda como a inflação afeta seus investimentos", link: "#"},
+                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "#"}
+            ];
             renderNews(backups);
         }
     }
@@ -600,14 +582,13 @@
     function realizarBusca() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            // Passa 'true' para indicar que é uma busca
-            loadNews(val, true);
+            loadNews(val, true); // True = é uma busca
             document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
         }
     }
 
     window.onload = function() {
-        loadNews(); // Carregamento inicial (isSearch = false)
+        loadNews(); // Carregamento inicial (não é busca)
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
