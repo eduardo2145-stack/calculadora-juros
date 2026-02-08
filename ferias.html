@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculadora de Férias 2025. Simule o valor das suas férias com 1/3 constitucional e venda de dias (abono).">
+    <title>Calculadora de Férias com 1/3 | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- ESTILO GLOBAL (PADRÃO VERMELHO) --- */
+        :root { 
+            --primary: #8B0000; 
+            --primary-dark: #600000; 
+            --secondary: #212529; 
+            --accent: #dca72e; 
+            --bg: #f8f9fa; 
+            --white: #ffffff; 
+        }
+        
+        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        .main-container { max-width: 1000px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; }
+
+        /* HEADER */
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
+        .logo i { color: var(--accent); }
+        
+        .nav-menu { display: flex; gap: 25px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        /* SIDEBAR MOBILE */
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 20px; border-bottom: 1px solid #444; margin-bottom: 10px; }
+        .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
+        .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
+        .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        .sidebar a:hover { color: var(--accent); padding-left: 25px; background: rgba(0,0,0,0.2); }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+
+        @media (max-width: 900px) {
+            .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            header { padding: 12px 0; }
+            .header-container { padding: 0 20px; }
+            .logo { font-size: 1.4rem; }
+        }
+
+        /* FERRAMENTA */
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width:600px){ .input-grid { grid-template-columns: 1fr; } }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.85rem; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-size: 1rem; color: #333; font-weight: 600; }
+        input:focus, select:focus { border-color: var(--primary); outline: none; }
+        
+        /* Checkbox Customizado */
+        .check-group { display: flex; align-items: center; gap: 10px; background: #f9f9f9; padding: 10px; border-radius: 4px; border: 1px solid #eee; cursor: pointer; }
+        .check-group input { width: auto; margin: 0; }
+        
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* TABELA DE RESULTADO */
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 30px; display: none; border: 1px solid #eee; }
+        .result-table th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #333; background: #f9f9f9; }
+        .result-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; color: #555; }
+        .gain { color: #28a745; font-weight: bold; }
+        .desc { color: #dc3545; font-weight: bold; }
+        .final td { background: var(--primary); color: white; font-weight: 900; font-size: 1.1rem; }
+
+        /* SEO CONTENT */
+        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .seo-content h2 { color: var(--primary); font-size: 1.5rem; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .seo-content h3 { color: #333; font-size: 1.2rem; margin-top: 30px; display: flex; align-items: center; gap: 10px; }
+        .seo-content h3 i { color: var(--accent); }
+        .seo-content p { color: #666; line-height: 1.8; text-align: justify; margin-bottom: 15px; }
+
+        .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
+
+        /* RODAPÉ PADRÃO */
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <h3>MENU</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
+    </div>
+    <a href="index.html">Início</a>
+    <a href="utilidades.html">Ferramentas</a>
+    <a href="salario.html">Salário Líquido</a>
+    <a href="ferias.html">Férias</a>
+    <a href="moedas.html">Cotações</a>
+</div>
+
+<header>
+    <div class="header-container">
+        <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
+        
+        <div class="nav-menu">
+            <a href="index.html">Início</a>
+            <a href="index.html#noticias">Notícias</a>
+        </div>
+    </div>
+</header>
+
+<div class="main-container">
+    
+    <div class="ad-slot">Publicidade Topo</div>
+
+    <div class="calc-box">
+        <h1 class="page-title"><i class="fas fa-umbrella-beach"></i> Calculadora de Férias</h1>
+        
+        <div class="input-group">
+            <label>Salário Bruto (R$)</label>
+            <input type="number" id="salario" placeholder="Ex: 3000.00">
+        </div>
+        
+        <div class="input-grid">
+            <div class="input-group">
+                <label>Dias de Férias</label>
+                <select id="dias">
+                    <option value="30">30 Dias (Completo)</option>
+                    <option value="20">20 Dias</option>
+                    <option value="15">15 Dias</option>
+                    <option value="10">10 Dias</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Dependentes</label>
+                <input type="number" id="deps" placeholder="0" value="0">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label class="check-group">
+                <input type="checkbox" id="vender">
+                <span>Vender 10 dias (Abono Pecuniário)?</span>
+            </label>
+        </div>
+
+        <button class="btn-calc" onclick="calcularFerias()">Calcular Valor a Receber</button>
+
+        <table class="result-table" id="resTable">
+            <tr style="background:#eee;"><th>Descrição</th><th>Valor</th></tr>
+            <tr><td>(+) Valor das Férias</td><td id="r_ferias" class="gain">R$ 0,00</td></tr>
+            <tr><td>(+) 1/3 Constitucional</td><td id="r_terco" class="gain">R$ 0,00</td></tr>
+            <tr id="row_abono" style="display:none; background:#f0fff4;"><td>(+) Abono Pecuniário (Venda)</td><td id="r_abono" class="gain">R$ 0,00</td></tr>
+            <tr id="row_terco_abono" style="display:none; background:#f0fff4;"><td>(+) 1/3 do Abono</td><td id="r_terco_abono" class="gain">R$ 0,00</td></tr>
+            <tr><td>(-) Desconto INSS</td><td id="r_inss" class="desc">R$ 0,00</td></tr>
+            <tr><td>(-) Desconto IRRF</td><td id="r_irrf" class="desc">R$ 0,00</td></tr>
+            <tr class="final"><td>(=) Total Líquido a Receber</td><td id="r_liquido">R$ 0,00</td></tr>
+        </table>
+    </div>
+
+    <article class="seo-content">
+        <h2>Como são calculadas as Férias?</h2>
+        <p>Todo trabalhador CLT tem direito a 30 dias de descanso remunerado após 12 meses de trabalho. O pagamento deve ser feito até 2 dias antes do início das férias.</p>
+
+        <h3><i class="fas fa-plus-circle"></i> O Adicional de 1/3</h3>
+        <p>A constituição garante que o trabalhador receba o salário normal mais um terço (1/3) extra. Por exemplo, se seu salário é R$ 3.000, o terço constitucional será R$ 1.000, totalizando R$ 4.000 brutos.</p>
+
+        <h3><i class="fas fa-hand-holding-usd"></i> Venda de Férias (Abono)</h3>
+        <p>O trabalhador pode optar por "vender" até 10 dias de suas férias para a empresa. A vantagem financeira é que sobre este valor (Abono Pecuniário) e seu respectivo terço, <strong>não incidem impostos</strong> (INSS e IRRF), o que aumenta o valor líquido recebido.</p>
+    </article>
+
+    <div class="ad-slot">Publicidade Rodapé</div>
+
+</div>
+
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="salario.html">Salário Líquido</a>
+            <a href="ferias.html">Calculadora de Férias</a>
+            <a href="decimo.html">Décimo Terceiro</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
+
+    function calcularFerias() {
+        let salario = parseFloat(document.getElementById('salario').value);
+        let dias = parseInt(document.getElementById('dias').value);
+        let deps = parseInt(document.getElementById('deps').value) || 0;
+        let vender = document.getElementById('vender').checked;
+
+        if(!salario) return alert("Digite o salário bruto.");
+
+        // 1. Base Férias (Proporcional aos dias descansados)
+        let valorFerias = (salario / 30) * dias;
+        let tercoConstitucional = valorFerias / 3;
+        
+        let abono = 0;
+        let tercoAbono = 0;
+
+        // Se vender 10 dias
+        if(vender) {
+            // Se escolheu 30 dias e marcou vender, o sistema assume 20 dias gozo + 10 venda
+            if(dias === 30) {
+                dias = 20; 
+                valorFerias = (salario / 30) * 20;
+                tercoConstitucional = valorFerias / 3;
+                document.getElementById('dias').value = "20"; // Ajusta visualmente
+                alert("Ajustamos para 20 dias de gozo + 10 de venda.");
+            }
+            abono = (salario / 30) * 10;
+            tercoAbono = abono / 3;
+            
+            document.getElementById('row_abono').style.display = 'table-row';
+            document.getElementById('row_terco_abono').style.display = 'table-row';
+        } else {
+            document.getElementById('row_abono').style.display = 'none';
+            document.getElementById('row_terco_abono').style.display = 'none';
+        }
+
+        // Base Tributável (Só o gozo + 1/3 do gozo)
+        let baseTributavel = valorFerias + tercoConstitucional;
+
+        // 2. INSS (Tabela Progressiva)
+        let inss = 0;
+        if(baseTributavel <= 1412.00) inss = baseTributavel * 0.075;
+        else if(baseTributavel <= 2666.68) inss = (1412 * 0.075) + ((baseTributavel - 1412) * 0.09);
+        else if(baseTributavel <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((baseTributavel - 2666.68) * 0.12);
+        else if(baseTributavel <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((baseTributavel - 4000.03) * 0.14);
+        else inss = 908.85;
+
+        // 3. IRRF
+        let baseIR = baseTributavel - inss - (deps * 189.59);
+        let irrf = 0;
+        if(baseIR > 2259.20) {
+            if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
+            else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
+            else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
+            else irrf = (baseIR * 0.275) - 896.00;
+        }
+        if(irrf < 0) irrf = 0;
+
+        // Total Líquido (Soma tudo e tira impostos)
+        let totalLiquido = (valorFerias + tercoConstitucional + abono + tercoAbono) - inss - irrf;
+
+        const fmt = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+
+        document.getElementById('r_ferias').innerText = fmt(valorFerias);
+        document.getElementById('r_terco').innerText = fmt(tercoConstitucional);
+        document.getElementById('r_abono').innerText = fmt(abono);
+        document.getElementById('r_terco_abono').innerText = fmt(tercoAbono);
+        document.getElementById('r_inss').innerText = "- " + fmt(inss);
+        document.getElementById('r_irrf').innerText = "- " + fmt(irrf);
+        document.getElementById('r_liquido').innerText = fmt(totalLiquido);
+
+        document.getElementById('resTable').style.display = 'table';
+    }
+</script>
+
+</body>
+</html>
