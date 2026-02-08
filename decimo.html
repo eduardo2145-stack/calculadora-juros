@@ -2,88 +2,263 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Décimo Terceiro | JurosWeb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculadora de Décimo Terceiro Salário 2025. Calcule o valor exato da 1ª e 2ª parcela com os descontos.">
+    <title>Calculadora de 13º Salário (Gratificação Natalina) | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #8B0000; --bg: #f8f9fa; --white: #ffffff; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        header { background: var(--primary); padding: 15px 0; }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
-        .nav-links a { color: white; text-decoration: none; font-weight: bold; float: right; margin-top: 5px; }
+        /* --- ESTILO GLOBAL (PADRÃO VERMELHO) --- */
+        :root { 
+            --primary: #8B0000; 
+            --primary-dark: #600000; 
+            --secondary: #212529; 
+            --accent: #dca72e; 
+            --bg: #f8f9fa; 
+            --white: #ffffff; 
+        }
+        
+        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        .main-container { max-width: 1000px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; }
 
-        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 40px; }
-        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; }
+        /* HEADER */
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
+        .logo i { color: var(--accent); }
+        
+        .nav-menu { display: flex; gap: 25px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        /* SIDEBAR MOBILE */
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 20px; border-bottom: 1px solid #444; margin-bottom: 10px; }
+        .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
+        .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
+        .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        .sidebar a:hover { color: var(--accent); padding-left: 25px; background: rgba(0,0,0,0.2); }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+
+        @media (max-width: 900px) {
+            .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            header { padding: 12px 0; }
+            .header-container { padding: 0 20px; }
+            .logo { font-size: 1.4rem; }
+        }
+
+        /* FERRAMENTA */
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media(max-width:600px){ .input-grid { grid-template-columns: 1fr; } }
+
         .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.85rem; }
+        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-size: 1rem; color: #333; font-weight: 600; }
+        input:focus { border-color: var(--primary); outline: none; }
         
-        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+        /* RESULTADOS EM CARDS */
+        .result-container { display: flex; gap: 20px; margin-top: 30px; display: none; }
+        @media(max-width:600px){ .result-container { flex-direction: column; } }
+
+        .res-card { flex: 1; padding: 20px; border-radius: 8px; text-align: center; border: 1px solid #eee; }
+        .res-card.first { background: #e6ffed; border-color: #b7eb8f; }
+        .res-card.second { background: #fff1f0; border-color: #ffa39e; }
         
-        .cards-result { display: flex; gap: 20px; margin-top: 30px; }
-        .card { flex: 1; background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; }
-        .card strong { display: block; font-size: 1.5rem; color: var(--primary); margin-top: 10px; }
-        
-        footer { background: #111; color: #ccc; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+        .res-title { font-weight: bold; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .res-value { font-size: 1.8rem; font-weight: 900; display: block; margin-bottom: 5px; }
+        .res-note { font-size: 0.8rem; color: #666; }
+
+        /* SEO CONTENT */
+        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .seo-content h2 { color: var(--primary); font-size: 1.5rem; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .seo-content h3 { color: #333; font-size: 1.2rem; margin-top: 30px; display: flex; align-items: center; gap: 10px; }
+        .seo-content h3 i { color: var(--accent); }
+        .seo-content p { color: #666; line-height: 1.8; text-align: justify; margin-bottom: 15px; }
+        .seo-content ul { padding-left: 20px; color: #666; margin-bottom: 20px; }
+        .seo-content li { margin-bottom: 10px; }
+
+        .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
+
+        /* RODAPÉ PADRÃO */
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <h3>MENU</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
+    </div>
+    <a href="index.html">Início</a>
+    <a href="utilidades.html">Ferramentas</a>
+    <a href="salario.html">Salário Líquido</a>
+    <a href="decimo.html">Décimo Terceiro</a>
+    <a href="moedas.html">Cotações</a>
+</div>
+
 <header>
-    <div class="container">
-        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
-        <nav class="nav-links"><a href="utilidades.html">FERRAMENTAS</a></nav>
+    <div class="header-container">
+        <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
+        
+        <div class="nav-menu">
+            <a href="index.html">Início</a>
+            <a href="index.html#noticias">Notícias</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
+<div class="main-container">
+    
+    <div class="ad-slot">Publicidade Topo</div>
+
     <div class="calc-box">
-        <h1 class="page-title">Calculadora de 13º Salário</h1>
+        <h1 class="page-title"><i class="fas fa-gift"></i> Calculadora de 13º Salário</h1>
         
         <div class="input-group">
-            <label>Salário Bruto</label>
+            <label>Salário Bruto (R$)</label>
             <input type="number" id="salario" placeholder="Ex: 2500.00">
         </div>
-        <div class="input-group">
-            <label>Meses Trabalhados no Ano</label>
-            <input type="number" id="meses" placeholder="12" value="12" max="12">
-        </div>
         
+        <div class="input-grid">
+            <div class="input-group">
+                <label>Meses Trabalhados no Ano</label>
+                <input type="number" id="meses" placeholder="12" value="12" max="12" min="1">
+            </div>
+            <div class="input-group">
+                <label>Nº de Dependentes</label>
+                <input type="number" id="deps" placeholder="0" value="0">
+            </div>
+        </div>
+
         <button class="btn-calc" onclick="calcularDecimo()">Calcular Parcelas</button>
 
-        <div class="cards-result" id="resultado" style="display:none;">
-            <div class="card">
-                <span>1ª Parcela (50%)</span>
-                <strong id="p1">R$ 0,00</strong>
-                <small style="color:green;">Sem descontos</small>
+        <div class="result-container" id="resultado">
+            <div class="res-card first">
+                <span class="res-title">1ª Parcela (Adiantamento)</span>
+                <span class="res-value" id="p1" style="color:#28a745;">R$ 0,00</span>
+                <div class="res-note">Paga até 30 de Novembro<br>(Sem descontos)</div>
             </div>
-            <div class="card">
-                <span>2ª Parcela (Restante)</span>
-                <strong id="p2">R$ 0,00</strong>
-                <small style="color:red;">Com descontos INSS/IR</small>
+            <div class="res-card second">
+                <span class="res-title">2ª Parcela (Saldo Final)</span>
+                <span class="res-value" id="p2" style="color:#dc3545;">R$ 0,00</span>
+                <div class="res-note">Paga até 20 de Dezembro<br>(Com descontos INSS/IR)</div>
             </div>
         </div>
     </div>
+
+    <article class="seo-content">
+        <h2>Como funciona o pagamento do Décimo Terceiro?</h2>
+        <p>A gratificação natalina é dividida em duas etapas para aliviar a folha de pagamento das empresas e antecipar recursos para o trabalhador.</p>
+
+        <h3><i class="fas fa-calendar-check"></i> Primeira Parcela (Até 30/11)</h3>
+        <p>Corresponde a 50% do valor do benefício devido. Nesta etapa <strong>não há descontos</strong> de INSS ou Imposto de Renda. O valor cai integral na conta.</p>
+
+        <h3><i class="fas fa-money-bill-wave"></i> Segunda Parcela (Até 20/12)</h3>
+        <p>Aqui é feito o acerto de contas. Calcula-se o valor total devido, descontam-se o INSS e o IRRF sobre o valor total e subtrai-se o adiantamento feito na primeira parcela. Por isso, o valor da segunda parcela é sempre menor que o da primeira.</p>
+
+        <h3><i class="fas fa-info-circle"></i> Quem tem direito?</h3>
+        <ul>
+            <li>Todo trabalhador com carteira assinada (CLT).</li>
+            <li>Aposentados e pensionistas do INSS.</li>
+            <li>Trabalhadores domésticos, rurais e avulsos.</li>
+            <li>Quem trabalhou pelo menos 15 dias no ano já tem direito a 1/12 do valor.</li>
+        </ul>
+    </article>
+
+    <div class="ad-slot">Publicidade Rodapé</div>
+
 </div>
 
-<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="salario.html">Salário Líquido</a>
+            <a href="decimo.html">Décimo Terceiro</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
 
 <script>
-    function calcularDecimo() {
-        let sal = parseFloat(document.getElementById('salario').value);
-        let mes = parseInt(document.getElementById('meses').value);
-        
-        if(!sal || !mes) return alert("Preencha os campos.");
-        if(mes > 12) mes = 12;
+    function toggleMenu() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
 
-        let total = (sal / 12) * mes;
-        let p1 = total / 2;
+    function calcularDecimo() {
+        let bruto = parseFloat(document.getElementById('salario').value);
+        let meses = parseInt(document.getElementById('meses').value);
+        let deps = parseInt(document.getElementById('deps').value) || 0;
         
-        // Simulação simples de desconto (aprox 8-11% INSS) na segunda parcela
-        let descontoEstimado = total * 0.09; 
-        let p2 = p1 - descontoEstimado;
+        if(!bruto || !meses) return alert("Preencha o salário e os meses trabalhados.");
+        if(meses > 12) meses = 12;
+
+        // Valor proporcional total
+        let valorTotal = (bruto / 12) * meses;
+
+        // 1ª Parcela (50% sem descontos)
+        let p1 = valorTotal / 2;
+
+        // CÁLCULO DOS DESCONTOS SOBRE O TOTAL (Para achar a 2ª parcela)
+        // 1. INSS
+        let inss = 0;
+        if(valorTotal <= 1412.00) inss = valorTotal * 0.075;
+        else if(valorTotal <= 2666.68) inss = (1412 * 0.075) + ((valorTotal - 1412) * 0.09);
+        else if(valorTotal <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((valorTotal - 2666.68) * 0.12);
+        else if(valorTotal <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((valorTotal - 4000.03) * 0.14);
+        else inss = 908.85;
+
+        // 2. IRRF (Base = Total - INSS - Dependentes)
+        let baseIR = valorTotal - inss - (deps * 189.59);
+        let irrf = 0;
+        if(baseIR > 2259.20) {
+            if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
+            else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
+            else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
+            else irrf = (baseIR * 0.275) - 896.00;
+        }
+        if(irrf < 0) irrf = 0;
+
+        // 2ª Parcela = Total - INSS - IRRF - 1ªParcela
+        let p2 = valorTotal - inss - irrf - p1;
 
         const fmt = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         
@@ -92,5 +267,6 @@
         document.getElementById('resultado').style.display = 'flex';
     }
 </script>
+
 </body>
 </html>
