@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Décimo Terceiro | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #8B0000; --bg: #f8f9fa; --white: #ffffff; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        header { background: var(--primary); padding: 15px 0; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .nav-links a { color: white; text-decoration: none; font-weight: bold; float: right; margin-top: 5px; }
+
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 40px; }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; }
+        
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        
+        .cards-result { display: flex; gap: 20px; margin-top: 30px; }
+        .card { flex: 1; background: #fdfdfd; border: 1px solid #ddd; padding: 20px; border-radius: 8px; text-align: center; }
+        .card strong { display: block; font-size: 1.5rem; color: var(--primary); margin-top: 10px; }
+        
+        footer { background: #111; color: #ccc; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="utilidades.html">FERRAMENTAS</a></nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="calc-box">
+        <h1 class="page-title">Calculadora de 13º Salário</h1>
+        
+        <div class="input-group">
+            <label>Salário Bruto</label>
+            <input type="number" id="salario" placeholder="Ex: 2500.00">
+        </div>
+        <div class="input-group">
+            <label>Meses Trabalhados no Ano</label>
+            <input type="number" id="meses" placeholder="12" value="12" max="12">
+        </div>
+        
+        <button class="btn-calc" onclick="calcularDecimo()">Calcular Parcelas</button>
+
+        <div class="cards-result" id="resultado" style="display:none;">
+            <div class="card">
+                <span>1ª Parcela (50%)</span>
+                <strong id="p1">R$ 0,00</strong>
+                <small style="color:green;">Sem descontos</small>
+            </div>
+            <div class="card">
+                <span>2ª Parcela (Restante)</span>
+                <strong id="p2">R$ 0,00</strong>
+                <small style="color:red;">Com descontos INSS/IR</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+
+<script>
+    function calcularDecimo() {
+        let sal = parseFloat(document.getElementById('salario').value);
+        let mes = parseInt(document.getElementById('meses').value);
+        
+        if(!sal || !mes) return alert("Preencha os campos.");
+        if(mes > 12) mes = 12;
+
+        let total = (sal / 12) * mes;
+        let p1 = total / 2;
+        
+        // Simulação simples de desconto (aprox 8-11% INSS) na segunda parcela
+        let descontoEstimado = total * 0.09; 
+        let p2 = p1 - descontoEstimado;
+
+        const fmt = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        
+        document.getElementById('p1').innerText = fmt(p1);
+        document.getElementById('p2').innerText = fmt(p2);
+        document.getElementById('resultado').style.display = 'flex';
+    }
+</script>
+</body>
+</html>
