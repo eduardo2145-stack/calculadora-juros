@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Conversor de Moedas Online. Cotação do Dólar, Euro e Bitcoin em tempo real para Real Brasileiro (BRL).">
-    <title>Conversor de Moedas (Dólar Hoje) | JurosWeb</title>
+    <meta name="description" content="Conversor Universal de Moedas. Converta Dólar, Euro, Bitcoin, Peso e mais em tempo real.">
+    <title>Conversor Universal de Moedas | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- ESTILO GLOBAL (PADRÃO VERMELHO) --- */
+        /* --- ESTILO GLOBAL (VERMELHO PREMIUM) --- */
         :root { 
             --primary: #8B0000; 
             --primary-dark: #600000; 
@@ -18,19 +18,19 @@
             --white: #ffffff; 
         }
         
-        /* CORREÇÃO DO RODAPÉ (FLEX) */
         body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
-        .main-container { max-width: 1000px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; /* O Segredo para o rodapé descer */ }
+        .main-container { max-width: 1000px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; }
 
-        /* HEADER LIMPO (SEM BUSCA) */
+        /* HEADER LIMPO */
         header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
         .header-container { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        .nav-menu { display: flex; gap: 25px; }
-        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; transition: 0.3s; }
+        /* MENU DESKTOP */
+        .nav-menu { display: flex; gap: 20px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
 
         /* MENU MOBILE (SIDEBAR) */
@@ -41,6 +41,7 @@
         .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
         .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
         .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        .sidebar a:hover { color: var(--accent); padding-left: 25px; background: rgba(0,0,0,0.2); }
         
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
         .overlay.active { display: block; }
@@ -53,42 +54,47 @@
             .logo { font-size: 1.4rem; }
         }
 
-        /* FERRAMENTA DE CÂMBIO */
-        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); text-align: center; }
-        .page-title { color: var(--primary); font-size: 2rem; margin-bottom: 30px; font-weight: 800; }
-        .icon-header { font-size: 3rem; color: var(--accent); margin-bottom: 15px; }
+        /* FERRAMENTA ROBUSTA */
+        .calc-box { background: white; padding: 40px; border-radius: 12px; border: 1px solid #eee; margin-top: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; }
+        .page-title { color: var(--primary); font-size: 1.8rem; margin-bottom: 30px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* GRID DO CONVERSOR */
+        .converter-container { display: flex; flex-direction: column; gap: 20px; max-width: 600px; margin: 0 auto; }
+        
+        .currency-row { display: flex; gap: 10px; align-items: center; }
+        @media(max-width:600px){ .currency-row { flex-direction: column; align-items: stretch; } }
 
-        .converter-grid { display: flex; gap: 15px; justify-content: center; align-items: center; margin-top: 30px; flex-wrap: wrap; }
+        .input-group { flex: 1; display: flex; flex-direction: column; align-items: flex-start; }
+        .input-group label { font-size: 0.8rem; font-weight: bold; color: #777; margin-bottom: 5px; text-transform: uppercase; }
         
-        .input-wrapper { display: flex; flex-direction: column; align-items: flex-start; }
-        .input-wrapper label { font-size: 0.8rem; font-weight: bold; color: #777; margin-bottom: 5px; }
-        
-        select, input { padding: 15px; font-size: 1.2rem; border: 2px solid #eee; border-radius: 8px; font-weight: bold; color: #333; min-width: 150px; }
+        select, input { width: 100%; padding: 15px; font-size: 1.1rem; border: 2px solid #eee; border-radius: 8px; font-weight: bold; color: #333; box-sizing: border-box; background: #fff; }
         select:focus, input:focus { border-color: var(--primary); outline: none; }
         
-        .equal-icon { font-size: 1.5rem; color: #ccc; margin-top: 20px; }
-        
-        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 30px; transition: 0.3s; text-transform: uppercase; }
-        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        /* BOTÃO DE INVERTER */
+        .swap-btn { background: #eee; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; color: var(--primary); font-size: 1.2rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; align-self: flex-end; margin-bottom: 2px; }
+        .swap-btn:hover { background: var(--primary); color: white; transform: rotate(180deg); }
+        @media(max-width:600px){ .swap-btn { align-self: center; margin: 10px 0; } }
 
-        .result-display { margin-top: 30px; padding: 20px; background: #fdfdfd; border: 1px dashed #ccc; border-radius: 8px; }
-        .big-val { font-size: 2.5rem; font-weight: 900; color: var(--primary); display: block; }
-        .taxa-info { color: #777; font-size: 0.9rem; margin-top: 5px; }
+        .btn-calc { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; margin-top: 20px; transition: 0.3s; text-transform: uppercase; box-shadow: 0 4px 0 #600000; }
+        .btn-calc:hover { background: #900; transform: translateY(2px); box-shadow: 0 2px 0 #600000; }
 
-        /* CONTEÚDO SEO */
-        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
-        .seo-content h2 { color: var(--primary); font-size: 1.5rem; margin-top: 0; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .seo-content h3 { color: #333; font-size: 1.2rem; margin-top: 30px; display: flex; align-items: center; gap: 10px; }
-        .seo-content h3 i { color: var(--accent); }
-        .seo-content p { color: #666; line-height: 1.8; text-align: justify; margin-bottom: 15px; }
+        /* RESULTADO */
+        .result-area { margin-top: 40px; padding-top: 30px; border-top: 1px dashed #ddd; }
+        .res-label { font-size: 0.9rem; color: #666; font-weight: 500; }
+        .res-value { font-size: 3rem; font-weight: 900; color: var(--primary); line-height: 1; margin: 10px 0; }
+        .res-rate { font-size: 0.85rem; color: #888; background: #f4f4f4; display: inline-block; padding: 5px 15px; border-radius: 20px; margin-top: 10px; }
 
         .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
 
-        /* RODAPÉ */
+        /* CONTEÚDO SEO */
+        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .seo-content h2 { color: var(--primary); margin-top: 0; }
+        .seo-content p { color: #666; line-height: 1.7; text-align: justify; margin-bottom: 15px; }
+
+        /* RODAPÉ IGUAL */
         footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
         .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
-        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
         .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); padding-left: 5px; }
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
@@ -104,9 +110,10 @@
     </div>
     <a href="index.html">Início</a>
     <a href="utilidades.html">Ferramentas</a>
+    <a href="index.html#simulador">Juros Compostos</a>
     <a href="salario.html">Salário Líquido</a>
     <a href="decimo.html">Décimo Terceiro</a>
-    <a href="moedas.html">Cotações</a>
+    <a href="index.html#noticias">Notícias</a>
 </div>
 
 <header>
@@ -117,7 +124,8 @@
         
         <div class="nav-menu">
             <a href="index.html">Início</a>
-            <a href="index.html#noticias">Notícias</a>
+            <a href="utilidades.html">Ferramentas</a>
+            <a href="index.html#simulador">Juros Compostos</a> <a href="index.html#noticias">Notícias</a>
         </div>
     </div>
 </header>
@@ -127,50 +135,60 @@
     <div class="ad-slot">Publicidade Topo</div>
 
     <div class="calc-box">
-        <i class="fas fa-exchange-alt icon-header"></i>
-        <h1 class="page-title">Conversor de Moedas</h1>
+        <h1 class="page-title"><i class="fas fa-globe-americas"></i> Conversor Universal</h1>
         
-        <div class="converter-grid">
-            <div class="input-wrapper">
-                <label>Valor</label>
+        <div class="converter-container">
+            <div class="input-group" style="width:100%;">
+                <label>Valor a Converter</label>
                 <input type="number" id="valor" placeholder="1.00" value="1">
             </div>
-            
-            <div class="input-wrapper">
-                <label>De (Moeda)</label>
-                <select id="moedaOrigem">
-                    <option value="USD">Dólar Americano (USD)</option>
-                    <option value="EUR">Euro (EUR)</option>
-                    <option value="GBP">Libra Esterlina (GBP)</option>
-                    <option value="BTC">Bitcoin (BTC)</option>
-                </select>
+
+            <div class="currency-row">
+                <div class="input-group">
+                    <label>De (Origem)</label>
+                    <select id="moedaDe">
+                        <option value="USD">Dólar Americano (USD)</option>
+                        <option value="BRL">Real Brasileiro (BRL)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">Libra Esterlina (GBP)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ARS">Peso Argentino (ARS)</option>
+                        <option value="CAD">Dólar Canadense (CAD)</option>
+                        <option value="JPY">Iene Japonês (JPY)</option>
+                        <option value="AUD">Dólar Australiano (AUD)</option>
+                    </select>
+                </div>
+
+                <button class="swap-btn" onclick="inverterMoedas()" title="Inverter"><i class="fas fa-exchange-alt"></i></button>
+
+                <div class="input-group">
+                    <label>Para (Destino)</label>
+                    <select id="moedaPara">
+                        <option value="BRL" selected>Real Brasileiro (BRL)</option>
+                        <option value="USD">Dólar Americano (USD)</option>
+                        <option value="EUR">Euro (EUR)</option>
+                        <option value="GBP">Libra Esterlina (GBP)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="ARS">Peso Argentino (ARS)</option>
+                        <option value="CAD">Dólar Canadense (CAD)</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="equal-icon"><i class="fas fa-arrow-right"></i></div>
-            
-            <div class="input-wrapper">
-                <label>Para</label>
-                <div style="padding:15px; font-size:1.2rem; font-weight:bold; color:#555;">Real (BRL)</div>
-            </div>
+            <button class="btn-calc" onclick="converter()">Converter Agora</button>
         </div>
 
-        <button class="btn-calc" onclick="converter()">Converter Agora</button>
-
-        <div class="result-display">
-            <span id="resultado" class="big-val">R$ 0,00</span>
-            <div class="taxa-info" id="taxaInfo">Aguardando cálculo...</div>
+        <div class="result-area">
+            <span class="res-label">Resultado da Conversão:</span>
+            <span class="res-value" id="resultado">...</span>
+            <div class="res-rate" id="taxaInfo">Atualizando cotações...</div>
         </div>
     </div>
 
     <article class="seo-content">
         <h2>Entenda como funciona o Câmbio</h2>
-        <p>A taxa de câmbio é o preço de uma moeda estrangeira medido em unidades ou frações da moeda nacional. No Brasil, adotamos o regime de câmbio flutuante, o que significa que o valor do Dólar ou Euro varia diariamente de acordo com a oferta e demanda do mercado.</p>
-
-        <h3><i class="fas fa-plane"></i> Dólar Comercial x Turismo</h3>
-        <p>Você sabia que existem cotações diferentes? O <strong>Dólar Comercial</strong> é utilizado em transações entre empresas e bancos (importação/exportação). Já o <strong>Dólar Turismo</strong> é aquele que você compra na casa de câmbio para viajar. Ele é mais caro pois inclui custos operacionais e de logística do dinheiro em espécie.</p>
-
-        <h3><i class="fas fa-chart-line"></i> O que afeta a cotação?</h3>
-        <p>Diversos fatores influenciam o preço da moeda: decisões políticas, taxa de juros (Selic e Fed), balança comercial e crises internacionais. Nossa ferramenta utiliza a cotação oficial comercial atualizada em tempo real para te dar uma estimativa precisa.</p>
+        <p>Ao realizar uma conversão de moedas, é importante entender que existem diferentes taxas no mercado. Nossa ferramenta utiliza a <strong>taxa comercial</strong> de mercado (Bid Price), que é a referência global para transações.</p>
+        <p><strong>Dica de Viagem:</strong> Se você está convertendo para comprar dinheiro em espécie (papel moeda) numa casa de câmbio, considere que o valor final será o "Dólar Turismo", que geralmente é de 3% a 8% mais caro que o valor comercial exibido aqui, devido aos custos operacionais e IOF.</p>
     </article>
 
     <div class="ad-slot">Publicidade Rodapé</div>
@@ -181,14 +199,14 @@
     <div class="footer-inner">
         <div class="footer-col">
             <h4>Sobre o JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia.</p>
         </div>
         <div class="footer-col">
             <h4>Ferramentas</h4>
             <a href="index.html">Simulador de Juros</a>
-            <a href="regra3.html">Regra de 3</a>
             <a href="salario.html">Salário Líquido</a>
             <a href="decimo.html">Décimo Terceiro</a>
+            <a href="moedas.html">Conversor de Moedas</a>
         </div>
         <div class="footer-col">
             <h4>Legal</h4>
@@ -209,40 +227,74 @@
         document.getElementById('menuOverlay').classList.toggle('active');
     }
 
+    function inverterMoedas() {
+        const de = document.getElementById('moedaDe');
+        const para = document.getElementById('moedaPara');
+        const temp = de.value;
+        de.value = para.value;
+        para.value = temp;
+        converter();
+    }
+
+    // Cache de taxas para economizar requisições
+    let taxasCache = {};
+
     async function converter() {
         const valor = parseFloat(document.getElementById('valor').value);
-        const moeda = document.getElementById('moedaOrigem').value;
-        const par = `${moeda}-BRL`;
+        const de = document.getElementById('moedaDe').value;
+        const para = document.getElementById('moedaPara').value;
         
-        if(!valor) return alert("Digite um valor para converter.");
+        if(!valor) return;
+        document.getElementById('resultado').style.opacity = '0.5';
 
-        document.getElementById('resultado').innerText = "Carregando...";
-        
         try {
-            // API Gratuita AwesomeAPI
-            const res = await fetch(`https://economia.awesomeapi.com.br/last/${par}`);
-            const data = await res.json();
-            const bid = parseFloat(data[moeda + 'BRL'].bid); // Valor de compra
-            const date = new Date(data[moeda + 'BRL'].create_date).toLocaleDateString('pt-BR');
+            // Lógica: Convertemos TUDO para BRL primeiro (Ponte), depois para o destino.
+            // Precisamos das taxas: USD-BRL, EUR-BRL, etc.
             
-            const total = valor * bid;
-            
-            document.getElementById('resultado').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('taxaInfo').innerText = `1 ${moeda} = R$ ${bid.toFixed(4)} (Atualizado em ${date})`;
-        } catch(e) {
-            // Backup manual se API falhar
-            let taxaFixa = 0;
-            if(moeda === 'USD') taxaFixa = 5.20;
-            else if(moeda === 'EUR') taxaFixa = 5.65;
-            else if(moeda === 'GBP') taxaFixa = 6.50;
-            else taxaFixa = 350000; // BTC aprox
+            // Se cache vazio, busca TODAS as taxas de uma vez
+            if(Object.keys(taxasCache).length === 0) {
+                const pares = "USD-BRL,EUR-BRL,GBP-BRL,BTC-BRL,ARS-BRL,CAD-BRL,AUD-BRL,JPY-BRL";
+                const res = await fetch(`https://economia.awesomeapi.com.br/last/${pares}`);
+                const data = await res.json();
+                
+                taxasCache['BRL'] = 1; // Base
+                taxasCache['USD'] = parseFloat(data.USDBRL.bid);
+                taxasCache['EUR'] = parseFloat(data.EURBRL.bid);
+                taxasCache['GBP'] = parseFloat(data.GBPBRL.bid);
+                taxasCache['BTC'] = parseFloat(data.BTCBRL.bid);
+                taxasCache['ARS'] = parseFloat(data.ARSBRL.bid);
+                taxasCache['CAD'] = parseFloat(data.CADBRL.bid);
+                taxasCache['AUD'] = parseFloat(data.AUDBRL.bid);
+                taxasCache['JPY'] = parseFloat(data.JPYBRL.bid);
+            }
 
-            document.getElementById('resultado').innerText = (valor * taxaFixa).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('taxaInfo').innerText = "Cotação aproximada (Modo Offline).";
+            // Matemática Cruzada: (Valor * TaxaOrigem) / TaxaDestino
+            // Ex: 100 USD para EUR -> (100 * 5.00) / 5.50 = 90.90 EUR
+            
+            const taxaOrigem = taxasCache[de] || 1;
+            const taxaDestino = taxasCache[para] || 1;
+            
+            const resultadoFinal = (valor * taxaOrigem) / taxaDestino;
+            
+            // Formatação inteligente (se for BTC usa mais casas)
+            let casas = para === 'BTC' ? 6 : 2;
+            let simbolo = para === 'BTC' ? '₿' : (para === 'EUR' ? '€' : (para === 'GBP' ? '£' : (para === 'JPY' ? '¥' : '$')));
+            if(para === 'BRL') simbolo = 'R$';
+
+            document.getElementById('resultado').innerText = simbolo + ' ' + resultadoFinal.toLocaleString('pt-BR', {minimumFractionDigits: casas, maximumFractionDigits: casas});
+            document.getElementById('resultado').style.opacity = '1';
+            
+            // Taxa cruzada para informação
+            const taxaCruzada = taxaOrigem / taxaDestino;
+            document.getElementById('taxaInfo').innerText = `Taxa: 1 ${de} = ${taxaCruzada.toFixed(4)} ${para}`;
+
+        } catch(e) {
+            console.error(e);
+            document.getElementById('resultado').innerText = "Erro na conexão";
         }
     }
     
-    // Converte automaticamente ao abrir
+    // Inicia convertendo
     window.onload = converter;
 </script>
 
