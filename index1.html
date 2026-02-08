@@ -42,7 +42,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA (ESTILO ESCURO/TRANSPARENTE) */
+        /* BUSCA (PRETO TRANSLÚCIDO - Aprovado) */
         .search-box { 
             display: flex; 
             align-items: center; 
@@ -170,7 +170,7 @@
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
         .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
         
-        /* HOVER RODAPÉ CORRIGIDO */
+        /* HOVER RODAPÉ */
         .footer-col a { color: #b0b0b0; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); padding-left: 8px; }
         
@@ -561,15 +561,15 @@
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
             } else { throw new Error("Vazio"); }
         } catch(e) {
-            // Backup manual
+            // Backup manual com links reais para Google Search
             const backups = [
-                {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "#"},
-                {title: "Dólar opera estável aguardando decisão do FED", link: "#"},
-                {title: "Banco Central mantém taxa Selic: O que muda?", link: "#"},
-                {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "#"},
-                {title: "Entenda como a inflação afeta seus investimentos", link: "#"},
-                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "#"},
-                {title: "Renda Fixa volta a ser atrativa com juros altos", link: "#"}
+                {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje"},
+                {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje"},
+                {title: "Banco Central mantém taxa Selic: O que muda?", link: "https://www.google.com/search?q=taxa+selic"},
+                {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "https://www.google.com/search?q=acoes+tecnologia"},
+                {title: "Entenda como a inflação afeta seus investimentos", link: "https://www.google.com/search?q=inflacao+investimentos"},
+                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "https://www.google.com/search?q=bitcoin+hoje"},
+                {title: "Renda Fixa volta a ser atrativa com juros altos", link: "https://www.google.com/search?q=renda+fixa"}
             ];
             renderNews(backups);
         }
