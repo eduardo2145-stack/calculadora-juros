@@ -231,33 +231,54 @@
         if(!bruto || !meses) return alert("Preencha o salário e os meses trabalhados.");
         if(meses > 12) meses = 12;
 
-        // Valor proporcional total
+        // Valor proporcional total do 13º
         let valorTotal = (bruto / 12) * meses;
 
         // 1ª Parcela (50% sem descontos)
         let p1 = valorTotal / 2;
 
-        // CÁLCULO DOS DESCONTOS SOBRE O TOTAL (Para achar a 2ª parcela)
-        // 1. INSS
+        // --- CÁLCULO INSS 2026 (Sobre o Total) ---
         let inss = 0;
-        if(valorTotal <= 1412.00) inss = valorTotal * 0.075;
-        else if(valorTotal <= 2666.68) inss = (1412 * 0.075) + ((valorTotal - 1412) * 0.09);
-        else if(valorTotal <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((valorTotal - 2666.68) * 0.12);
-        else if(valorTotal <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((valorTotal - 4000.03) * 0.14);
-        else inss = 908.85;
+        let tetoINSS = 8475.55; 
 
-        // 2. IRRF (Base = Total - INSS - Dependentes)
-        let baseIR = valorTotal - inss - (deps * 189.59);
-        let irrf = 0;
+        if (valorTotal <= 1621.00) {
+            inss = valorTotal * 0.075;
+        } else if (valorTotal <= 2902.84) {
+            inss = (1621.00 * 0.075) + ((valorTotal - 1621.00) * 0.09);
+        } else if (valorTotal <= 4354.27) {
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((valorTotal - 2902.84) * 0.12);
+        } else if (valorTotal <= tetoINSS) {
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((valorTotal - 4354.27) * 0.14);
+        } else {
+            // Teto máximo
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((tetoINSS - 4354.27) * 0.14);
+        }
+
+        // --- CÁLCULO IRRF 2026 (Com Isenção 5k) ---
+        let deducaoDependente = 189.59;
+        let baseIR = valorTotal - inss - (deps * deducaoDependente);
+        
+        // Passo A: Tabela Padrão
+        let irrfBruto = 0;
         if(baseIR > 2259.20) {
-            if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
-            else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
-            else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
-            else irrf = (baseIR * 0.275) - 896.00;
+            if(baseIR <= 2826.65) irrfBruto = (baseIR * 0.075) - 169.44;
+            else if(baseIR <= 3751.05) irrfBruto = (baseIR * 0.15) - 381.44;
+            else if(baseIR <= 4664.68) irrfBruto = (baseIR * 0.225) - 662.77;
+            else irrfBruto = (baseIR * 0.275) - 896.00;
+        }
+
+        // Passo B: Redutor 5k
+        let irrf = irrfBruto;
+        if (baseIR <= 5000.00) {
+            irrf = 0; // Isento
+        } else if (baseIR <= 7350.00) {
+            let redutor = 978.62 - (0.133145 * baseIR);
+            if (redutor < 0) redutor = 0;
+            irrf = irrfBruto - redutor;
         }
         if(irrf < 0) irrf = 0;
 
-        // 2ª Parcela = Total - INSS - IRRF - 1ªParcela
+        // 2ª Parcela = Total - INSS - IRRF - Adiantamento(p1)
         let p2 = valorTotal - inss - irrf - p1;
 
         const fmt = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
