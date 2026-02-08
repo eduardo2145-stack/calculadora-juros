@@ -20,21 +20,16 @@
         
         body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
         
-        /* HEADER IGUAL AO INDEX */
+        /* HEADER LIMPO (SEM BUSCA) */
         header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
-        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; gap: 15px; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA */
-        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; width: 350px; transition: 0.3s; }
-        .search-box input { flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 0.95rem; box-shadow: none !important; width: 100%; }
-        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
-        .search-box i { color: white; cursor: pointer; }
-
-        .nav-menu { display: flex; gap: 20px; }
-        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        /* MENU SIMPLIFICADO */
+        .nav-menu { display: flex; gap: 25px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
 
         /* MENU MOBILE (SIDEBAR) */
@@ -53,12 +48,9 @@
         @media (max-width: 900px) {
             .nav-menu { display: none; }
             .mobile-menu-btn { display: block; }
-            header { padding: 10px 0; }
-            .header-container { flex-direction: row; flex-wrap: nowrap; gap: 10px; padding: 0 15px; }
-            .logo { font-size: 1.3rem; flex: 0 1 auto; gap: 5px; }
-            .logo span { display: none; }
-            @media (min-width: 400px) { .logo span { display: inline; } }
-            .search-box { width: auto; flex: 1; height: 38px; padding: 0 12px; }
+            header { padding: 12px 0; }
+            .header-container { padding: 0 20px; } /* Ajuste de padding */
+            .logo { font-size: 1.4rem; }
         }
 
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; flex:1; width: 100%; box-sizing: border-box; }
@@ -68,7 +60,7 @@
         .hero-title h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 10px; font-weight: 800; }
         .hero-title p { color: #666; font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
 
-        /* GRID DE FERRAMENTAS (9 ITENS) */
+        /* GRID DE FERRAMENTAS */
         .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 60px; }
         
         .tool-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 30px; text-align: center; transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
@@ -116,7 +108,7 @@
         <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
     </div>
     <a href="index.html">Início</a>
-    <a href="utilidades.html">Ferramentas</a>
+    <a href="index.html#noticias">Notícias</a>
     <a href="salario.html">Salário Líquido</a>
     <a href="decimo.html">Décimo Terceiro</a>
     <a href="moedas.html">Cotações</a>
@@ -128,15 +120,8 @@
         
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
         
-        <div class="search-box">
-            <input type="text" placeholder="Pesquisar ferramenta...">
-            <i class="fas fa-search"></i>
-        </div>
-
         <div class="nav-menu">
             <a href="index.html">Início</a>
-            <a href="utilidades.html">Ferramentas</a>
-            <a href="salario.html">Calculadoras</a>
             <a href="index.html#noticias">Notícias</a>
         </div>
     </div>
@@ -146,7 +131,7 @@
     
     <div class="hero-title">
         <h1>Central de Ferramentas</h1>
-        <p>Selecione abaixo o simulador ou utilitário que você deseja utilizar. Todas as ferramentas são 100% gratuitas.</p>
+        <p>Acesse nossos simuladores gratuitos e simplifique seus cálculos diários.</p>
     </div>
 
     <div class="tools-grid">
@@ -189,7 +174,7 @@
         <a href="datas.html" class="tool-card">
             <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
             <div class="tool-name">Contador de Dias</div>
-            <div class="tool-desc">Calcule a diferença entre datas ou some dias a um prazo.</div>
+            <div class="tool-desc">Calcule a diferença exata de dias entre duas datas ou some prazos.</div>
             <span class="btn-access">Contar</span>
         </a>
 
@@ -270,7 +255,7 @@
         </div>
         <div class="footer-col">
             <h4>Ferramentas</h4>
-            <a href="index.html">Juros Compostos</a>
+            <a href="index.html">Simulador de Juros</a>
             <a href="regra3.html">Regra de 3</a>
             <a href="salario.html">Salário Líquido</a>
             <a href="decimo.html">Décimo Terceiro</a>
