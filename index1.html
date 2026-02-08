@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Portal JurosWeb. O seu portal de finanças, cotações e simuladores.">
+    <meta name="description" content="Portal JurosWeb. Finanças, cotações e simuladores gratuitos.">
     <title>JurosWeb | Portal Financeiro</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -41,19 +41,9 @@
         .logo i { color: var(--accent); }
         
         /* BUSCA */
-        .search-box { 
-            display: flex; align-items: center; 
-            background: rgba(255,255,255,0.15); 
-            border: 1px solid rgba(255,255,255,0.3); 
-            padding: 5px 20px; 
-            border-radius: 50px; 
-            width: 350px; 
-            transition: 0.3s; 
-        }
+        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 20px; border-radius: 50px; width: 350px; transition: 0.3s; }
         .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        .search-box input { 
-            flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 1rem; box-shadow: none !important; appearance: none !important;
-        }
+        .search-box input { flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 1rem; box-shadow: none !important; appearance: none !important; }
         .search-box input::placeholder { color: rgba(255,255,255,0.7); }
         .search-box i { color: white; cursor: pointer; margin-left: 10px; }
 
@@ -61,29 +51,36 @@
         .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
 
-        /* --- AJUSTES MOBILE (AQUI ESTÁ O SEGREDO) --- */
+        /* --- CORREÇÃO MOBILE (RESOLVE OBJETOS DE TOQUE) --- */
         @media (max-width: 768px) {
-            header { padding: 10px 0; } /* Menos espaço no topo */
-            .header-container { flex-direction: column; gap: 10px; } /* Menos espaço entre logo, busca e menu */
-            .logo { font-size: 1.4rem; } /* Logo um pouco menor */
+            header { padding: 10px 0; }
+            .header-container { flex-direction: column; gap: 12px; }
+            .logo { font-size: 1.5rem; }
             
-            .search-box { width: 100%; height: 35px; padding: 0 15px; } /* Busca mais fina */
-            .search-box input { font-size: 0.9rem; }
+            /* Busca mais alta para facilitar o toque */
+            .search-box { width: 100%; height: 45px; padding: 0 15px; } 
             
+            /* Menu com rolagem e botões grandes */
             .nav-menu { 
                 width: 100%; 
                 overflow-x: auto; 
-                padding-bottom: 0; 
+                padding: 10px 5px; /* Espaço para o dedo não bater na borda */
                 white-space: nowrap; 
-                gap: 15px; /* Itens mais próximos */
-                -webkit-overflow-scrolling: touch;
+                gap: 10px; 
+                -webkit-overflow-scrolling: touch; /* Rolagem suave no iPhone */
             }
-            .nav-menu a { font-size: 0.8rem; display: inline-block; padding: 5px 0; }
+            /* Aumenta a área de clique dos links no celular */
+            .nav-menu a { 
+                font-size: 0.9rem; 
+                display: inline-block; 
+                padding: 8px 16px; 
+                background: rgba(0,0,0,0.2); 
+                border-radius: 4px;
+            }
             
-            .stock-ticker-wrap { height: 25px; line-height: 25px; font-size: 0.75rem; } /* Ticker mais fino */
-            
+            .stock-ticker-wrap { height: 25px; line-height: 25px; font-size: 0.75rem; }
             .main-container { padding: 10px 15px; }
-            .ad-slot { margin: 15px 0 !important; padding: 15px !important; font-size: 0.7rem !important; } /* Publicidade mais compacta */
+            .ad-slot { margin: 15px 0 !important; padding: 15px !important; font-size: 0.7rem !important; }
         }
 
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; flex:1; width: 100%; box-sizing: border-box; }
@@ -93,7 +90,7 @@
         @media (max-width: 900px) { .hero-section { grid-template-columns: 1fr; gap: 15px; margin-top: 10px; } }
         
         .featured-card { position: relative; height: 400px; border-radius: 8px; overflow: hidden; display: block; color: white; text-decoration: none; background: #000; }
-        @media (max-width: 768px) { .featured-card { height: 250px; } /* Imagem menor no celular */ }
+        @media (max-width: 768px) { .featured-card { height: 280px; } } /* Altura ajustada mobile */
         
         .featured-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
         .featured-card:hover .featured-img { transform: scale(1.05); opacity: 0.6; }
@@ -125,9 +122,9 @@
         input[type="text"], input[type="number"] { width: 100%; border: 2px solid #eee; border-radius: 4px; padding: 12px; font-weight: 600; color: #333; box-sizing: border-box; }
         input:focus { border-color: var(--primary); outline: none; }
         
-        .btn-calc { background: var(--primary); color: white; border-radius: 4px; text-transform: uppercase; font-weight: 800; padding: 15px; border: none; width: 100%; cursor: pointer; transition: 0.3s; margin-top: 15px; }
+        .btn-calc { background: var(--primary); color: white; border-radius: 4px; text-transform: uppercase; font-weight: 800; padding: 15px; border: none; width: 100%; cursor: pointer; transition: 0.3s; margin-top: 15px; min-height: 48px; /* TIPO TOQUE MINIMO */ }
         .btn-calc:hover { background: #600000; transform: translateY(-2px); }
-        .btn-pdf { background: #333; margin-top: 20px; font-size: 0.9rem; display: block; width: 100%; }
+        .btn-pdf { background: #333; margin-top: 20px; font-size: 0.9rem; display: block; width: 100%; min-height: 48px; }
 
         .result-box { background: #fdfdfd; border: 1px dashed #ddd; padding: 20px; border-radius: 4px; margin-top: 20px; display: none; }
         .big-result { font-size: 2.5rem; font-weight: 900; color: var(--primary); display: block; margin: 10px 0; text-align: center; }
@@ -149,7 +146,7 @@
         .news-title { font-size: 1.1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; }
         .news-meta { font-size: 0.8rem; color: #888; margin-top: auto; }
 
-        /* GUIA DO INVESTIDOR (COMENTÁRIOS) */
+        /* GUIA DO INVESTIDOR */
         .info-section { margin-top: 60px; background: white; border-radius: 8px; border: 1px solid #eee; padding: 30px; }
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 20px; }
         .info-card h3 { color: var(--primary); font-size: 1.1rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -162,7 +159,7 @@
         .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
         .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
-        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; padding: 5px 0; /* Area de toque */ }
         .footer-col a:hover { color: var(--accent); padding-left: 5px; }
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
@@ -170,7 +167,14 @@
 <body>
 
 <div class="stock-ticker-wrap">
-    <div class="stock-ticker" id="stockTicker">Carregando cotações...</div>
+    <div class="stock-ticker" id="stockTicker">
+        <span class="stock-item">IBOV <span class="stock-up">128.500 ▲</span></span>
+        <span class="stock-item">PETR4 <span class="stock-down">38,20 ▼</span></span>
+        <span class="stock-item">VALE3 <span class="stock-up">62,50 ▲</span></span>
+        <span class="stock-item">DÓLAR <span class="stock-up">5,22 ▲</span></span>
+        <span class="stock-item">BITCOIN <span class="stock-up">$95k ▲</span></span>
+        <span class="stock-item">CDI <span class="stock-up">10,75% ▲</span></span>
+    </div>
 </div>
 
 <header>
@@ -197,7 +201,7 @@
 
     <div class="hero-section" id="heroSection">
         <a href="#" class="featured-card" id="heroLink" target="_blank">
-            <img src="IMG/news1.jpg" class="featured-img" id="heroImg" alt="Destaque" 
+            <img src="IMG/news1.jpg" class="featured-img" id="heroImg" alt="Destaque" loading="lazy" width="800" height="400"
                  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80';">
             <div class="featured-overlay">
                 <span class="featured-tag">Destaque do Dia</span>
@@ -207,7 +211,13 @@
 
         <aside class="side-widget">
             <div class="widget-header">Rankings B3 (Simulado)</div>
-            <ul class="ranking-list" id="rankingList"></ul>
+            <ul class="ranking-list" id="rankingList">
+                <li class="ranking-item"><span class="rank-name">IBOV</span><span class="rank-val up">128.500 ▲</span></li>
+                <li class="ranking-item"><span class="rank-name">PETR4</span><span class="rank-val down">38,20 ▼</span></li>
+                <li class="ranking-item"><span class="rank-name">VALE3</span><span class="rank-val up">62,50 ▲</span></li>
+                <li class="ranking-item"><span class="rank-name">DÓLAR</span><span class="rank-val up">5,22 ▲</span></li>
+                <li class="ranking-item"><span class="rank-name">CDI</span><span class="rank-val up">10,75% ▲</span></li>
+            </ul>
         </aside>
     </div>
 
@@ -217,15 +227,14 @@
         <a href="regra3.html" class="tool-link"><i class="fas fa-calculator tool-icon"></i> Regra de 3</a>
         <a href="porcentagem.html" class="tool-link"><i class="fas fa-percentage tool-icon"></i> Porcentagem</a>
         <a href="datas.html" class="tool-link"><i class="fas fa-calendar-alt tool-icon"></i> Dias e Datas</a>
-        <a href="imagem.html" class="tool-link"><i class="fas fa-image tool-icon"></i> Editor IMG</a>
     </div>
 
     <div class="calc-section" id="simulador">
         <div class="section-title">
             <span>Simulador de Investimentos</span>
             <div style="font-size:0.9rem;">
-                <button onclick="openTab('rendimento')" id="btn-rend" style="padding:5px 15px; background:var(--primary); color:white; border:none; border-radius:4px; cursor:pointer;">Rendimento</button>
-                <button onclick="openTab('meta')" id="btn-meta" style="padding:5px 15px; background:#eee; color:#333; border:none; border-radius:4px; cursor:pointer;">Meta</button>
+                <button onclick="openTab('rendimento')" id="btn-rend" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:4px; cursor:pointer;">Rendimento</button>
+                <button onclick="openTab('meta')" id="btn-meta" style="padding:10px 20px; background:#eee; color:#333; border:none; border-radius:4px; cursor:pointer;">Meta</button>
             </div>
         </div>
 
@@ -292,15 +301,15 @@
         <div class="info-grid">
             <div class="info-card">
                 <h3><i class="fas fa-magic"></i> A Mágica dos Juros Compostos</h3>
-                <p>Albert Einstein teria dito que os juros compostos são a oitava maravilha do mundo. Eles funcionam como uma bola de neve: você ganha juros não apenas sobre o dinheiro que investiu, mas também sobre os juros que esse dinheiro já rendeu. Começar cedo é o segredo.</p>
+                <p>Albert Einstein teria dito que os juros compostos são a oitava maravilha do mundo. Eles funcionam como uma bola de neve: você ganha juros não apenas sobre o dinheiro que investiu, mas também sobre os juros que esse dinheiro já rendeu.</p>
             </div>
             <div class="info-card">
                 <h3><i class="fas fa-shield-alt"></i> Reserva de Emergência</h3>
-                <p>Antes de investir em renda variável, é crucial ter uma reserva. O ideal é guardar de 6 a 12 meses do seu custo de vida mensal em um investimento de alta liquidez e baixo risco, como o Tesouro Selic ou CDBs de liquidez diária, para imprevistos.</p>
+                <p>Antes de investir em renda variável, é crucial ter uma reserva. O ideal é guardar de 6 a 12 meses do seu custo de vida mensal em um investimento de alta liquidez e baixo risco, como o Tesouro Selic ou CDBs de liquidez diária.</p>
             </div>
             <div class="info-card">
                 <h3><i class="fas fa-balance-scale"></i> Diversificação é Chave</h3>
-                <p>Nunca coloque "todos os ovos na mesma cesta". Diversificar seus investimentos entre diferentes classes (Renda Fixa, Ações, Fundos Imobiliários e Internacional) ajuda a reduzir riscos e aumentar o potencial de retorno da sua carteira a longo prazo.</p>
+                <p>Nunca coloque "todos os ovos na mesma cesta". Diversificar seus investimentos entre diferentes classes (Renda Fixa, Ações, Fundos Imobiliários e Internacional) ajuda a reduzir riscos e aumentar o potencial de retorno.</p>
             </div>
         </div>
     </div>
@@ -321,7 +330,6 @@
             <a href="regra3.html">Regra de 3</a>
             <a href="porcentagem.html">Calculadora de Porcentagem</a>
             <a href="datas.html">Contador de Dias</a>
-            <a href="imagem.html">Editor de Imagens</a>
         </div>
         <div class="footer-col">
             <h4>Legal</h4>
@@ -405,15 +413,6 @@
                 labels.push(m);
                 dataInvestido.push(totalInvestido);
                 dataBruto.push(saldoBruto);
-            }
-            // Tabela
-            if(m > 0 && (m % 1 === 0)) {
-                globalTableData.push([
-                    m, 
-                    totalInvestido.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
-                    rendimentoMes.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),
-                    saldoBruto.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})
-                ]);
             }
         }
 
@@ -508,12 +507,10 @@
         doc.save('relatorio.pdf');
     }
 
-    // --- 3. NOTÍCIAS & TICKER ---
+    // --- 3. NOTÍCIAS (BLINDADAS) ---
     async function loadNews(termo = '') {
         const query = termo || 'investimentos mercado financeiro brasil';
         
-        // BACKUPS DE IMAGENS (Online + Local)
-        // DICA: Coloque suas imagens na pasta IMG com nome news1.jpg até news6.jpg
         const backups = [
             'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=600&q=80',
             'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=600&q=80',
@@ -523,7 +520,6 @@
             'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80'
         ];
         
-        // Notícias de Fallback (7 Itens para garantir 1 Hero + 6 Grid)
         const fallbackNews = [
             {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje", enclosure: {link: backups[0]}},
             {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje", enclosure: {link: backups[1]}},
@@ -555,13 +551,12 @@
             items.slice(1, 7).forEach((item, idx) => {
                 let imgLocal = `IMG/news${(idx%6)+1}.jpg`;
                 let imgOnline = backups[(idx+1) % backups.length];
-                // Se tiver imagem na API, usa ela
                 if(item.enclosure?.link) imgOnline = item.enclosure.link;
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
                     <div class="news-img-box">
-                        <img src="${imgLocal}" onerror="this.src='${imgOnline}'" class="news-img">
+                        <img src="${imgLocal}" onerror="this.src='${imgOnline}'" class="news-img" loading="lazy" width="300" height="180">
                     </div>
                     <div class="news-body">
                         <div class="news-tag">Mercado</div>
@@ -572,8 +567,12 @@
             });
         };
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+
         try {
-            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`);
+            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`, { signal: controller.signal });
+            clearTimeout(timeoutId);
             const data = await res.json();
             
             if(data.status === 'ok' && data.items.length > 0) {
@@ -594,28 +593,8 @@
         }
     }
 
-    function loadTicker() {
-        const stocks = [
-            {n:'IBOV', v:'128.500', c:'up'}, {n:'PETR4', v:'38,20', c:'down'}, 
-            {n:'VALE3', v:'62,50', c:'up'}, {n:'DÓLAR', v:'5,22', c:'up'},
-            {n:'BITCOIN', v:'$95k', c:'up'}, {n:'CDI', v:'10,75%', c:'up'}
-        ];
-        let tickerHTML = '';
-        let rankingHTML = '';
-        
-        [...stocks, ...stocks].forEach(s => {
-            let arrow = s.c==='up' ? '▲' : '▼';
-            tickerHTML += `<span class="stock-item">${s.n} <span class="stock-${s.c}">${s.v} ${arrow}</span></span>`;
-            if(rankingHTML.length < 500) rankingHTML += `<li class="ranking-item"><span class="rank-name">${s.n}</span><span class="rank-val ${s.c}">${s.v} ${arrow}</span></li>`;
-        });
-        document.getElementById('stockTicker').innerHTML = tickerHTML;
-        document.getElementById('rankingList').innerHTML = rankingHTML;
-    }
-
     window.onload = function() {
         loadNews();
-        loadTicker();
-        
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
