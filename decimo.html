@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Calculadora de Décimo Terceiro Salário 2025. Calcule o valor exato da 1ª e 2ª parcela com os descontos.">
-    <title>Calculadora de 13º Salário (Gratificação Natalina) | JurosWeb</title>
+    <meta name="description" content="Calculadora de Décimo Terceiro 2026. Calcule o valor exato da 1ª e 2ª parcela com as novas regras de isenção.">
+    <title>Calculadora de 13º Salário 2026 (Atualizada) | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -55,8 +55,11 @@
 
         /* FERRAMENTA */
         .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
-        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 10px; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         
+        /* Badge de Atualização */
+        .update-badge { display: inline-block; background: #e6ffed; color: #28a745; font-size: 0.85rem; font-weight: bold; padding: 5px 10px; border-radius: 4px; margin-bottom: 30px; border: 1px solid #b7eb8f; display: flex; align-items: center; gap: 5px; width: fit-content; }
+
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media(max-width:600px){ .input-grid { grid-template-columns: 1fr; } }
 
@@ -112,7 +115,7 @@
     <a href="index.html">Início</a>
     <a href="utilidades.html">Ferramentas</a>
     <a href="salario.html">Salário Líquido</a>
-    <a href="decimo.html">Décimo Terceiro</a>
+    <a href="ferias.html">Férias</a>
     <a href="moedas.html">Cotações</a>
 </div>
 
@@ -124,6 +127,7 @@
         
         <div class="nav-menu">
             <a href="index.html">Início</a>
+            <a href="utilidades.html">Ferramentas</a>
             <a href="index.html#noticias">Notícias</a>
         </div>
     </div>
@@ -136,9 +140,11 @@
     <div class="calc-box">
         <h1 class="page-title"><i class="fas fa-gift"></i> Calculadora de 13º Salário</h1>
         
+        <div class="update-badge"><i class="fas fa-check-circle"></i> Atualizado: Regras 2026 (Nova Isenção IRRF R$ 5k)</div>
+        
         <div class="input-group">
             <label>Salário Bruto (R$)</label>
-            <input type="number" id="salario" placeholder="Ex: 2500.00">
+            <input type="text" id="salario" class="money-input" placeholder="R$ 3.000,00">
         </div>
         
         <div class="input-grid">
@@ -169,22 +175,14 @@
     </div>
 
     <article class="seo-content">
-        <h2>Como funciona o pagamento do Décimo Terceiro?</h2>
-        <p>A gratificação natalina é dividida em duas etapas para aliviar a folha de pagamento das empresas e antecipar recursos para o trabalhador.</p>
+        <h2>Como funciona o cálculo (Novas Regras 2026)?</h2>
+        <p>A gratificação natalina é dividida em duas etapas. A nossa ferramenta já está preparada para a nova tabela de isenção do Imposto de Renda.</p>
 
         <h3><i class="fas fa-calendar-check"></i> Primeira Parcela (Até 30/11)</h3>
         <p>Corresponde a 50% do valor do benefício devido. Nesta etapa <strong>não há descontos</strong> de INSS ou Imposto de Renda. O valor cai integral na conta.</p>
 
         <h3><i class="fas fa-money-bill-wave"></i> Segunda Parcela (Até 20/12)</h3>
-        <p>Aqui é feito o acerto de contas. Calcula-se o valor total devido, descontam-se o INSS e o IRRF sobre o valor total e subtrai-se o adiantamento feito na primeira parcela. Por isso, o valor da segunda parcela é sempre menor que o da primeira.</p>
-
-        <h3><i class="fas fa-info-circle"></i> Quem tem direito?</h3>
-        <ul>
-            <li>Todo trabalhador com carteira assinada (CLT).</li>
-            <li>Aposentados e pensionistas do INSS.</li>
-            <li>Trabalhadores domésticos, rurais e avulsos.</li>
-            <li>Quem trabalhou pelo menos 15 dias no ano já tem direito a 1/12 do valor.</li>
-        </ul>
+        <p>Aqui é feito o acerto de contas. Com a <strong>nova isenção de 2026</strong>, se o seu 13º integral for de até R$ 5.000,00 (após deduzir o INSS), você não pagará nada de Imposto de Renda, recebendo um valor líquido maior.</p>
     </article>
 
     <div class="ad-slot">Publicidade Rodapé</div>
@@ -200,8 +198,8 @@
         <div class="footer-col">
             <h4>Ferramentas</h4>
             <a href="index.html">Simulador de Juros</a>
-            <a href="regra3.html">Regra de 3</a>
             <a href="salario.html">Salário Líquido</a>
+            <a href="ferias.html">Calculadora de Férias</a>
             <a href="decimo.html">Décimo Terceiro</a>
         </div>
         <div class="footer-col">
@@ -223,21 +221,40 @@
         document.getElementById('menuOverlay').classList.toggle('active');
     }
 
+    // MÁSCARA DE MOEDA
+    const salarioInput = document.getElementById('salario');
+    salarioInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if(value === '') return;
+        value = (parseInt(value) / 100).toFixed(2) + '';
+        value = value.replace('.', ',');
+        value = value.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+        e.target.value = 'R$ ' + value;
+    });
+
+    // Função para limpar a máscara
+    function parseMoney(str) { 
+        if(!str) return 0;
+        let limpo = str.toString().replace(/[^\d,]/g, '');
+        limpo = limpo.replace(',', '.');
+        return parseFloat(limpo) || 0; 
+    }
+
     function calcularDecimo() {
-        let bruto = parseFloat(document.getElementById('salario').value);
+        let bruto = parseMoney(document.getElementById('salario').value);
         let meses = parseInt(document.getElementById('meses').value);
         let deps = parseInt(document.getElementById('deps').value) || 0;
         
         if(!bruto || !meses) return alert("Preencha o salário e os meses trabalhados.");
         if(meses > 12) meses = 12;
 
-        // Valor proporcional total do 13º
+        // Valor proporcional total
         let valorTotal = (bruto / 12) * meses;
 
         // 1ª Parcela (50% sem descontos)
         let p1 = valorTotal / 2;
 
-        // --- CÁLCULO INSS 2026 (Sobre o Total) ---
+        // --- CÁLCULO INSS 2026 ---
         let inss = 0;
         let tetoINSS = 8475.55; 
 
@@ -250,7 +267,6 @@
         } else if (valorTotal <= tetoINSS) {
             inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((valorTotal - 4354.27) * 0.14);
         } else {
-            // Teto máximo
             inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((tetoINSS - 4354.27) * 0.14);
         }
 
@@ -258,7 +274,6 @@
         let deducaoDependente = 189.59;
         let baseIR = valorTotal - inss - (deps * deducaoDependente);
         
-        // Passo A: Tabela Padrão
         let irrfBruto = 0;
         if(baseIR > 2259.20) {
             if(baseIR <= 2826.65) irrfBruto = (baseIR * 0.075) - 169.44;
@@ -267,10 +282,10 @@
             else irrfBruto = (baseIR * 0.275) - 896.00;
         }
 
-        // Passo B: Redutor 5k
+        // Aplicar Redutor 2026
         let irrf = irrfBruto;
         if (baseIR <= 5000.00) {
-            irrf = 0; // Isento
+            irrf = 0; // Isenção Total
         } else if (baseIR <= 7350.00) {
             let redutor = 978.62 - (0.133145 * baseIR);
             if (redutor < 0) redutor = 0;
@@ -278,7 +293,7 @@
         }
         if(irrf < 0) irrf = 0;
 
-        // 2ª Parcela = Total - INSS - IRRF - Adiantamento(p1)
+        // 2ª Parcela = Total - INSS - IRRF - 1ªParcela
         let p2 = valorTotal - inss - irrf - p1;
 
         const fmt = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
