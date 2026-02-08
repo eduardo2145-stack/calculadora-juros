@@ -25,7 +25,6 @@
             --danger: #dc3545;
         }
         
-        /* CORREÇÃO DO RODAPÉ (FLEX) */
         body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
         .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; flex:1; width: 100%; box-sizing: border-box; }
         
@@ -43,43 +42,43 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA (CORRIGIDA) */
+        /* BUSCA */
         .search-box { 
             display: flex; 
             align-items: center; 
-            background: rgba(255,255,255,0.15); /* Fundo translúcido */
-            border: 1px solid rgba(255,255,255,0.3); 
-            padding: 5px 15px; 
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            padding: 8px 15px; 
             border-radius: 50px; 
             width: 350px; 
             transition: 0.3s; 
         }
-        .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
-        
-        /* Texto Branco Forçado */
+        .search-box:hover, .search-box:focus-within { 
+            background: rgba(0, 0, 0, 0.35); 
+            border-color: rgba(255, 255, 255, 0.3); 
+        }
         .search-box input { 
             flex: 1; 
             background: transparent !important; 
             border: none !important; 
             outline: none !important; 
-            color: #ffffff !important; /* TEXTO BRANCO */
+            color: #ffffff !important; 
             font-size: 0.95rem; 
             box-shadow: none !important; 
             width: 100%; 
         }
-        /* Placeholder Branco Translúcido */
         .search-box input::placeholder { 
-            color: rgba(255,255,255,0.8) !important; 
-            opacity: 1; /* Firefox fix */
+            color: rgba(255, 255, 255, 0.7) !important;
         }
-        .search-box i { color: white; cursor: pointer; }
+        .search-box i { color: rgba(255,255,255,0.8); cursor: pointer; transition: 0.3s; }
+        .search-box:hover i { color: white; }
 
-        /* MENU SIMPLIFICADO */
+        /* MENU TOPO */
         .nav-menu { display: flex; gap: 20px; }
         .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
         .nav-menu a:hover { color: var(--accent); }
 
-        /* MENU MOBILE (SIDEBAR) */
+        /* MENU MOBILE */
         .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
         .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         .sidebar.active { left: 0; }
@@ -167,13 +166,16 @@
 
         .ad-slot { background: #eee; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
         
-        /* RODAPÉ PADRÃO (IGUAL OUTRAS PÁGINAS) */
+        /* RODAPÉ */
         footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
         .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
         .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
-        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        
+        /* CORREÇÃO DO HOVER DO RODAPÉ */
+        .footer-col a { color: #b0b0b0; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
@@ -210,7 +212,7 @@
         <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
         
         <div class="search-box">
-            <input type="text" id="campoBusca" placeholder="Pesquisar...">
+            <input type="text" id="campoBusca" placeholder="Pesquisar (ex: PETR4, Dólar)...">
             <i class="fas fa-search" onclick="realizarBusca()"></i>
         </div>
 
@@ -520,7 +522,7 @@
         doc.save('relatorio-jurosweb.pdf');
     }
 
-    async function loadNews(termo = '') {
+    async function loadNews(termo = '', isSearch = false) {
         const query = termo || 'investimentos mercado financeiro brasil';
         
         const backups = [
@@ -537,8 +539,9 @@
         
         const renderNews = (items) => {
             grid.innerHTML = '';
-            // Hero
-            if(items.length > 0) {
+            
+            // CORREÇÃO 1: Atualiza o Hero APENAS se NÃO for busca
+            if (!isSearch && items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
@@ -547,9 +550,20 @@
                 document.getElementById('heroImg').onerror = function() { this.src = 'https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80'; };
             }
 
-            // Grid
-            let list = items.length >= 7 ? items.slice(1, 7) : items;
-            list.forEach((item, idx) => {
+            // Define os itens da grade
+            let gridItems = [];
+            if (!isSearch) {
+                // Carregamento inicial: pula o primeiro item (que está no hero)
+                gridItems = items.slice(1);
+            } else {
+                // Busca: usa todos os itens
+                gridItems = items;
+            }
+            
+            // Limita a 6 itens na grade
+            gridItems = gridItems.slice(0, 6);
+
+            gridItems.forEach((item, idx) => {
                 let imgUrl = item.img || (item.enclosure ? item.enclosure.link : `IMG/news${(idx % 6) + 1}.jpg`);
                 
                 grid.innerHTML += `
@@ -586,13 +600,14 @@
     function realizarBusca() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            loadNews(val);
+            // Passa 'true' para indicar que é uma busca
+            loadNews(val, true);
             document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
         }
     }
 
     window.onload = function() {
-        loadNews();
+        loadNews(); // Carregamento inicial (isSearch = false)
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
