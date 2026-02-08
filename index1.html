@@ -43,9 +43,35 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA */
-        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; width: 350px; transition: 0.3s; }
-        .search-box input { flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 0.95rem; box-shadow: none !important; width: 100%; }
+        /* BUSCA (CORRIGIDA) */
+        .search-box { 
+            display: flex; 
+            align-items: center; 
+            background: rgba(255,255,255,0.15); /* Fundo translúcido */
+            border: 1px solid rgba(255,255,255,0.3); 
+            padding: 5px 15px; 
+            border-radius: 50px; 
+            width: 350px; 
+            transition: 0.3s; 
+        }
+        .search-box:focus-within { background: rgba(255,255,255,0.25); border-color: white; }
+        
+        /* Texto Branco Forçado */
+        .search-box input { 
+            flex: 1; 
+            background: transparent !important; 
+            border: none !important; 
+            outline: none !important; 
+            color: #ffffff !important; /* TEXTO BRANCO */
+            font-size: 0.95rem; 
+            box-shadow: none !important; 
+            width: 100%; 
+        }
+        /* Placeholder Branco Translúcido */
+        .search-box input::placeholder { 
+            color: rgba(255,255,255,0.8) !important; 
+            opacity: 1; /* Firefox fix */
+        }
         .search-box i { color: white; cursor: pointer; }
 
         /* MENU SIMPLIFICADO */
