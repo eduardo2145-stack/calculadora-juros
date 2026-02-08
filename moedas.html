@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* (Estilos iguais ao anterior) */
+        :root { --primary: #8B0000; --bg: #f8f9fa; --white: #ffffff; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        header { background: var(--primary); padding: 15px 0; }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .nav-links a { color: white; text-decoration: none; font-weight: bold; float: right; margin-top: 5px; }
+
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 40px; text-align: center; }
+        .calc-box i { font-size: 3rem; color: #dca72e; margin-bottom: 20px; }
+        
+        .converter-grid { display: flex; gap: 20px; justify-content: center; align-items: center; margin-top: 30px; flex-wrap: wrap; }
+        select, input { padding: 15px; font-size: 1.1rem; border: 2px solid #eee; border-radius: 4px; }
+        .equal-icon { font-size: 1.5rem; color: #999; }
+        
+        .result-display { margin-top: 30px; font-size: 2rem; font-weight: 900; color: var(--primary); }
+        .taxa-info { color: #777; font-size: 0.9rem; margin-top: 5px; }
+
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: bold; margin-top: 30px; cursor: pointer; }
+        
+        footer { background: #111; color: #ccc; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="utilidades.html">FERRAMENTAS</a></nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="calc-box">
+        <i class="fas fa-exchange-alt"></i>
+        <h1>Conversor de Moedas</h1>
+        
+        <div class="converter-grid">
+            <input type="number" id="valor" placeholder="1.00" value="1">
+            <select id="moedaOrigem">
+                <option value="USD">Dólar (USD)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="BTC">Bitcoin (BTC)</option>
+            </select>
+            <div class="equal-icon">=</div>
+            <div style="font-size:1.5rem; font-weight:bold;">Real (BRL)</div>
+        </div>
+
+        <button class="btn-calc" onclick="converter()">Converter Agora</button>
+
+        <div class="result-display" id="resultado">R$ 0,00</div>
+        <div class="taxa-info" id="taxaInfo">Carregando cotação...</div>
+    </div>
+</div>
+
+<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+
+<script>
+    async function converter() {
+        const valor = parseFloat(document.getElementById('valor').value);
+        const moeda = document.getElementById('moedaOrigem').value;
+        const par = `${moeda}-BRL`;
+        
+        document.getElementById('resultado').innerText = "Calculando...";
+        
+        try {
+            // Tenta API AwesomeAPI (Gratuita e ótima para BRL)
+            const res = await fetch(`https://economia.awesomeapi.com.br/last/${par}`);
+            const data = await res.json();
+            const bid = parseFloat(data[moeda + 'BRL'].bid);
+            
+            const total = valor * bid;
+            document.getElementById('resultado').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('taxaInfo').innerText = `Cotação usada: 1 ${moeda} = R$ ${bid.toFixed(2)}`;
+        } catch(e) {
+            // Fallback se API falhar
+            let taxaFixa = moeda === 'USD' ? 5.20 : (moeda === 'EUR' ? 5.60 : 350000);
+            document.getElementById('resultado').innerText = (valor * taxaFixa).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('taxaInfo').innerText = "Cotação aproximada (Offline).";
+        }
+    }
+    // Converte ao carregar
+    window.onload = converter;
+</script>
+</body>
+</html>
