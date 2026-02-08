@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Salário Líquido 2025 | JurosWeb</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #8B0000; --bg: #f8f9fa; --white: #ffffff; --text: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
+        .logo i { color: #dca72e; }
+        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; float: right; margin-top: 5px; }
+
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase; }
+        .btn-calc:hover { background: #600000; }
+
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 30px; display: none; }
+        .result-table th { text-align: left; padding: 10px; border-bottom: 2px solid #eee; color: #555; }
+        .result-table td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; }
+        .desc { color: #dc3545; font-weight: bold; }
+        .final { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: #fdfdfd; }
+
+        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; }
+        footer { background: #111; color: #ccc; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
+        <nav class="nav-links"><a href="utilidades.html">FERRAMENTAS</a></nav>
+    </div>
+</header>
+
+<div class="container">
+    <div class="calc-box">
+        <h1 class="page-title">Calculadora de Salário Líquido (CLT)</h1>
+        
+        <div class="input-group">
+            <label>Salário Bruto (R$)</label>
+            <input type="number" id="bruto" placeholder="Ex: 3000.00">
+        </div>
+        <div class="input-group">
+            <label>Número de Dependentes</label>
+            <input type="number" id="deps" placeholder="0" value="0">
+        </div>
+        <div class="input-group">
+            <label>Outros Descontos (VR, VT, Plano...)</label>
+            <input type="number" id="outros" placeholder="0.00">
+        </div>
+
+        <button class="btn-calc" onclick="calcularSalario()">Calcular Líquido</button>
+
+        <table class="result-table" id="resTable">
+            <tr><th>Descrição</th><th>Alíquota</th><th>Valor</th></tr>
+            <tr><td>Salário Bruto</td><td>-</td><td id="r_bruto">R$ 0,00</td></tr>
+            <tr><td>(-) INSS</td><td id="aliq_inss">0%</td><td class="desc" id="r_inss">R$ 0,00</td></tr>
+            <tr><td>(-) IRRF</td><td id="aliq_ir">0%</td><td class="desc" id="r_ir">R$ 0,00</td></tr>
+            <tr><td>(-) Outros</td><td>-</td><td class="desc" id="r_outros">R$ 0,00</td></tr>
+            <tr class="final"><td>Salário Líquido</td><td></td><td id="r_liquido">R$ 0,00</td></tr>
+        </table>
+    </div>
+
+    <article class="seo-content">
+        <h2>Entenda seu Holerite</h2>
+        <p>O cálculo do salário líquido envolve descontos obrigatórios definidos por lei. Primeiro desconta-se o INSS (Previdência), que segue uma tabela progressiva. Sobre o valor restante, calcula-se o IRRF (Imposto de Renda), considerando deduções por dependentes.</p>
+    </article>
+</div>
+
+<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+
+<script>
+    function calcularSalario() {
+        let bruto = parseFloat(document.getElementById('bruto').value);
+        let deps = parseInt(document.getElementById('deps').value) || 0;
+        let outros = parseFloat(document.getElementById('outros').value) || 0;
+
+        if(!bruto) return alert("Digite o salário bruto");
+
+        // 1. INSS (Tabela Progressiva 2024/25 aprox)
+        let inss = 0;
+        if(bruto <= 1412.00) inss = bruto * 0.075;
+        else if(bruto <= 2666.68) inss = (1412 * 0.075) + ((bruto - 1412) * 0.09);
+        else if(bruto <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((bruto - 2666.68) * 0.12);
+        else if(bruto <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((bruto - 4000.03) * 0.14);
+        else inss = 908.85; // Teto
+
+        // 2. IRRF
+        let baseIR = bruto - inss - (deps * 189.59);
+        let irrf = 0;
+        if(baseIR <= 2259.20) irrf = 0;
+        else if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
+        else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
+        else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
+        else irrf = (baseIR * 0.275) - 896.00;
+        if(irrf < 0) irrf = 0;
+
+        let liquido = bruto - inss - irrf - outros;
+
+        // Render
+        const fmt = (v) => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('r_bruto').innerText = fmt(bruto);
+        document.getElementById('r_inss').innerText = "- " + fmt(inss);
+        document.getElementById('r_ir').innerText = "- " + fmt(irrf);
+        document.getElementById('r_outros').innerText = "- " + fmt(outros);
+        document.getElementById('r_liquido').innerText = fmt(liquido);
+        document.getElementById('resTable').style.display = 'table';
+    }
+</script>
+</body>
+</html>
