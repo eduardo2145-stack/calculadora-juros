@@ -2,121 +2,279 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Salário Líquido 2025 | JurosWeb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Calculadora de Salário Líquido 2025. Descubra o valor real do seu salário após descontos de INSS e IRRF.">
+    <title>Calculadora de Salário Líquido (CLT) | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --primary: #8B0000; --bg: #f8f9fa; --white: #ffffff; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
-        .logo i { color: #dca72e; }
-        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; float: right; margin-top: 5px; }
+        /* --- ESTILO GLOBAL (VERMELHO PREMIUM) --- */
+        :root { 
+            --primary: #8B0000; 
+            --primary-dark: #600000; 
+            --secondary: #212529; 
+            --accent: #dca72e; 
+            --bg: #f8f9fa; 
+            --white: #ffffff; 
+        }
+        
+        /* CORREÇÃO DO RODAPÉ (MIN-HEIGHT + FLEX) */
+        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        .main-container { max-width: 1000px; margin: 0 auto; padding: 20px; width: 100%; box-sizing: border-box; flex: 1; /* Empurra o rodapé */ }
 
-        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; }
+        /* HEADER IGUAL UTILIDADES */
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; gap: 15px; }
+        
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
+        .logo i { color: var(--accent); }
+        
+        /* BUSCA */
+        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; width: 350px; transition: 0.3s; }
+        .search-box input { flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 0.95rem; box-shadow: none !important; width: 100%; }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box i { color: white; cursor: pointer; }
+
+        .nav-menu { display: flex; gap: 20px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        /* MENU MOBILE (SIDEBAR) */
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 20px; border-bottom: 1px solid #444; margin-bottom: 10px; }
+        .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
+        .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
+        .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+
+        /* CORREÇÕES MOBILE */
+        @media (max-width: 900px) {
+            .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            header { padding: 10px 0; }
+            .header-container { flex-direction: row; flex-wrap: nowrap; gap: 10px; padding: 0 15px; }
+            .logo { font-size: 1.3rem; flex: 0 1 auto; gap: 5px; }
+            .logo span { display: none; }
+            @media (min-width: 400px) { .logo span { display: inline; } }
+            .search-box { width: auto; flex: 1; height: 38px; padding: 0 12px; }
+        }
+
+        /* ESTILO DA CALCULADORA */
+        .calc-box { background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; margin-top: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .page-title { color: var(--primary); border-left: 5px solid var(--primary); padding-left: 15px; margin-bottom: 30px; font-size: 1.8rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         
         .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-size: 1rem; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; text-transform: uppercase; font-size: 0.85rem; }
+        input { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 4px; box-sizing: border-box; font-size: 1rem; color: #333; font-weight: 600; }
+        input:focus { border-color: var(--primary); outline: none; }
         
-        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: bold; font-size: 1rem; cursor: pointer; text-transform: uppercase; }
-        .btn-calc:hover { background: #600000; }
+        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: 800; font-size: 1rem; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; }
+        .btn-calc:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-        .result-table { width: 100%; border-collapse: collapse; margin-top: 30px; display: none; }
-        .result-table th { text-align: left; padding: 10px; border-bottom: 2px solid #eee; color: #555; }
-        .result-table td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; }
+        /* TABELA DE RESULTADO */
+        .result-table { width: 100%; border-collapse: collapse; margin-top: 30px; display: none; border: 1px solid #eee; }
+        .result-table th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; color: #333; background: #f9f9f9; }
+        .result-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; color: #555; }
         .desc { color: #dc3545; font-weight: bold; }
-        .final { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: #fdfdfd; }
+        .final td { background: var(--primary); color: white; font-weight: 900; font-size: 1.1rem; }
 
-        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; }
-        footer { background: #111; color: #ccc; padding: 40px 0; margin-top: 50px; text-align: center; border-top: 4px solid var(--primary); }
+        /* CONTEÚDO SEO (EXPANDIDO) */
+        .seo-content { margin-top: 50px; background: white; padding: 40px; border-radius: 8px; border: 1px solid #eee; }
+        .seo-content h2 { color: var(--primary); font-size: 1.5rem; margin-top: 0; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .seo-content h3 { color: #333; font-size: 1.2rem; margin-top: 30px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .seo-content h3 i { color: var(--accent); }
+        .seo-content p { color: #666; line-height: 1.8; text-align: justify; margin-bottom: 15px; }
+        .seo-content ul { padding-left: 20px; color: #666; margin-bottom: 20px; }
+        .seo-content li { margin-bottom: 10px; }
+
+        .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
+
+        /* RODAPÉ IGUAL UTILIDADES */
+        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
+        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
+        .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
+        .footer-col a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <h3>MENU</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
+    </div>
+    <a href="index.html">Início</a>
+    <a href="utilidades.html">Ferramentas</a>
+    <a href="salario.html">Salário Líquido</a>
+    <a href="decimo.html">Décimo Terceiro</a>
+    <a href="moedas.html">Cotações</a>
+</div>
+
 <header>
-    <div class="container">
-        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
-        <nav class="nav-links"><a href="utilidades.html">FERRAMENTAS</a></nav>
+    <div class="header-container">
+        <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
+        
+        <div class="search-box">
+            <input type="text" placeholder="Pesquisar...">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="nav-menu">
+            <a href="index.html">Início</a>
+            <a href="utilidades.html">Ferramentas</a>
+            <a href="salario.html">Calculadoras</a>
+            <a href="index.html#noticias">Notícias</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
+<div class="main-container">
+    
+    <div class="ad-slot">Publicidade Topo</div>
+
     <div class="calc-box">
-        <h1 class="page-title">Calculadora de Salário Líquido (CLT)</h1>
+        <h1 class="page-title"><i class="fas fa-money-check-alt"></i> Calculadora de Salário Líquido (CLT)</h1>
         
         <div class="input-group">
             <label>Salário Bruto (R$)</label>
             <input type="number" id="bruto" placeholder="Ex: 3000.00">
         </div>
-        <div class="input-group">
-            <label>Número de Dependentes</label>
-            <input type="number" id="deps" placeholder="0" value="0">
-        </div>
-        <div class="input-group">
-            <label>Outros Descontos (VR, VT, Plano...)</label>
-            <input type="number" id="outros" placeholder="0.00">
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div class="input-group">
+                <label>Nº de Dependentes</label>
+                <input type="number" id="deps" placeholder="0" value="0">
+            </div>
+            <div class="input-group">
+                <label>Outros Descontos</label>
+                <input type="number" id="outros" placeholder="R$ 0.00">
+            </div>
         </div>
 
         <button class="btn-calc" onclick="calcularSalario()">Calcular Líquido</button>
 
         <table class="result-table" id="resTable">
-            <tr><th>Descrição</th><th>Alíquota</th><th>Valor</th></tr>
-            <tr><td>Salário Bruto</td><td>-</td><td id="r_bruto">R$ 0,00</td></tr>
-            <tr><td>(-) INSS</td><td id="aliq_inss">0%</td><td class="desc" id="r_inss">R$ 0,00</td></tr>
-            <tr><td>(-) IRRF</td><td id="aliq_ir">0%</td><td class="desc" id="r_ir">R$ 0,00</td></tr>
-            <tr><td>(-) Outros</td><td>-</td><td class="desc" id="r_outros">R$ 0,00</td></tr>
-            <tr class="final"><td>Salário Líquido</td><td></td><td id="r_liquido">R$ 0,00</td></tr>
+            <tr style="background:#eee;"><th>Descrição</th><th>Alíquota Efetiva</th><th>Valor</th></tr>
+            <tr><td>(+) Salário Bruto</td><td>-</td><td id="r_bruto">R$ 0,00</td></tr>
+            <tr><td>(-) INSS (Previdência)</td><td id="aliq_inss">0%</td><td class="desc" id="r_inss">R$ 0,00</td></tr>
+            <tr><td>(-) IRRF (Imposto de Renda)</td><td id="aliq_ir">0%</td><td class="desc" id="r_ir">R$ 0,00</td></tr>
+            <tr><td>(-) Outros Descontos</td><td>-</td><td class="desc" id="r_outros">R$ 0,00</td></tr>
+            <tr class="final"><td>(=) Salário Líquido</td><td></td><td id="r_liquido">R$ 0,00</td></tr>
         </table>
     </div>
 
     <article class="seo-content">
-        <h2>Entenda seu Holerite</h2>
-        <p>O cálculo do salário líquido envolve descontos obrigatórios definidos por lei. Primeiro desconta-se o INSS (Previdência), que segue uma tabela progressiva. Sobre o valor restante, calcula-se o IRRF (Imposto de Renda), considerando deduções por dependentes.</p>
+        <h2>Entenda o Cálculo do seu Salário</h2>
+        <p>Receber o holerite (contracheque) e ver um valor menor do que o contratado é comum, mas é importante entender para onde vai esse dinheiro. No regime CLT, existem descontos obrigatórios por lei que incidem sobre o salário bruto.</p>
+
+        <h3><i class="fas fa-shield-alt"></i> 1. Desconto do INSS</h3>
+        <p>O INSS (Instituto Nacional do Seguro Social) é o primeiro desconto aplicado. Ele garante sua aposentadoria, auxílio-doença e outros benefícios. A tabela é <strong>progressiva</strong>, ou seja, quem ganha mais paga uma alíquota maior, variando de 7,5% a 14% (até o teto).</p>
+
+        <h3><i class="fas fa-file-invoice-dollar"></i> 2. Imposto de Renda (IRRF)</h3>
+        <p>O Imposto de Renda Retido na Fonte é descontado após a subtração do INSS. Ele também segue uma tabela progressiva. A boa notícia é que quem possui <strong>dependentes</strong> (filhos, cônjuges) tem direito a uma dedução legal por pessoa, o que diminui o imposto a pagar.</p>
+
+        <h3><i class="fas fa-bus"></i> 3. Outros Descontos</h3>
+        <p>Além dos impostos, podem ocorrer outros descontos comuns:</p>
+        <ul>
+            <li><strong>Vale Transporte:</strong> A empresa pode descontar até 6% do salário base.</li>
+            <li><strong>Plano de Saúde:</strong> Coparticipação ou mensalidade (opcional).</li>
+            <li><strong>Vale Refeição/Alimentação:</strong> Parte do valor pode ser descontada (geralmente até 20%).</li>
+        </ul>
+        
+        <p>Use nossa ferramenta mensalmente para conferir se os valores depositados na sua conta estão corretos.</p>
     </article>
+
+    <div class="ad-slot">Publicidade Rodapé</div>
+
 </div>
 
-<footer><p>&copy; 2026 JurosWeb.com.br</p></footer>
+<footer>
+    <div class="footer-inner">
+        <div class="footer-col">
+            <h4>Sobre o JurosWeb</h4>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Ferramentas</h4>
+            <a href="index.html">Simulador de Juros</a>
+            <a href="regra3.html">Regra de 3</a>
+            <a href="salario.html">Salário Líquido</a>
+            <a href="decimo.html">Décimo Terceiro</a>
+        </div>
+        <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="politica.html">Política de Privacidade</a>
+            <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
+            <a href="contato.html">Contato</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
+</footer>
 
 <script>
+    function toggleMenu() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
+
     function calcularSalario() {
         let bruto = parseFloat(document.getElementById('bruto').value);
         let deps = parseInt(document.getElementById('deps').value) || 0;
         let outros = parseFloat(document.getElementById('outros').value) || 0;
 
-        if(!bruto) return alert("Digite o salário bruto");
+        if(!bruto) return alert("Por favor, digite o valor do Salário Bruto.");
 
-        // 1. INSS (Tabela Progressiva 2024/25 aprox)
+        // 1. CÁLCULO INSS (Tabela Progressiva 2024/2025 Aprox.)
         let inss = 0;
         if(bruto <= 1412.00) inss = bruto * 0.075;
         else if(bruto <= 2666.68) inss = (1412 * 0.075) + ((bruto - 1412) * 0.09);
         else if(bruto <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((bruto - 2666.68) * 0.12);
         else if(bruto <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((bruto - 4000.03) * 0.14);
-        else inss = 908.85; // Teto
+        else inss = 908.85; // Teto do INSS
 
-        // 2. IRRF
+        // 2. CÁLCULO IRRF
         let baseIR = bruto - inss - (deps * 189.59);
         let irrf = 0;
+        
         if(baseIR <= 2259.20) irrf = 0;
         else if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
         else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
         else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
         else irrf = (baseIR * 0.275) - 896.00;
+        
         if(irrf < 0) irrf = 0;
 
         let liquido = bruto - inss - irrf - outros;
 
-        // Render
+        // Formatação
         const fmt = (v) => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        
         document.getElementById('r_bruto').innerText = fmt(bruto);
         document.getElementById('r_inss').innerText = "- " + fmt(inss);
         document.getElementById('r_ir').innerText = "- " + fmt(irrf);
         document.getElementById('r_outros').innerText = "- " + fmt(outros);
         document.getElementById('r_liquido').innerText = fmt(liquido);
+        
+        // Alíquotas Efetivas (Visual apenas)
+        document.getElementById('aliq_inss').innerText = ((inss/bruto)*100).toFixed(1) + "%";
+        document.getElementById('aliq_ir').innerText = ((irrf/bruto)*100).toFixed(1) + "%";
+
         document.getElementById('resTable').style.display = 'table';
     }
 </script>
+
 </body>
 </html>
