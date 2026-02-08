@@ -42,7 +42,7 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
         .logo i { color: var(--accent); }
         
-        /* BUSCA (PRETO TRANSLÚCIDO) */
+        /* BUSCA (ESTILO ESCURO/TRANSPARENTE) */
         .search-box { 
             display: flex; 
             align-items: center; 
@@ -172,7 +172,7 @@
         
         /* HOVER RODAPÉ CORRIGIDO */
         .footer-col a { color: #b0b0b0; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
-        .footer-col a:hover { color: var(--accent); padding-left: 8px; } /* Deslocamento e cor */
+        .footer-col a:hover { color: var(--accent); padding-left: 8px; }
         
         .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
     </style>
@@ -228,7 +228,7 @@
     <div class="hero-section" id="heroSection">
         <a href="#" class="featured-card" id="heroLink" target="_blank">
             <img src="IMG/news1.jpg" class="featured-img" id="heroImg" alt="Destaque" loading="lazy" 
-                 onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80';">
+                 onerror="this.onerror=null;this.src='IMG/news1.jpg';">
             <div class="featured-overlay">
                 <span class="featured-tag">Destaque do Dia</span>
                 <h2 class="featured-title" id="heroTitle">Mercado financeiro: Acompanhe as principais movimentações...</h2>
@@ -506,43 +506,38 @@
     async function loadNews(termo = '', isSearch = false) {
         const query = termo || 'investimentos mercado financeiro brasil';
         
-        // IMAGENS DE ESTOQUE VARIADAS (Para resolver o problema das fotos iguais)
-        const stockImages = [
-            "https://images.unsplash.com/photo-1611974765270-ca1258634369?w=800&q=80",
-            "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=800&q=80",
-            "https://images.unsplash.com/photo-1633158829585-23ba8f7c8caf?w=800&q=80",
-            "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=80",
-            "https://images.unsplash.com/photo-1554224155-9ffd48f43606?w=800&q=80",
-            "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80"
-        ];
-
         const grid = document.getElementById('newsGrid');
         
         const renderNews = (items) => {
             grid.innerHTML = '';
             
-            // ATUALIZA HERO APENAS SE NÃO FOR BUSCA
+            // HERÓI (Destaque):
+            // Só atualiza se NÃO for busca. Se for busca, mantém o destaque carregado na abertura.
             if (!isSearch && items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
-                let heroImg = hero.enclosure ? hero.enclosure.link : stockImages[0];
+                let heroImg = hero.enclosure ? hero.enclosure.link : 'IMG/news1.jpg';
                 document.getElementById('heroImg').src = heroImg;
-                document.getElementById('heroImg').onerror = function() { this.src = stockImages[0]; };
+                document.getElementById('heroImg').onerror = function() { 
+                    this.src = 'IMG/news1.jpg'; // Fallback para Hero
+                };
             }
 
-            // GRID
+            // GRID:
+            // Se for busca, mostra tudo. Se for home, pula o primeiro (que foi pro Hero).
             let list = isSearch ? items : items.slice(1);
-            list = list.slice(0, 6);
+            list = list.slice(0, 6); // Limita a 6
 
             list.forEach((item, idx) => {
-                // Tenta imagem da API ou pega uma da lista rotativa
-                let imgUrl = item.enclosure ? item.enclosure.link : stockImages[idx % stockImages.length];
+                // Tenta imagem da API. 
+                // Se falhar (onerror), usa LOCAL rotativa (1 a 6) para não repetir.
+                let imgUrl = item.enclosure ? item.enclosure.link : `IMG/news${(idx % 6) + 1}.jpg`;
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
                     <div class="news-img-box">
-                        <img src="${imgUrl}" onerror="this.src='${stockImages[idx % stockImages.length]}'" class="news-img" loading="lazy">
+                        <img src="${imgUrl}" onerror="this.src='IMG/news${(idx % 6) + 1}.jpg'" class="news-img" loading="lazy">
                     </div>
                     <div class="news-body">
                         <div class="news-tag">Mercado</div>
@@ -566,14 +561,15 @@
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
             } else { throw new Error("Vazio"); }
         } catch(e) {
-            // Backup manual em caso de erro
+            // Backup manual
             const backups = [
                 {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "#"},
                 {title: "Dólar opera estável aguardando decisão do FED", link: "#"},
                 {title: "Banco Central mantém taxa Selic: O que muda?", link: "#"},
                 {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "#"},
                 {title: "Entenda como a inflação afeta seus investimentos", link: "#"},
-                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "#"}
+                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "#"},
+                {title: "Renda Fixa volta a ser atrativa com juros altos", link: "#"}
             ];
             renderNews(backups);
         }
@@ -582,13 +578,13 @@
     function realizarBusca() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            loadNews(val, true); // True = é uma busca
+            loadNews(val, true); // True = é uma busca (preserva o Hero)
             document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
         }
     }
 
     window.onload = function() {
-        loadNews(); // Carregamento inicial (não é busca)
+        loadNews(); // False = carregamento inicial
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
