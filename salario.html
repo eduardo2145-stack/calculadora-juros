@@ -222,40 +222,76 @@
 
         if(!bruto) return alert("Por favor, digite o valor do Salário Bruto.");
 
-        // 1. CÁLCULO INSS (Tabela Progressiva 2024/2025 Aprox.)
+        // --- 1. CÁLCULO INSS 2026 (Tabela Progressiva Oficial) ---
+        // Salário Mínimo 2026: R$ 1.621,00
+        // Teto do INSS 2026: R$ 8.475,55
         let inss = 0;
-        if(bruto <= 1412.00) inss = bruto * 0.075;
-        else if(bruto <= 2666.68) inss = (1412 * 0.075) + ((bruto - 1412) * 0.09);
-        else if(bruto <= 4000.03) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((bruto - 2666.68) * 0.12);
-        else if(bruto <= 7786.02) inss = (1412 * 0.075) + ((2666.68 - 1412) * 0.09) + ((4000.03 - 2666.68) * 0.12) + ((bruto - 4000.03) * 0.14);
-        else inss = 908.85; // Teto do INSS
+        let tetoINSS = 8475.55; 
 
-        // 2. CÁLCULO IRRF
-        let baseIR = bruto - inss - (deps * 189.59);
-        let irrf = 0;
+        if (bruto <= 1621.00) {
+            inss = bruto * 0.075;
+        } else if (bruto <= 2902.84) {
+            inss = (1621.00 * 0.075) + ((bruto - 1621.00) * 0.09);
+        } else if (bruto <= 4354.27) {
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((bruto - 2902.84) * 0.12);
+        } else if (bruto <= tetoINSS) {
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((bruto - 4354.27) * 0.14);
+        } else {
+            // Valor fixo máximo para quem ganha acima do teto
+            inss = (1621.00 * 0.075) + ((2902.84 - 1621.00) * 0.09) + ((4354.27 - 2902.84) * 0.12) + ((tetoINSS - 4354.27) * 0.14);
+        }
+
+        // --- 2. CÁLCULO IRRF 2026 (Nova Regra de Isenção 5k) ---
+        // Base de cálculo = Bruto - INSS - Dependentes
+        let deducaoDependente = 189.59; 
+        let baseIR = bruto - inss - (deps * deducaoDependente);
         
-        if(baseIR <= 2259.20) irrf = 0;
-        else if(baseIR <= 2826.65) irrf = (baseIR * 0.075) - 169.44;
-        else if(baseIR <= 3751.05) irrf = (baseIR * 0.15) - 381.44;
-        else if(baseIR <= 4664.68) irrf = (baseIR * 0.225) - 662.77;
-        else irrf = (baseIR * 0.275) - 896.00;
-        
-        if(irrf < 0) irrf = 0;
+        // Passo A: Calcular o IR pela "Tabela Tradicional" (que não mudou as faixas base)
+        let irrfBruto = 0;
+        if (baseIR <= 2259.20) {
+            irrfBruto = 0;
+        } else if (baseIR <= 2826.65) {
+            irrfBruto = (baseIR * 0.075) - 169.44;
+        } else if (baseIR <= 3751.05) {
+            irrfBruto = (baseIR * 0.15) - 381.44;
+        } else if (baseIR <= 4664.68) {
+            irrfBruto = (baseIR * 0.225) - 662.77;
+        } else {
+            irrfBruto = (baseIR * 0.275) - 896.00;
+        }
 
-        let liquido = bruto - inss - irrf - outros;
+        // Passo B: Aplicar o NOVO REDUTOR 2026 (Lei da Isenção 5k)
+        // Se a base for até 5.000, o redutor zera o imposto.
+        // Se for entre 5.000 e 7.350, o redutor é gradual.
+        let irrfFinal = irrfBruto;
 
-        // Formatação
+        if (baseIR <= 5000.00) {
+            irrfFinal = 0; // Isenção total
+        } else if (baseIR <= 7350.00) {
+            // Fórmula do redutor gradual oficial 2026
+            let redutor = 978.62 - (0.133145 * baseIR);
+            if (redutor < 0) redutor = 0;
+            irrfFinal = irrfBruto - redutor;
+        }
+        // Acima de 7.350,00 segue o cálculo normal (irrfBruto) sem redutor extra
+
+        if (irrfFinal < 0) irrfFinal = 0;
+
+        // --- 3. RESULTADO FINAL ---
+        let liquido = bruto - inss - irrfFinal - outros;
+
+        // Formatação para Moeda Real (BRL)
         const fmt = (v) => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         
         document.getElementById('r_bruto').innerText = fmt(bruto);
         document.getElementById('r_inss').innerText = "- " + fmt(inss);
-        document.getElementById('r_ir').innerText = "- " + fmt(irrf);
+        document.getElementById('r_ir').innerText = "- " + fmt(irrfFinal);
         document.getElementById('r_outros').innerText = "- " + fmt(outros);
         document.getElementById('r_liquido').innerText = fmt(liquido);
         
-        // Alíquotas Efetivas (Visual apenas)
-        document.getElementById('aliq_inss').innerText = ((inss/bruto)*100).toFixed(1) + "%";
-        document.getElementById('aliq_ir').innerText = ((irrf/bruto)*100).toFixed(1) + "%";
+        // Exibe alíquotas efetivas (quanto % realmente pagou sobre o bruto)
+        document.getElementById('aliq_inss').innerText = ((inss/bruto)*100).toFixed(2) + "%";
+        document.getElementById('aliq_ir').innerText = ((irrfFinal/bruto)*100).toFixed(2) + "%";
 
         document.getElementById('resTable').style.display = 'table';
     }
