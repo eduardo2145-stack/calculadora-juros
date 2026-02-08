@@ -2,147 +2,298 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Central de Ferramentas JurosWeb. Calculadoras trabalhistas, financeiras e matemáticas.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Central de Ferramentas JurosWeb. Calculadoras financeiras, trabalhistas e matemáticas.">
     <title>Todas as Ferramentas | JurosWeb</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --primary: #8B0000; --primary-dark: #600000; --secondary: #212529; --accent: #dca72e; --bg: #f8f9fa; --white: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; min-height: 100vh; color: #333; line-height: 1.6; }
-        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; }
-        .header-flex { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; text-transform: uppercase; }
-        .logo i { color: var(--accent); }
-        .nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; margin-left: 20px; text-transform: uppercase; font-size: 0.85rem; }
-        .nav-links a:hover { color: var(--accent); }
-
-        .hero-title { text-align: center; margin-top: 50px; margin-bottom: 40px; }
-        .hero-title h1 { color: var(--primary); font-size: 2.5rem; margin-bottom: 10px; font-weight: 800; }
+        /* --- ESTILO GLOBAL (VERMELHO PREMIUM) --- */
+        :root { 
+            --primary: #8B0000; 
+            --primary-dark: #600000; 
+            --secondary: #212529; 
+            --accent: #dca72e; 
+            --bg: #f8f9fa; 
+            --white: #ffffff; 
+        }
         
-        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px; }
-        .tool-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 30px; text-align: center; transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; }
+        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        
+        /* HEADER IGUAL AO INDEX */
+        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; gap: 15px; }
+        
+        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
+        .logo i { color: var(--accent); }
+        
+        /* BUSCA */
+        .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 15px; border-radius: 50px; width: 350px; transition: 0.3s; }
+        .search-box input { flex: 1; background: transparent !important; border: none !important; outline: none !important; color: #ffffff !important; font-size: 0.95rem; box-shadow: none !important; width: 100%; }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
+        .search-box i { color: white; cursor: pointer; }
+
+        .nav-menu { display: flex; gap: 20px; }
+        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
+        .nav-menu a:hover { color: var(--accent); }
+
+        /* MENU MOBILE (SIDEBAR) */
+        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 20px; border-bottom: 1px solid #444; margin-bottom: 10px; }
+        .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
+        .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
+        .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+
+        /* CORREÇÕES MOBILE */
+        @media (max-width: 900px) {
+            .nav-menu { display: none; }
+            .mobile-menu-btn { display: block; }
+            header { padding: 10px 0; }
+            .header-container { flex-direction: row; flex-wrap: nowrap; gap: 10px; padding: 0 15px; }
+            .logo { font-size: 1.3rem; flex: 0 1 auto; gap: 5px; }
+            .logo span { display: none; }
+            @media (min-width: 400px) { .logo span { display: inline; } }
+            .search-box { width: auto; flex: 1; height: 38px; padding: 0 12px; }
+        }
+
+        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; flex:1; width: 100%; box-sizing: border-box; }
+
+        /* HERO TITLE */
+        .hero-title { text-align: center; margin-top: 40px; margin-bottom: 40px; }
+        .hero-title h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 10px; font-weight: 800; }
+        .hero-title p { color: #666; font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+
+        /* GRID DE FERRAMENTAS (9 ITENS) */
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 60px; }
+        
+        .tool-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 30px; text-align: center; transition: 0.3s; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; position: relative; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
         .tool-card:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 15px 30px rgba(139,0,0,0.1); }
-        .icon-box { width: 70px; height: 70px; background: #fdfdfd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid #eee; color: var(--primary); font-size: 2rem; transition:0.3s;}
+        .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--primary); transform: scaleX(0); transition: 0.3s; transform-origin: left; }
+        .tool-card:hover::before { transform: scaleX(1); }
+
+        .icon-box { width: 70px; height: 70px; background: #fdfdfd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; border: 2px solid #eee; color: var(--primary); font-size: 2rem; transition: 0.3s; }
         .tool-card:hover .icon-box { background: var(--primary); color: white; border-color: var(--primary); }
+        
         .tool-name { font-size: 1.25rem; font-weight: 800; color: #222; margin-bottom: 10px; }
-        .tool-desc { color: #666; font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
-        .btn-access { padding: 8px 25px; background: #eee; color: #333; border-radius: 50px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
+        .tool-desc { color: #666; font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; line-height: 1.5; }
+        .btn-access { padding: 10px 25px; background: #eee; color: #333; border-radius: 50px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
         .tool-card:hover .btn-access { background: var(--primary); color: white; }
 
-        /* SEÇÃO EXPLICATIVA */
+        /* SEÇÃO EXPLICATIVA (SEO) */
         .guide-section { background: white; border-radius: 12px; padding: 40px; border: 1px solid #eee; margin-bottom: 50px; }
-        .guide-section h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .guide-item h3 { color: #333; display: flex; align-items: center; gap: 10px; }
-        .guide-item h3 i { color: var(--accent); }
+        .guide-section h2 { color: var(--primary); font-size: 1.8rem; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+        
+        .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media(max-width:768px){ .guide-grid { grid-template-columns: 1fr; gap: 20px; } }
 
+        .guide-item { margin-bottom: 20px; }
+        .guide-item h3 { color: #333; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .guide-item h3 i { color: var(--accent); }
+        .guide-item p { color: #666; text-align: justify; font-size: 0.95rem; }
+
+        .ad-slot { background: #eee; text-align: center; padding: 20px; margin: 30px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
+
+        /* RODAPÉ IGUAL INDEX */
         footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: auto; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
         .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
         .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
         .footer-col a { color: #999; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
         .footer-col a:hover { color: var(--accent); padding-left: 5px; }
-        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
+<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="sidebar" id="mobileSidebar">
+    <div class="sidebar-header">
+        <h3>MENU</h3>
+        <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
+    </div>
+    <a href="index.html">Início</a>
+    <a href="utilidades.html">Ferramentas</a>
+    <a href="salario.html">Salário Líquido</a>
+    <a href="decimo.html">Décimo Terceiro</a>
+    <a href="moedas.html">Cotações</a>
+</div>
+
 <header>
-    <div class="container header-flex">
-        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> JurosWeb</a>
-        <nav class="nav-links">
+    <div class="header-container">
+        <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
+        
+        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
+        
+        <div class="search-box">
+            <input type="text" placeholder="Pesquisar ferramenta...">
+            <i class="fas fa-search"></i>
+        </div>
+
+        <div class="nav-menu">
             <a href="index.html">Início</a>
-            <a href="utilidades.html" style="color:var(--accent);">Ferramentas</a>
-        </nav>
+            <a href="utilidades.html">Ferramentas</a>
+            <a href="salario.html">Calculadoras</a>
+            <a href="index.html#noticias">Notícias</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
+<div class="main-container">
+    
     <div class="hero-title">
         <h1>Central de Ferramentas</h1>
-        <p>Acesse nossos simuladores gratuitos e simplifique seus cálculos.</p>
+        <p>Selecione abaixo o simulador ou utilitário que você deseja utilizar. Todas as ferramentas são 100% gratuitas.</p>
     </div>
 
     <div class="tools-grid">
+        
+        <a href="index.html#simulador" class="tool-card">
+            <div class="icon-box"><i class="fas fa-chart-line"></i></div>
+            <div class="tool-name">Juros Compostos</div>
+            <div class="tool-desc">Projeção de investimentos a longo prazo com aportes mensais.</div>
+            <span class="btn-access">Simular</span>
+        </a>
+
         <a href="salario.html" class="tool-card">
             <div class="icon-box"><i class="fas fa-money-check-alt"></i></div>
             <div class="tool-name">Salário Líquido</div>
-            <div class="tool-desc">Calcule os descontos de INSS e IRRF e saiba quanto cai na conta.</div>
+            <div class="tool-desc">Descubra quanto cai na conta após os descontos de INSS e IRRF.</div>
             <span class="btn-access">Calcular</span>
         </a>
 
         <a href="moedas.html" class="tool-card">
             <div class="icon-box"><i class="fas fa-exchange-alt"></i></div>
             <div class="tool-name">Conversor de Moedas</div>
-            <div class="tool-desc">Cotação atualizada do Dólar, Euro e Bitcoin para Real.</div>
+            <div class="tool-desc">Converta Dólar, Euro e Bitcoin para Real com cotação atualizada.</div>
             <span class="btn-access">Converter</span>
-        </a>
-
-        <a href="decimo.html" class="tool-card">
-            <div class="icon-box"><i class="fas fa-gift"></i></div>
-            <div class="tool-name">Décimo Terceiro</div>
-            <div class="tool-desc">Descubra quanto você vai receber na 1ª e 2ª parcela do 13º.</div>
-            <span class="btn-access">Calcular</span>
-        </a>
-
-        <a href="index.html#simulador" class="tool-card">
-            <div class="icon-box"><i class="fas fa-chart-line"></i></div>
-            <div class="tool-name">Juros Compostos</div>
-            <div class="tool-desc">Projeção de investimentos a longo prazo.</div>
-            <span class="btn-access">Simular</span>
         </a>
 
         <a href="regra3.html" class="tool-card">
             <div class="icon-box"><i class="fas fa-calculator"></i></div>
             <div class="tool-name">Regra de 3</div>
-            <div class="tool-desc">Cálculo de proporções simples e rápidas.</div>
+            <div class="tool-desc">Resolva proporções matemáticas simples de forma rápida.</div>
+            <span class="btn-access">Resolver</span>
+        </a>
+
+        <a href="porcentagem.html" class="tool-card">
+            <div class="icon-box"><i class="fas fa-percentage"></i></div>
+            <div class="tool-name">Porcentagem</div>
+            <div class="tool-desc">Calcule descontos, aumentos e variações percentuais.</div>
             <span class="btn-access">Calcular</span>
         </a>
 
         <a href="datas.html" class="tool-card">
             <div class="icon-box"><i class="fas fa-calendar-alt"></i></div>
             <div class="tool-name">Contador de Dias</div>
-            <div class="tool-desc">Diferença entre datas e soma de prazos.</div>
+            <div class="tool-desc">Calcule a diferença entre datas ou some dias a um prazo.</div>
             <span class="btn-access">Contar</span>
         </a>
+
+        <a href="decimo.html" class="tool-card">
+            <div class="icon-box"><i class="fas fa-gift"></i></div>
+            <div class="tool-name">Décimo Terceiro</div>
+            <div class="tool-desc">Saiba o valor da 1ª e 2ª parcela do seu 13º salário.</div>
+            <span class="btn-access">Calcular</span>
+        </a>
+
+        <a href="index.html#simulador" onclick="setTimeout(()=>document.getElementById('btn-meta').click(), 500)" class="tool-card">
+            <div class="icon-box"><i class="fas fa-bullseye"></i></div>
+            <div class="tool-name">Minha Meta</div>
+            <div class="tool-desc">Planejamento: quanto investir para atingir seu objetivo?</div>
+            <span class="btn-access">Planejar</span>
+        </a>
+
+        <a href="#" onclick="alert('Em breve! Utilize a calculadora de Salário Líquido por enquanto.')" class="tool-card">
+            <div class="icon-box"><i class="fas fa-umbrella-beach"></i></div>
+            <div class="tool-name">Calculadora de Férias</div>
+            <div class="tool-desc">Simule o valor das suas férias com o terço constitucional.</div>
+            <span class="btn-access">Em Breve</span>
+        </a>
+
     </div>
 
     <div class="guide-section">
-        <h2>Para que servem estas ferramentas?</h2>
-        <div class="guide-item">
-            <h3><i class="fas fa-money-check-alt"></i> Salário Líquido (CLT)</h3>
-            <p>Fundamental para o planejamento mensal. Muitas vezes negociamos o salário pelo valor Bruto, mas esquecemos dos descontos obrigatórios (INSS e Imposto de Renda). Use esta ferramenta antes de aceitar uma nova proposta de emprego.</p>
-        </div>
-        <br>
-        <div class="guide-item">
-            <h3><i class="fas fa-gift"></i> Décimo Terceiro</h3>
-            <p>O 13º salário é um direito do trabalhador brasileiro. Ele é pago em duas parcelas: a primeira (sem descontos) até novembro e a segunda (com descontos de INSS/IR) até dezembro. Nossa calculadora ajuda você a prever exatamente quanto vai receber em cada data.</p>
+        <h2>Guia de Funcionalidades</h2>
+        <div class="guide-grid">
+            <div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-chart-line"></i> Juros Compostos</h3>
+                    <p>Ideal para quem quer planejar a aposentadoria ou ver o dinheiro crescer. Mostra o efeito "bola de neve" dos juros sobre juros em investimentos como CDB, LCI e Tesouro.</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-money-check-alt"></i> Salário Líquido (CLT)</h3>
+                    <p>Antes de aceitar um emprego, use esta ferramenta. Ela desconta automaticamente o INSS e o Imposto de Renda da tabela vigente para mostrar o valor real que cairá na conta.</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-calculator"></i> Regra de Três</h3>
+                    <p>A ferramenta mais versátil do dia a dia. Serve para adaptar receitas, calcular consumo de combustível ou ajustar medidas proporcionais.</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-percentage"></i> Porcentagem</h3>
+                    <p>Não seja enganado em promoções. Calcule rapidamente o valor real de um desconto ou quanto foi o aumento percentual de uma conta.</p>
+                </div>
+            </div>
+            <div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-exchange-alt"></i> Conversor de Moedas</h3>
+                    <p>Vai viajar ou fazer compras internacionais? Converta valores de Dólar e Euro para Real com a cotação comercial atualizada.</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-gift"></i> Décimo Terceiro</h3>
+                    <p>Planeje seu fim de ano. Calculamos quanto você recebe na primeira parcela (sem descontos) e na segunda (com os impostos).</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-calendar-alt"></i> Contador de Dias</h3>
+                    <p>Útil para advogados, RH e planejamento pessoal. Descubra quantos dias exatos existem entre duas datas ou quando cairá um prazo de 45 dias.</p>
+                </div>
+                <div class="guide-item">
+                    <h3><i class="fas fa-bullseye"></i> Planejador de Metas</h3>
+                    <p>Quer juntar R$ 50 mil em 3 anos? Essa calculadora faz a conta inversa e te diz quanto você precisa guardar por mês.</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="ad-slot">Publicidade Rodapé</div>
+
 </div>
 
 <footer>
     <div class="footer-inner">
         <div class="footer-col">
             <h4>Sobre o JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira e ferramentas para o dia a dia.</p>
+            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
         </div>
         <div class="footer-col">
-            <h4>Calculadoras</h4>
+            <h4>Ferramentas</h4>
+            <a href="index.html">Juros Compostos</a>
+            <a href="regra3.html">Regra de 3</a>
             <a href="salario.html">Salário Líquido</a>
             <a href="decimo.html">Décimo Terceiro</a>
-            <a href="moedas.html">Cotação Dólar</a>
-            <a href="index.html">Juros Compostos</a>
         </div>
         <div class="footer-col">
             <h4>Legal</h4>
             <a href="politica.html">Política de Privacidade</a>
             <a href="termos.html">Termos de Uso</a>
+            <a href="anuncie.html">Anuncie Conosco</a>
             <a href="contato.html">Contato</a>
         </div>
     </div>
-    <div class="footer-bottom">&copy; 2026 JurosWeb.com.br</div>
+    <div class="footer-bottom">
+        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
+    </div>
 </footer>
+
+<script>
+    function toggleMenu() {
+        document.getElementById('mobileSidebar').classList.toggle('active');
+        document.getElementById('menuOverlay').classList.toggle('active');
+    }
+</script>
 
 </body>
 </html>
