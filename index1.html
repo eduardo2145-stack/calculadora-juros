@@ -1,371 +1,11 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="description" content="Portal JurosWeb. O seu portal de finanças, cotações e simuladores.">
-    <title>JurosWeb | Portal Financeiro</title>
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪙</text></svg>">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        /* --- DESIGN PREMIUM (VERMELHO) --- */
-        :root { 
-            --primary: #8B0000; 
-            --primary-dark: #600000; 
-            --secondary: #212529; 
-            --accent: #dca72e; 
-            --text: #333; 
-            --bg: #f8f9fa; 
-            --white: #ffffff;
-            --success: #28a745;
-            --danger: #dc3545;
-        }
-        
-        body { font-family: 'Roboto', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
-        .main-container { max-width: 1200px; margin: 0 auto; padding: 20px; flex:1; width: 100%; box-sizing: border-box; }
-        
-        /* TICKER */
-        .stock-ticker-wrap { background: #111; color: #eee; height: 30px; line-height: 30px; overflow: hidden; border-bottom: 2px solid var(--primary); font-size: 0.8rem; }
-        .stock-ticker { display: inline-block; white-space: nowrap; animation: ticker 120s linear infinite; padding-left: 100%; }
-        .stock-item { display: inline-block; margin-right: 30px; font-weight: 500; }
-        .stock-up { color: #4cd137; } .stock-down { color: #e84118; }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-
-        /* HEADER */
-        header { background: var(--primary); padding: 15px 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; }
-        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; gap: 15px; }
-        
-        .logo { font-size: 1.8rem; font-weight: 900; color: white; text-decoration: none; display: flex; align-items: center; gap: 8px; text-transform: uppercase; white-space: nowrap; }
-        .logo i { color: var(--accent); }
-        
-        /* BUSCA (ESTILO ESCURO/TRANSPARENTE) */
-        .search-box { 
-            display: flex; 
-            align-items: center; 
-            background: rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            padding: 8px 15px; 
-            border-radius: 50px; 
-            width: 350px; 
-            transition: 0.3s; 
-        }
-        .search-box:hover, .search-box:focus-within { 
-            background: rgba(0, 0, 0, 0.35); 
-            border-color: rgba(255, 255, 255, 0.3); 
-        }
-        .search-box input { 
-            flex: 1; 
-            background: transparent !important; 
-            border: none !important; 
-            outline: none !important; 
-            color: #ffffff !important; 
-            font-size: 0.95rem; 
-            box-shadow: none !important; 
-            width: 100%; 
-        }
-        .search-box input::placeholder { color: rgba(255, 255, 255, 0.7) !important; }
-        .search-box i { color: rgba(255,255,255,0.8); cursor: pointer; transition: 0.3s; }
-        .search-box:hover i { color: white; }
-
-        /* MENU TOPO */
-        .nav-menu { display: flex; gap: 20px; }
-        .nav-menu a { color: rgba(255,255,255,0.9); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; }
-        .nav-menu a:hover { color: var(--accent); }
-
-        /* MENU MOBILE */
-        .mobile-menu-btn { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 0; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 260px; height: 100vh; background: var(--secondary); z-index: 1000; transition: 0.3s; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        .sidebar.active { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 20px; border-bottom: 1px solid #444; margin-bottom: 10px; }
-        .sidebar-header h3 { color: white; margin: 0; font-size: 1.2rem; }
-        .close-sidebar { color: white; font-size: 1.5rem; cursor: pointer; }
-        .sidebar a { display: block; padding: 15px 20px; color: #ddd; text-decoration: none; font-weight: 600; border-bottom: 1px solid #333; transition: 0.3s; text-transform: uppercase; font-size: 0.9rem; }
-        
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
-        .overlay.active { display: block; }
-
-        @media (max-width: 900px) {
-            .nav-menu { display: none; }
-            .mobile-menu-btn { display: block; }
-            header { padding: 10px 0; }
-            .header-container { gap: 10px; padding: 0 15px; }
-            .logo { font-size: 1.3rem; flex: 0 1 auto; gap: 5px; }
-            .logo span { display: none; }
-            @media (min-width: 400px) { .logo span { display: inline; } }
-            .search-box { width: auto; flex: 1; height: 38px; padding: 0 12px; }
-            .stock-ticker-wrap { height: 25px; line-height: 25px; font-size: 0.75rem; }
-        }
-
-        /* HERO SECTION */
-        .hero-section { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
-        @media (max-width: 900px) { .hero-section { grid-template-columns: 1fr; gap: 15px; margin-top: 10px; } }
-        
-        .featured-card { position: relative; height: 350px; border-radius: 8px; overflow: hidden; display: block; color: white; text-decoration: none; background: #000; }
-        @media (max-width: 768px) { .featured-card { height: 220px; } }
-        .featured-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.5s; }
-        .featured-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); padding: 20px; box-sizing: border-box; }
-        .featured-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin: 0; }
-        @media (max-width: 768px) { .featured-title { font-size: 1.2rem; } }
-
-        .side-widget { background: white; border-radius: 8px; border: 1px solid #eee; display: flex; flex-direction: column; overflow: hidden; height: 100%; min-height: 350px; }
-        @media (max-width: 900px) { .side-widget { min-height: auto; } }
-        .widget-header { background: var(--secondary); color: white; padding: 10px 15px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; border-bottom: 3px solid var(--accent); }
-        .ranking-list { list-style: none; padding: 0; margin: 0; }
-        .ranking-item { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
-        .rank-val.up { color: var(--success); font-weight: bold; } .rank-val.down { color: var(--danger); font-weight: bold; }
-
-        /* FERRAMENTAS */
-        .tools-title { margin-top: 30px; margin-bottom: 15px; font-size: 1.2rem; font-weight: 800; color: var(--primary); text-transform: uppercase; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--primary); padding-left: 10px; }
-        .tools-bar { background: var(--primary); border-radius: 8px; padding: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; box-shadow: 0 5px 15px rgba(139, 0, 0, 0.2); }
-        @media (max-width: 768px) { .tools-bar { grid-template-columns: repeat(3, 1fr); padding: 15px 10px; gap: 10px; } }
-        
-        .tool-link { display: flex; flex-direction: column; align-items: center; color: white; text-decoration: none; font-weight: bold; font-size: 0.8rem; transition: 0.3s; text-align: center; background: rgba(0,0,0,0.15); padding: 15px 5px; border-radius: 8px; }
-        .tool-link:hover { transform: translateY(-3px); background: rgba(0,0,0,0.3); color: var(--accent); }
-        .tool-icon { font-size: 1.8rem; margin-bottom: 8px; color: var(--accent); }
-
-        /* CALCULADORA */
-        .calc-section { margin-top: 30px; background: white; padding: 25px; border-radius: 8px; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
-        .calc-header { margin-bottom: 20px; text-align: center; }
-        .calc-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 15px; }
-        
-        .tab-buttons { display: flex; width: 100%; max-width: 400px; margin: 0 auto; border-radius: 6px; overflow: hidden; border: 1px solid #ccc; }
-        .tab-btn { flex: 1; padding: 12px; font-weight: bold; font-size: 0.9rem; text-transform: uppercase; border: none; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { background: var(--primary); color: white; }
-        .tab-btn.inactive { background: #f8f9fa; color: #555; }
-
-        .input-group label { font-size: 0.8rem; text-transform: uppercase; color: #777; font-weight: 700; display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="number"] { width: 100%; border: 2px solid #eee; border-radius: 4px; padding: 12px; font-weight: 600; color: #333; box-sizing: border-box; font-size: 1rem; }
-        
-        .btn-calc { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 15px; }
-        .btn-calc:hover { background: var(--primary-dark); }
-        .btn-pdf { background: #333; margin-top: 20px; font-size: 0.9rem; display: block; width: 100%; }
-
-        .result-box { background: #fdfdfd; border: 1px dashed #ccc; padding: 20px; border-radius: 8px; margin-top: 20px; display: none; }
-        .big-result { font-size: 2.2rem; font-weight: 900; color: var(--primary); display: block; margin: 10px 0; text-align: center; }
-        
-        .table-wrapper { margin-top: 20px; max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px; background: white; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background: #f8f9fa; padding: 10px; text-align: right; position: sticky; top: 0; color: #333; font-weight: bold; border-bottom: 2px solid #ddd; }
-        td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #f1f1f1; color: #555; }
-        th:first-child, td:first-child { text-align: center; }
-
-        /* NOTÍCIAS */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .news-card { background: white; border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; text-decoration: none; color: inherit; }
-        .news-img-box { height: 160px; overflow: hidden; background: #eee; }
-        .news-img-box img { width: 100%; height: 100%; object-fit: cover; }
-        .news-body { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
-        .news-title { font-size: 1rem; font-weight: 700; color: #222; margin-bottom: 10px; line-height: 1.4; }
-        .news-meta { font-size: 0.75rem; color: #888; margin-top: auto; }
-
-        .ad-slot { background: #eee; text-align: center; padding: 15px; margin: 20px 0; font-size: 0.8rem; color: #999; border: 1px dashed #ccc; }
-        
-        /* RODAPÉ */
-        footer { background: #111; color: #ccc; padding: 50px 0 20px; margin-top: 50px; border-top: 4px solid var(--primary); font-size: 0.9rem; width: 100%; }
-        .footer-inner { max-width: 1100px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; text-align: left; }
-        .footer-col h4 { color: white; margin-bottom: 15px; font-size: 1.1rem; border-left: 3px solid var(--primary); padding-left: 10px; }
-        .footer-col p { color: #888; line-height: 1.6; font-size: 0.85rem; }
-        
-        /* HOVER RODAPÉ CORRIGIDO */
-        .footer-col a { color: #b0b0b0; text-decoration: none; display: block; margin-bottom: 8px; transition: 0.3s; }
-        .footer-col a:hover { color: var(--accent); padding-left: 8px; }
-        
-        .footer-bottom { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #333; color: #666; font-size: 0.8rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
-    </style>
-</head>
-<body>
-
-<div class="overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-<div class="sidebar" id="mobileSidebar">
-    <div class="sidebar-header">
-        <h3>MENU</h3>
-        <i class="fas fa-times close-sidebar" onclick="toggleMenu()"></i>
-    </div>
-    <a href="utilidades.html">Ferramentas</a>
-    <a href="#noticias" onclick="toggleMenu()">Notícias</a>
-    <a href="salario.html">Salário Líquido</a>
-    <a href="ferias.html">Férias</a>
-    <a href="moedas.html">Cotações</a>
-</div>
-
-<div class="stock-ticker-wrap">
-    <div class="stock-ticker" id="stockTicker">
-        <span class="stock-item">IBOV <span class="stock-up">128.500 ▲</span></span>
-        <span class="stock-item">PETR4 <span class="stock-down">38,20 ▼</span></span>
-        <span class="stock-item">VALE3 <span class="stock-up">62,50 ▲</span></span>
-        <span class="stock-item">DÓLAR <span class="stock-up">5,22 ▲</span></span>
-        <span class="stock-item">BITCOIN <span class="stock-up">$95k ▲</span></span>
-        <span class="stock-item">CDI <span class="stock-up">10,75% ▲</span></span>
-    </div>
-</div>
-
-<header>
-    <div class="header-container">
-        <button class="mobile-menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
-        
-        <a href="index.html" class="logo"><i class="fas fa-chart-pie"></i> <span>JurosWeb</span></a>
-        
-        <div class="search-box">
-            <input type="text" id="campoBusca" placeholder="Pesquisar (ex: PETR4, Dólar)...">
-            <i class="fas fa-search" onclick="realizarBusca()"></i>
-        </div>
-
-        <div class="nav-menu">
-            <a href="utilidades.html">Ferramentas</a>
-            <a href="#noticias">Notícias</a>
-        </div>
-    </div>
-</header>
-
-<div class="main-container">
-
-    <div class="ad-slot">Publicidade Topo</div>
-
-    <div class="hero-section" id="heroSection">
-        <a href="#" class="featured-card" id="heroLink" target="_blank">
-            <img src="IMG/news1.jpg" class="featured-img" id="heroImg" alt="Destaque" loading="lazy" 
-                 onerror="this.onerror=null;this.src='IMG/news1.jpg';">
-            <div class="featured-overlay">
-                <span class="featured-tag">Destaque do Dia</span>
-                <h2 class="featured-title" id="heroTitle">Mercado financeiro: Acompanhe as principais movimentações...</h2>
-            </div>
-        </a>
-
-        <aside class="side-widget">
-            <div class="widget-header">Rankings B3 (Simulado)</div>
-            <ul class="ranking-list" id="rankingList">
-                <li class="ranking-item"><span class="rank-name">IBOV</span><span class="rank-val up">128.500 ▲</span></li>
-                <li class="ranking-item"><span class="rank-name">PETR4</span><span class="rank-val down">38,20 ▼</span></li>
-                <li class="ranking-item"><span class="rank-name">VALE3</span><span class="rank-val up">62,50 ▲</span></li>
-                <li class="ranking-item"><span class="rank-name">DÓLAR</span><span class="rank-val up">5,22 ▲</span></li>
-                <li class="ranking-item"><span class="rank-name">CDI</span><span class="rank-val up">10,75% ▲</span></li>
-            </ul>
-        </aside>
-    </div>
-
-    <div class="tools-title">Ferramentas & Simuladores</div>
-    <div class="tools-bar">
-        <a href="index.html#simulador" class="tool-link"><i class="fas fa-chart-line tool-icon"></i> Juros</a>
-        <a href="regra3.html" class="tool-link"><i class="fas fa-calculator tool-icon"></i> Regra de 3</a>
-        <a href="moedas.html" class="tool-link"><i class="fas fa-exchange-alt tool-icon"></i> Moedas</a>
-        <a href="datas.html" class="tool-link"><i class="fas fa-calendar-alt tool-icon"></i> Datas</a>
-        <a href="decimo.html" class="tool-link"><i class="fas fa-gift tool-icon"></i> 13º Salário</a>
-        <a href="salario.html" class="tool-link"><i class="fas fa-money-check-alt tool-icon"></i> Salário CLT</a>
-    </div>
-
-    <div class="calc-section" id="simulador">
-        <div class="calc-header">
-            <div class="calc-title">Simulador de Investimentos</div>
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="btn-rend" onclick="openTab('rendimento')">Rendimento</button>
-                <button class="tab-btn inactive" id="btn-meta" onclick="openTab('meta')">Meta</button>
-            </div>
-        </div>
-
-        <div id="rendimento">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top:20px;">
-                <div class="input-group"><label>Valor Inicial</label><input type="text" class="money-input" id="valorInicial" placeholder="R$ 1.000,00"></div>
-                <div class="input-group"><label>Aporte Mensal</label><input type="text" class="money-input" id="aporteMensal" placeholder="R$ 500,00"></div>
-                <div class="input-group"><label>Taxa Anual (%)</label><input type="number" id="taxaJuros" placeholder="10.5"></div>
-                <div class="input-group"><label>Prazo (Anos)</label><input type="number" id="anos" placeholder="10"></div>
-            </div>
-            
-            <div style="margin: 15px 0; display:flex; gap:15px; flex-wrap:wrap;">
-                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="checkbox" id="checkIR"> Descontar IR</label>
-                <label style="cursor:pointer; display:flex; align-items:center; gap:5px;"><input type="checkbox" id="checkInflacao"> Descontar Inflação</label>
-            </div>
-
-            <button class="btn-calc" onclick="calcularRendimento()">Simular Agora</button>
-
-            <div id="results-area" class="result-box">
-                <small>SALDO FINAL ESTIMADO</small>
-                <span id="resTotalBruto" class="big-result">R$ 0,00</span>
-                
-                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>Total Investido:</span> <strong id="resInvestido">R$ 0,00</strong></div>
-                <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee;"><span>Rendimento Bruto:</span> <strong style="color:var(--success);" id="resBrutoJuros">R$ 0,00</strong></div>
-                <div id="rowIR" style="display:none; justify-content:space-between; padding:8px 0; color:var(--danger);"><span>(-) Imposto de Renda:</span> <strong id="resIR">R$ 0,00</strong></div>
-                <div id="rowInflacao" style="display:none; justify-content:space-between; padding:8px 0; color:var(--accent);"><span>(i) Perda Inflacionária:</span> <strong id="resInflacao">R$ 0,00</strong></div>
-                
-                <div style="height:250px; margin-top:20px;"><canvas id="chartRendimento"></canvas></div>
-
-                <div class="table-wrapper">
-                    <table id="tabelaEvolucao">
-                        <thead><tr><th>Mês</th><th>Investido</th><th>Juros</th><th>Total</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-
-                <button class="btn-calc btn-pdf" onclick="gerarPDF('rendimento')"><i class="fas fa-file-pdf"></i> Baixar Relatório PDF</button>
-            </div>
-        </div>
-
-        <div id="meta" style="display:none; margin-top:20px;">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                <div class="input-group"><label>Objetivo (R$)</label><input type="text" class="money-input" id="metaValor"></div>
-                <div class="input-group"><label>Prazo (Anos)</label><input type="number" id="metaAnos"></div>
-                <div class="input-group"><label>Tenho Hoje</label><input type="text" class="money-input" id="metaInicial"></div>
-                <div class="input-group"><label>Rentabilidade (%)</label><input type="number" id="metaTaxa"></div>
-            </div>
-            <button class="btn-calc" onclick="calcularMeta()">Descobrir Aporte</button>
-            <div id="meta-res" class="result-box">
-                <small>VOCÊ PRECISA INVESTIR POR MÊS:</small>
-                <span id="resMetaMensal" class="big-result">R$ 0,00</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="noticias" style="margin-top:40px;">
-        <div class="tools-title" style="font-size:1.2rem; border-left:none; padding-left:0; margin-bottom:0;">Últimas do Mercado <small id="lastUpdate" style="font-size:0.75rem; color:#777; font-weight:normal; margin-left:10px;"></small></div>
-        <div class="news-grid" id="newsGrid">Carregando...</div>
-    </div>
-
-    <div class="ad-slot">Publicidade Rodapé</div>
-
-</div>
-
-<footer>
-    <div class="footer-inner">
-        <div class="footer-col">
-            <h4>Sobre o JurosWeb</h4>
-            <p>Seu portal gratuito de educação financeira, simuladores e ferramentas para o dia a dia. Simplificamos o mercado para você.</p>
-        </div>
-        <div class="footer-col">
-            <h4>Ferramentas</h4>
-            <a href="index.html">Simulador de Juros</a>
-            <a href="salario.html">Salário Líquido</a>
-            <a href="ferias.html">Calculadora de Férias</a>
-            <a href="decimo.html">Décimo Terceiro</a>
-        </div>
-        <div class="footer-col">
-            <h4>Legal</h4>
-            <a href="politica.html">Política de Privacidade</a>
-            <a href="termos.html">Termos de Uso</a>
-            <a href="anuncie.html">Anuncie Conosco</a>
-            <a href="contato.html">Contato</a>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        &copy; 2026 JurosWeb.com.br - Todos os direitos reservados.
-    </div>
-</footer>
-
 <script>
     function toggleMenu() {
         document.getElementById('mobileSidebar').classList.toggle('active');
         document.getElementById('menuOverlay').classList.toggle('active');
     }
 
+    // --- MÁSCARAS DE DINHEIRO ---
     const moneyInputs = document.querySelectorAll('.money-input');
-    let chartRend = null;
-    let globalTableData = [];
-    let pdfData = {};
-
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -384,6 +24,7 @@
         return parseFloat(limpo) || 0; 
     }
 
+    // --- ABAS ---
     function openTab(tab) {
         document.getElementById('rendimento').style.display = tab === 'rendimento' ? 'block' : 'none';
         document.getElementById('meta').style.display = tab === 'meta' ? 'block' : 'none';
@@ -399,6 +40,12 @@
             btnMeta.className = 'tab-btn active';
         }
     }
+
+    // --- CÁLCULOS (Juros e Meta) ---
+    // (Mantive igual, pois já estava perfeito)
+    let chartRend = null;
+    let globalTableData = [];
+    let pdfData = {};
 
     function calcularRendimento() {
         let P = parseMoney(document.getElementById('valorInicial').value);
@@ -491,6 +138,23 @@
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText };
     }
 
+    function calcularMeta() {
+        let obj = parseMoney(document.getElementById('metaValor').value);
+        let ano = parseFloat(document.getElementById('metaAnos').value);
+        let ini = parseMoney(document.getElementById('metaInicial').value);
+        let tax = parseFloat(document.getElementById('metaTaxa').value);
+        
+        if(!obj || !ano) return alert("Preencha os campos.");
+        
+        let mes = ano * 12;
+        let i = Math.pow(1 + (tax/100), 1/12) - 1;
+        let pmt = (obj - ini * Math.pow(1+i, mes)) / ( (Math.pow(1+i, mes) - 1) / i );
+        if(pmt < 0) pmt = 0;
+
+        document.getElementById('resMetaMensal').innerText = pmt.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('meta-res').style.display = 'block';
+    }
+
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -505,44 +169,70 @@
         doc.save('relatorio-jurosweb.pdf');
     }
 
+    // --- LÓGICA DE NOTÍCIAS INTELIGENTE ---
+    
+    // 1. Banco de Dicas "Evergreen" (Nunca ficam velhas)
+    const backupTips = [
+        {title: "Entenda a Regra 50-30-20 para organizar seu orçamento mensal", link: "utilidades.html"},
+        {title: "Reserva de Emergência: Onde investir para ter liquidez diária?", link: "index.html#simulador"},
+        {title: "Como funciona a nova tabela progressiva do INSS 2026?", link: "salario.html"},
+        {title: "Décimo Terceiro: Como calcular a primeira e segunda parcela?", link: "decimo.html"},
+        {title: "Férias vencidas? Saiba como calcular o pagamento em dobro", link: "ferias.html"},
+        {title: "Juros Compostos: A oitava maravilha do mundo nos seus investimentos", link: "index.html#simulador"},
+        {title: "Diferença entre Taxa Selic e CDI: O guia completo", link: "utilidades.html"},
+        {title: "Como declarar seus investimentos no Imposto de Renda", link: "salario.html"},
+        {title: "Vale a pena antecipar o saque-aniversário do FGTS?", link: "regra3.html"},
+        {title: "Tesouro Direto vs Poupança: Qual rende mais hoje?", link: "index.html#simulador"}
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     async function loadNews(termo = '', isSearch = false) {
         const query = termo || 'investimentos mercado financeiro brasil';
-        
         const grid = document.getElementById('newsGrid');
         
-        const renderNews = (items) => {
+        // Função de Renderização
+        const renderNews = (items, isBackup = false) => {
             grid.innerHTML = '';
             
-            // HERÓI (Destaque):
-            // Só atualiza se NÃO for busca. Se for busca, mantém o destaque carregado na abertura.
+            // Se for backup, exibe um aviso discreto
+            if(isBackup) {
+                document.getElementById('lastUpdate').innerText = 'Dicas Financeiras (Modo Offline)';
+            }
+
+            // Lógica do Hero (Destaque)
             if (!isSearch && items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
                 let heroImg = hero.enclosure ? hero.enclosure.link : 'IMG/news1.jpg';
                 document.getElementById('heroImg').src = heroImg;
-                document.getElementById('heroImg').onerror = function() { 
-                    this.src = 'IMG/news1.jpg'; // Fallback para Hero
-                };
+                document.getElementById('heroImg').onerror = function() { this.src = 'IMG/news1.jpg'; };
             }
 
-            // GRID:
-            // Se for busca, mostra tudo. Se for home, pula o primeiro (que foi pro Hero).
-            let list = isSearch ? items : items.slice(1);
+            // Lógica da Grade
+            // Se for busca ou backup, mostra tudo. Se for home live, pula o primeiro.
+            let list = (isSearch || isBackup) ? items : items.slice(1);
             list = list.slice(0, 6); // Limita a 6
 
             list.forEach((item, idx) => {
-                // Tenta imagem da API. 
-                // Se falhar (onerror), usa LOCAL rotativa (1 a 6) para não repetir.
-                let imgUrl = item.enclosure ? item.enclosure.link : `IMG/news${(idx % 6) + 1}.jpg`;
+                // Rodízio de imagens locais (1 a 6) para backups ou falhas
+                let fallbackImg = `IMG/news${(idx % 6) + 1}.jpg`;
+                let imgUrl = item.enclosure ? item.enclosure.link : fallbackImg;
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
                     <div class="news-img-box">
-                        <img src="${imgUrl}" onerror="this.src='IMG/news${(idx % 6) + 1}.jpg'" class="news-img" loading="lazy">
+                        <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" class="news-img" loading="lazy">
                     </div>
                     <div class="news-body">
-                        <div class="news-tag">Mercado</div>
+                        <div class="news-tag">${isBackup ? 'Dica' : 'Mercado'}</div>
                         <div class="news-title">${item.title}</div>
                         <div class="news-meta">Ler mais →</div>
                     </div>
@@ -550,6 +240,30 @@
             });
         };
 
+        // Cache Management
+        const CACHE_KEY = 'jurosweb_news_cache';
+        const CACHE_TIME = 1000 * 60 * 60; // 1 Hora de validade
+
+        // Se for busca, ignora cache e vai direto pra API
+        if (isSearch) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if(data.status === 'ok' && data.items.length > 0) {
+                    renderNews(data.items);
+                    document.getElementById('lastUpdate').innerText = 'Resultado da busca';
+                } else { throw new Error("Busca vazia"); }
+            } catch(e) {
+                alert("Não foi possível buscar agora. Mostrando dicas financeiras.");
+                renderNews(shuffleArray([...backupTips]).slice(0,6), true);
+            }
+            return;
+        }
+
+        // Se for Home, tenta: API -> Cache -> Backup Aleatório
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
 
@@ -559,39 +273,44 @@
             const data = await res.json();
             
             if(data.status === 'ok' && data.items.length > 0) {
+                // Sucesso! Salva no cache e renderiza
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), items: data.items }));
                 renderNews(data.items);
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
-            } else { throw new Error("Vazio"); }
+            } else { throw new Error("API Error"); }
+
         } catch(e) {
-            // Backup manual com links reais para Google Search
-            const backups = [
-                {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje"},
-                {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje"},
-                {title: "Banco Central mantém taxa Selic: O que muda?", link: "https://www.google.com/search?q=taxa+selic"},
-                {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "https://www.google.com/search?q=acoes+tecnologia"},
-                {title: "Entenda como a inflação afeta seus investimentos", link: "https://www.google.com/search?q=inflacao+investimentos"},
-                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "https://www.google.com/search?q=bitcoin+hoje"},
-                {title: "Renda Fixa volta a ser atrativa com juros altos", link: "https://www.google.com/search?q=renda+fixa"}
-            ];
-            renderNews(backups);
+            // Falha na API. Tenta o Cache.
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const cData = JSON.parse(cached);
+                // Se cache tem menos de 2 horas, usa ele
+                if (Date.now() - cData.timestamp < (CACHE_TIME * 2)) {
+                    renderNews(cData.items);
+                    document.getElementById('lastUpdate').innerText = 'Versão salva anteriormente';
+                    return;
+                }
+            }
+            
+            // Se não tem cache ou é muito velho: Usa Dicas Aleatórias
+            // Embaralha o array de dicas para sempre mostrar algo diferente
+            const randomTips = shuffleArray([...backupTips]).slice(0, 7); 
+            renderNews(randomTips, true);
         }
     }
 
     function realizarBusca() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            loadNews(val, true); // True = é uma busca (preserva o Hero)
+            loadNews(val, true);
             document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
         }
     }
 
     window.onload = function() {
-        loadNews(); // False = carregamento inicial
+        loadNews(); // Carrega Home
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
     };
 </script>
-
-</body>
-</html>
