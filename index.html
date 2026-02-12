@@ -363,17 +363,14 @@
     </div>
 </footer>
 
-<script>
+  <script>
     function toggleMenu() {
         document.getElementById('mobileSidebar').classList.toggle('active');
         document.getElementById('menuOverlay').classList.toggle('active');
     }
 
+    // --- MÁSCARAS DE DINHEIRO ---
     const moneyInputs = document.querySelectorAll('.money-input');
-    let chartRend = null;
-    let globalTableData = [];
-    let pdfData = {};
-
     moneyInputs.forEach(input => {
         input.addEventListener('input', function(e) {
             let value = e.target.value.replace(/\D/g, '');
@@ -392,6 +389,7 @@
         return parseFloat(limpo) || 0; 
     }
 
+    // --- ABAS ---
     function openTab(tab) {
         document.getElementById('rendimento').style.display = tab === 'rendimento' ? 'block' : 'none';
         document.getElementById('meta').style.display = tab === 'meta' ? 'block' : 'none';
@@ -407,6 +405,12 @@
             btnMeta.className = 'tab-btn active';
         }
     }
+
+    // --- CÁLCULOS (Juros e Meta) ---
+    // (Mantive igual, pois já estava perfeito)
+    let chartRend = null;
+    let globalTableData = [];
+    let pdfData = {};
 
     function calcularRendimento() {
         let P = parseMoney(document.getElementById('valorInicial').value);
@@ -499,6 +503,23 @@
         pdfData = { total: document.getElementById('resTotalBruto').innerText, investido: document.getElementById('resInvestido').innerText };
     }
 
+    function calcularMeta() {
+        let obj = parseMoney(document.getElementById('metaValor').value);
+        let ano = parseFloat(document.getElementById('metaAnos').value);
+        let ini = parseMoney(document.getElementById('metaInicial').value);
+        let tax = parseFloat(document.getElementById('metaTaxa').value);
+        
+        if(!obj || !ano) return alert("Preencha os campos.");
+        
+        let mes = ano * 12;
+        let i = Math.pow(1 + (tax/100), 1/12) - 1;
+        let pmt = (obj - ini * Math.pow(1+i, mes)) / ( (Math.pow(1+i, mes) - 1) / i );
+        if(pmt < 0) pmt = 0;
+
+        document.getElementById('resMetaMensal').innerText = pmt.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+        document.getElementById('meta-res').style.display = 'block';
+    }
+
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -513,44 +534,70 @@
         doc.save('relatorio-jurosweb.pdf');
     }
 
+    // --- LÓGICA DE NOTÍCIAS INTELIGENTE ---
+    
+    // 1. Banco de Dicas "Evergreen" (Nunca ficam velhas)
+    const backupTips = [
+        {title: "Entenda a Regra 50-30-20 para organizar seu orçamento mensal", link: "utilidades.html"},
+        {title: "Reserva de Emergência: Onde investir para ter liquidez diária?", link: "index.html#simulador"},
+        {title: "Como funciona a nova tabela progressiva do INSS 2026?", link: "salario.html"},
+        {title: "Décimo Terceiro: Como calcular a primeira e segunda parcela?", link: "decimo.html"},
+        {title: "Férias vencidas? Saiba como calcular o pagamento em dobro", link: "ferias.html"},
+        {title: "Juros Compostos: A oitava maravilha do mundo nos seus investimentos", link: "index.html#simulador"},
+        {title: "Diferença entre Taxa Selic e CDI: O guia completo", link: "utilidades.html"},
+        {title: "Como declarar seus investimentos no Imposto de Renda", link: "salario.html"},
+        {title: "Vale a pena antecipar o saque-aniversário do FGTS?", link: "regra3.html"},
+        {title: "Tesouro Direto vs Poupança: Qual rende mais hoje?", link: "index.html#simulador"}
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     async function loadNews(termo = '', isSearch = false) {
         const query = termo || 'investimentos mercado financeiro brasil';
-        
         const grid = document.getElementById('newsGrid');
         
-        const renderNews = (items) => {
+        // Função de Renderização
+        const renderNews = (items, isBackup = false) => {
             grid.innerHTML = '';
             
-            // HERÓI (Destaque):
-            // Só atualiza se NÃO for busca. Se for busca, mantém o destaque carregado na abertura.
+            // Se for backup, exibe um aviso discreto
+            if(isBackup) {
+                document.getElementById('lastUpdate').innerText = 'Dicas Financeiras (Modo Offline)';
+            }
+
+            // Lógica do Hero (Destaque)
             if (!isSearch && items.length > 0) {
                 const hero = items[0];
                 document.getElementById('heroTitle').innerText = hero.title;
                 document.getElementById('heroLink').href = hero.link;
                 let heroImg = hero.enclosure ? hero.enclosure.link : 'IMG/news1.jpg';
                 document.getElementById('heroImg').src = heroImg;
-                document.getElementById('heroImg').onerror = function() { 
-                    this.src = 'IMG/news1.jpg'; // Fallback para Hero
-                };
+                document.getElementById('heroImg').onerror = function() { this.src = 'IMG/news1.jpg'; };
             }
 
-            // GRID:
-            // Se for busca, mostra tudo. Se for home, pula o primeiro (que foi pro Hero).
-            let list = isSearch ? items : items.slice(1);
+            // Lógica da Grade
+            // Se for busca ou backup, mostra tudo. Se for home live, pula o primeiro.
+            let list = (isSearch || isBackup) ? items : items.slice(1);
             list = list.slice(0, 6); // Limita a 6
 
             list.forEach((item, idx) => {
-                // Tenta imagem da API. 
-                // Se falhar (onerror), usa LOCAL rotativa (1 a 6) para não repetir.
-                let imgUrl = item.enclosure ? item.enclosure.link : `IMG/news${(idx % 6) + 1}.jpg`;
+                // Rodízio de imagens locais (1 a 6) para backups ou falhas
+                let fallbackImg = `IMG/news${(idx % 6) + 1}.jpg`;
+                let imgUrl = item.enclosure ? item.enclosure.link : fallbackImg;
                 
                 grid.innerHTML += `
                 <a href="${item.link}" target="_blank" class="news-card">
                     <div class="news-img-box">
-                        <img src="${imgUrl}" onerror="this.src='IMG/news${(idx % 6) + 1}.jpg'" class="news-img" loading="lazy">
+                        <img src="${imgUrl}" onerror="this.src='${fallbackImg}'" class="news-img" loading="lazy">
                     </div>
                     <div class="news-body">
-                        <div class="news-tag">Mercado</div>
+                        <div class="news-tag">${isBackup ? 'Dica' : 'Mercado'}</div>
                         <div class="news-title">${item.title}</div>
                         <div class="news-meta">Ler mais →</div>
                     </div>
@@ -558,6 +605,30 @@
             });
         };
 
+        // Cache Management
+        const CACHE_KEY = 'jurosweb_news_cache';
+        const CACHE_TIME = 1000 * 60 * 60; // 1 Hora de validade
+
+        // Se for busca, ignora cache e vai direto pra API
+        if (isSearch) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://news.google.com/rss/search?q='+query+'&hl=pt-BR&gl=BR&ceid=BR:pt-419')}`, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                const data = await res.json();
+                if(data.status === 'ok' && data.items.length > 0) {
+                    renderNews(data.items);
+                    document.getElementById('lastUpdate').innerText = 'Resultado da busca';
+                } else { throw new Error("Busca vazia"); }
+            } catch(e) {
+                alert("Não foi possível buscar agora. Mostrando dicas financeiras.");
+                renderNews(shuffleArray([...backupTips]).slice(0,6), true);
+            }
+            return;
+        }
+
+        // Se for Home, tenta: API -> Cache -> Backup Aleatório
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 2000);
 
@@ -567,39 +638,48 @@
             const data = await res.json();
             
             if(data.status === 'ok' && data.items.length > 0) {
+                // Sucesso! Salva no cache e renderiza
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), items: data.items }));
                 renderNews(data.items);
                 document.getElementById('lastUpdate').innerText = 'Atualizado agora';
-            } else { throw new Error("Vazio"); }
+            } else { throw new Error("API Error"); }
+
         } catch(e) {
-            // Backup manual com links reais para Google Search
-            const backups = [
-                {title: "Ibovespa fecha em alta: Veja as ações que mais subiram", link: "https://www.google.com/search?q=ibovespa+hoje"},
-                {title: "Dólar opera estável aguardando decisão do FED", link: "https://www.google.com/search?q=dolar+hoje"},
-                {title: "Banco Central mantém taxa Selic: O que muda?", link: "https://www.google.com/search?q=taxa+selic"},
-                {title: "Empresas de tecnologia lideram ganhos na bolsa", link: "https://www.google.com/search?q=acoes+tecnologia"},
-                {title: "Entenda como a inflação afeta seus investimentos", link: "https://www.google.com/search?q=inflacao+investimentos"},
-                {title: "Bitcoin atinge nova máxima histórica: Vale a pena?", link: "https://www.google.com/search?q=bitcoin+hoje"},
-                {title: "Renda Fixa volta a ser atrativa com juros altos", link: "https://www.google.com/search?q=renda+fixa"}
-            ];
-            renderNews(backups);
+            // Falha na API. Tenta o Cache.
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const cData = JSON.parse(cached);
+                // Se cache tem menos de 2 horas, usa ele
+                if (Date.now() - cData.timestamp < (CACHE_TIME * 2)) {
+                    renderNews(cData.items);
+                    document.getElementById('lastUpdate').innerText = 'Versão salva anteriormente';
+                    return;
+                }
+            }
+            
+            // Se não tem cache ou é muito velho: Usa Dicas Aleatórias
+            // Embaralha o array de dicas para sempre mostrar algo diferente
+            const randomTips = shuffleArray([...backupTips]).slice(0, 7); 
+            renderNews(randomTips, true);
         }
     }
 
     function realizarBusca() {
         let val = document.getElementById('campoBusca').value;
         if(val) {
-            loadNews(val, true); // True = é uma busca (preserva o Hero)
+            loadNews(val, true);
             document.getElementById('noticias').scrollIntoView({behavior:'smooth'});
         }
     }
 
     window.onload = function() {
-        loadNews(); // False = carregamento inicial
+        loadNews(); // Carrega Home
         document.getElementById('campoBusca').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') realizarBusca();
         });
     };
 </script>
+       
 
 </body>
 </html>
